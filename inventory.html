@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digital Ledger - Enterprise Schema Architecture</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        tailwind.config = { theme: { extend: { fontFamily: { sans: ['Inter', 'sans-serif'] }, colors: { brand: { primary: '#0F172A', accent: '#2563EB', bg: '#F8FAFC' } } } } }
+    </script>
+    <style>
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        #side-drawer { transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .drawer-open { transform: translateX(0) !important; }
+        .modal-enter { opacity: 1 !important; transform: scale(1) translateY(0) !important; }
+        .sticky-header { position: sticky; top: 0; z-index: 10; backdrop-filter: blur(8px); }
+    </style>
+</head>
+<body class="bg-brand-bg text-slate-800 font-sans h-screen flex flex-col overflow-hidden">
+
+    <!-- WORKSPACE -->
+    <main class="flex-1 flex flex-col max-w-6xl mx-auto w-full p-6 overflow-hidden">
+        
+        <!-- HEADER & ACTIONS -->
+        <div class="flex items-end justify-between mb-4 shrink-0">
+            <div>
+                <h1 class="text-2xl font-bold text-slate-900">Supply Inbox</h1>
+                <p class="text-sm text-slate-500 mt-1">Typography-driven list. Full financial & clinical schema.</p>
+            </div>
+            <div class="flex items-center gap-3">
+                <button onclick="openModal('in')" class="flex items-center gap-2 px-4 py-2 bg-white border border-slate-300 text-slate-700 rounded-lg text-sm font-medium hover:bg-slate-50 transition shadow-sm">
+                    <i data-lucide="arrow-down-to-line" class="w-4 h-4 text-green-600"></i> Stock In
+                </button>
+                <button onclick="openModal('out')" class="flex items-center gap-2 px-4 py-2 bg-white border border-slate-300 text-slate-700 rounded-lg text-sm font-medium hover:bg-slate-50 transition shadow-sm">
+                    <i data-lucide="arrow-up-from-line" class="w-4 h-4 text-red-500"></i> Stock Out
+                </button>
+                <button onclick="openModal('create')" class="flex items-center gap-2 px-4 py-2 bg-brand-accent text-white rounded-lg text-sm font-medium hover:bg-blue-700 transition shadow-sm shadow-blue-500/20">
+                    <i data-lucide="plus" class="w-4 h-4"></i> Add Item
+                </button>
+            </div>
+        </div>
+
+        <!-- CONTROLS BAR -->
+        <div class="flex items-center gap-3 mb-4 shrink-0 bg-white p-2.5 rounded-xl border border-slate-200 shadow-sm">
+            <div class="flex bg-slate-100 rounded-md p-0.5 shrink-0">
+                <button id="btn-flat" onclick="toggleView('flat')" class="px-4 py-1.5 text-sm font-medium rounded shadow-sm bg-white text-slate-900 transition-all">Flat List</button>
+                <button id="btn-group" onclick="toggleView('group')" class="px-4 py-1.5 text-sm font-medium rounded text-slate-500 hover:text-slate-900 transition-all">Grouped</button>
+            </div>
+            <div class="w-px h-6 bg-slate-200 mx-1"></div>
+            <div class="relative flex-1 min-w-[200px]">
+                <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2"></i>
+                <input type="text" id="search-input" oninput="renderList()" placeholder="Search items, brands, specs..." class="w-full pl-9 pr-3 py-1.5 bg-transparent text-sm focus:outline-none">
+            </div>
+            <div class="w-px h-6 bg-slate-200 mx-1"></div>
+            <div class="flex items-center gap-2 shrink-0">
+                <i data-lucide="filter" class="w-4 h-4 text-slate-400"></i>
+                <select id="filter-category" onchange="renderList()" class="bg-transparent text-sm focus:outline-none text-slate-700 font-medium cursor-pointer py-1.5">
+                    <option value="All">All Categories</option>
+                    <option value="Medications">Medications</option>
+                    <option value="Injectables">Injectables</option>
+                    <option value="Topicals">Topicals</option>
+                    <option value="Vaccines">Vaccines</option>
+                    <option value="Diagnostics">Diagnostics</option>
+                    <option value="Consumables">Consumables</option>
+                    <option value="Nutrition">Nutrition</option>
+                    <option value="Equipment">Equipment</option>
+                    <option value="Chemicals">Chemicals</option>
+                </select>
+            </div>
+            <div class="w-px h-6 bg-slate-200 mx-1"></div>
+            <div class="flex items-center gap-2 shrink-0 pr-2">
+                <i data-lucide="arrow-up-down" class="w-4 h-4 text-slate-400"></i>
+                <select id="sort-by" onchange="renderList()" class="bg-transparent text-sm focus:outline-none text-slate-700 font-medium cursor-pointer py-1.5">
+                    <option value="name-asc">Alphabetical (A-Z)</option>
+                    <option value="name-desc">Alphabetical (Z-A)</option>
+                    <option value="stock-low">Stock (Low-High)</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- INBOX LIST CONTAINER -->
+        <div class="flex-1 bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden flex flex-col">
+            <div class="overflow-y-auto custom-scrollbar flex-1 relative p-2" id="inbox-container">
+                <!-- Rendered by JS -->
+            </div>
+        </div>
+
+    </main>
+
+    <!-- SIDE DRAWER (BIODATA) -->
+    <div id="drawer-backdrop" class="fixed inset-0 bg-slate-900/20 backdrop-blur-[1px] z-30 hidden opacity-0 transition-opacity" onclick="closeDrawer()"></div>
+    <div id="side-drawer" class="fixed top-0 right-0 bottom-0 w-[500px] bg-white shadow-2xl z-40 translate-x-full flex flex-col border-l border-slate-200">
+        <div class="p-6 border-b border-slate-200 bg-slate-50 flex items-start justify-between shrink-0">
+            <div>
+                <span id="drawer-group" class="px-2 py-0.5 rounded text-[10px] font-bold tracking-wider bg-white text-slate-600 border border-slate-200 uppercase mb-2 inline-block">Group</span>
+                <button onclick="editItemDetails('group')" class="ml-1 text-slate-400 hover:text-brand-accent transition inline-block"><i data-lucide="pencil" class="w-3 h-3"></i></button>
+                
+                <div class="flex items-center gap-2 mt-1">
+                    <h2 id="drawer-title" class="text-xl font-bold text-slate-900 leading-tight">Name</h2>
+                    <button onclick="editItemDetails('name')" class="text-slate-400 hover:text-brand-accent transition"><i data-lucide="pencil" class="w-4 h-4"></i></button>
+                </div>
+                <p id="drawer-subtitle" class="text-sm font-medium text-brand-accent mt-1">Spec</p>
+                <input type="hidden" id="drawer-item-id">
+            </div>
+            <button onclick="closeDrawer()" class="p-1.5 text-slate-400 hover:bg-slate-200 rounded transition"><i data-lucide="x" class="w-5 h-5"></i></button>
+        </div>
+        
+        <div class="flex-1 overflow-y-auto p-6 space-y-6 custom-scrollbar" id="drawer-content">
+            <!-- Injected via JS -->
+        </div>
+
+        <div class="p-4 border-t border-slate-200 bg-slate-50 flex gap-3 shrink-0">
+            <button id="drawer-btn-in" class="flex-1 py-2.5 bg-brand-accent text-white rounded-lg text-sm font-medium shadow-sm hover:bg-blue-700 transition">Stock In</button>
+            <button id="drawer-btn-out" class="flex-1 py-2.5 bg-white border border-slate-300 text-slate-700 rounded-lg text-sm font-medium shadow-sm hover:bg-slate-50 transition">Stock Out</button>
+        </div>
+    </div>
+
+    <script src="assets/js/layout.js"></script>
+    <script src="assets/js/forms.js"></script>
+    <script src="assets/js/db.js"></script>
+    <script>
+        // --- 1. STATE MANAGEMENT (Wired to Global DB) ---
+let inventoryState = db.read('inventory');
+let currentView = 'flat';
+
+// --- 2. INBOX LIST RENDERING ---
+window.toggleView = function(view) {
+    currentView = view;
+    document.getElementById('btn-flat').className = view === 'flat' ? 'px-4 py-1.5 text-sm font-medium rounded shadow-sm bg-white text-slate-900 transition-all' : 'px-4 py-1.5 text-sm font-medium rounded text-slate-500 hover:text-slate-900 transition-all';
+    document.getElementById('btn-group').className = view === 'group' ? 'px-4 py-1.5 text-sm font-medium rounded shadow-sm bg-white text-slate-900 transition-all' : 'px-4 py-1.5 text-sm font-medium rounded text-slate-500 hover:text-slate-900 transition-all';
+    renderList();
+};
+
+window.createInboxRow = function(item) {
+    let statusColor = 'bg-emerald-500';
+    let statusText = 'text-emerald-700';
+    if (item.totalBaseUnits === 0) { statusColor = 'bg-red-500'; statusText = 'text-red-700'; } 
+    else if (item.totalBaseUnits <= item.minThreshold) { statusColor = 'bg-amber-500'; statusText = 'text-amber-700'; }
+
+    let displaySpecies = item.targetSpecies.split(' ')[0];
+
+    return `
+        <div class="group flex items-center justify-between p-4 mb-2 bg-white hover:bg-slate-50 border border-slate-100 hover:border-blue-200 rounded-xl transition cursor-pointer shadow-sm relative" onclick="openDrawer('${item.id}')">
+            <div class="flex-1">
+                <div class="flex items-center gap-2 mb-1">
+                    <h3 class="text-lg font-bold text-slate-900 leading-tight group-hover:text-brand-accent transition">${item.name}</h3>
+                    <span class="px-2 py-0.5 rounded text-[10px] font-bold tracking-wider bg-slate-100 text-slate-500 uppercase">${item.category}</span>
+                    ${item.isControlled === 'Yes' ? `<span class="px-2 py-0.5 rounded text-[10px] font-bold tracking-wider bg-red-100 text-red-600 uppercase border border-red-200">Controlled</span>` : ''}
+                </div>
+                <div class="flex items-center gap-3 text-sm text-slate-500">
+                    <span class="font-medium text-brand-accent">${item.brand} ${item.generatedName ? '- ' + item.generatedName : ''}</span>
+                    <span class="w-1 h-1 rounded-full bg-slate-300"></span>
+                    <span class="flex items-center gap-1 text-slate-400"><i data-lucide="paw-print" class="w-3 h-3"></i> ${displaySpecies}</span>
+                </div>
+            </div>
+            
+            <div class="w-48 px-6 flex flex-col items-end border-r border-slate-100 transition-opacity group-hover:opacity-10">
+                <div class="flex items-baseline gap-1">
+                    <span class="text-2xl font-black ${statusText}">${item.totalBaseUnits.toLocaleString()}</span>
+                    <span class="text-sm font-medium text-slate-500">${item.baseUnit}</span>
+                </div>
+                <div class="flex items-center gap-1.5 mt-0.5">
+                    <div class="w-2 h-2 rounded-full ${statusColor}"></div>
+                    <span class="text-[10px] font-bold uppercase tracking-wider ${statusText}">${item.totalBaseUnits <= item.minThreshold ? (item.totalBaseUnits === 0 ? 'Zero Stock' : 'Low Stock') : 'Optimal'}</span>
+                </div>
+            </div>
+
+            <div class="absolute right-6 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity flex gap-2">
+                <button onclick="event.stopPropagation(); window.openModal('in', '${item.id}')" class="px-3 py-1.5 bg-blue-50 text-brand-accent border border-blue-200 rounded text-xs font-bold hover:bg-brand-accent hover:text-white transition shadow-sm">Stock In</button>
+                <button onclick="event.stopPropagation(); window.openModal('out', '${item.id}')" class="px-3 py-1.5 bg-white text-slate-600 border border-slate-200 rounded text-xs font-bold hover:bg-slate-100 transition shadow-sm">Stock Out</button>
+            </div>
+        </div>
+    `;
+};
+
+window.renderList = function() {
+    inventoryState = db.read('inventory'); // Always get fresh data from global DB
+    const container = document.getElementById('inbox-container');
+    container.innerHTML = '';
+    
+    let filtered = [...inventoryState];
+    const filterCat = document.getElementById('filter-category').value;
+    if (filterCat !== 'All') filtered = filtered.filter(i => i.category === filterCat);
+    
+    const search = document.getElementById('search-input').value.toLowerCase().trim();
+    if (search) {
+        filtered = filtered.filter(i => 
+            i.name.toLowerCase().includes(search) || 
+            (i.generatedName && i.generatedName.toLowerCase().includes(search)) ||
+            i.brand.toLowerCase().includes(search)
+        );
+    }
+
+    const sortBy = document.getElementById('sort-by').value;
+    filtered.sort((a, b) => {
+        if (sortBy === 'name-asc') return a.name.localeCompare(b.name);
+        if (sortBy === 'name-desc') return b.name.localeCompare(a.name);
+        if (sortBy === 'stock-low') return a.totalBaseUnits - b.totalBaseUnits;
+        return 0;
+    });
+
+    if (filtered.length === 0) {
+        container.innerHTML = `<div class="p-12 text-center text-slate-400">No items match your criteria.</div>`;
+        return;
+    }
+
+    if (currentView === 'flat') {
+        filtered.forEach(item => container.innerHTML += createInboxRow(item));
+    } else {
+        const groups = [...new Set(filtered.map(i => i.itemGroup || 'Uncategorized'))].sort();
+        groups.forEach(group => {
+            const itemsInGroup = filtered.filter(i => (i.itemGroup || 'Uncategorized') === group);
+            if(itemsInGroup.length > 0) {
+                container.innerHTML += `
+                    <div class="sticky-header bg-white/90 p-3 mt-4 mb-2 border-b border-slate-200">
+                        <h2 class="text-sm font-black text-slate-800 uppercase tracking-wider flex items-center gap-2">
+                            <i data-lucide="folder-open" class="w-4 h-4 text-brand-accent"></i> ${group}
+                            <span class="ml-auto text-xs font-medium text-slate-400 bg-slate-100 px-2 py-0.5 rounded-full">${itemsInGroup.length} Items</span>
+                        </h2>
+                    </div>
+                `;
+                itemsInGroup.forEach(item => container.innerHTML += createInboxRow(item));
+            }
+        });
+    }
+    lucide.createIcons();
+};
+
+// --- 3. DRAWER LOGIC ---
+window.editItemDetails = function(field) {
+    const id = document.getElementById('drawer-item-id').value;
+    const item = inventoryState.find(i => i.id === id);
+    if(!item) return;
+
+    if (field === 'name') {
+        const newName = prompt("Edit Commodity Name:", item.name);
+        if(newName && newName.trim() !== '') {
+            item.name = newName.trim();
+            document.getElementById('drawer-title').textContent = item.name;
+            db.write('inventory', inventoryState);
+        }
+    } else if (field === 'group') {
+        const newGroup = prompt("Edit Item Group (Classification):", item.itemGroup);
+        if(newGroup !== null) { 
+            item.itemGroup = newGroup.trim() || 'Uncategorized';
+            document.getElementById('drawer-group').textContent = item.itemGroup;
+            db.write('inventory', inventoryState);
+        }
+    }
+    renderList();
+};
+
+window.openDrawer = function(itemId) {
+    const item = inventoryState.find(i => i.id === itemId);
+    if(!item) return;
+
+    document.getElementById('drawer-item-id').value = item.id;
+    document.getElementById('drawer-group').textContent = item.itemGroup || 'Uncategorized';
+    document.getElementById('drawer-title').textContent = item.name;
+    document.getElementById('drawer-subtitle').textContent = `${item.brand} - ${item.generatedName || 'N/A'}`;
+
+    let displayCount = `${item.totalBaseUnits.toLocaleString()} ${item.baseUnit}`;
+    let displayBulk = "";
+    if (item.latestMultiplier > 1) {
+        const bulk = Math.floor(item.totalBaseUnits / item.latestMultiplier);
+        const rem = item.totalBaseUnits % item.latestMultiplier;
+        displayBulk = `(Est: ${bulk} ${item.latestPurchasingUnit}` + (rem > 0 ? ` + ${rem} ${item.baseUnit})` : ')');
+    }
+
+    document.getElementById('drawer-content').innerHTML = `
+        <div class="bg-blue-50 border border-blue-100 rounded-xl p-5 flex items-center justify-between">
+            <div>
+                <p class="text-xs font-bold text-blue-600 uppercase tracking-wider mb-1">Total Stock on Hand</p>
+                <p class="text-2xl font-bold text-slate-900">${displayCount}</p>
+                ${displayBulk ? `<p class="text-xs font-medium text-slate-600 mt-0.5">${displayBulk}</p>` : ''}
+            </div>
+            <div class="text-right">
+                <p class="text-[10px] text-slate-500 uppercase tracking-wide">Alert Threshold</p>
+                <p class="text-sm font-medium text-amber-600">${item.minThreshold} ${item.baseUnit}</p>
+            </div>
+        </div>
+
+        <div>
+            <h3 class="text-sm font-bold text-slate-900 border-b border-slate-200 pb-2 mb-4">Master Identity & Protocol</h3>
+            <div class="grid grid-cols-2 gap-y-4 gap-x-4">
+                <div><p class="text-[10px] text-slate-500 uppercase tracking-wide">Target Species</p><p class="text-sm font-medium text-slate-900">${item.targetSpecies}</p></div>
+                <div><p class="text-[10px] text-slate-500 uppercase tracking-wide">Storage Protocol</p><p class="text-sm font-medium text-slate-900">${item.storage}</p></div>
+            </div>
+            
+            <h3 class="text-sm font-bold text-slate-900 border-b border-slate-200 pb-2 mt-6 mb-4">Latest Batch Info</h3>
+            <div class="grid grid-cols-2 gap-y-4 gap-x-4">
+                <div><p class="text-[10px] text-slate-500 uppercase tracking-wide">Packaging Configuration</p><p class="text-sm font-medium text-slate-900">1 ${item.latestPurchasingUnit} = ${item.latestMultiplier} ${item.baseUnit}</p></div>
+                <div><p class="text-[10px] text-slate-500 uppercase tracking-wide">Physical Location</p><p class="text-sm font-medium text-slate-900">${item.latestLocation || 'Unassigned'}</p></div>
+                
+                <div class="col-span-2 border-t border-slate-100 pt-3 mt-1">
+                    <p class="text-[10px] text-slate-500 uppercase tracking-wide mb-1">Procurement Financials</p>
+                    <div class="bg-slate-50 p-3 rounded border border-slate-200 flex justify-between">
+                        <div><p class="text-xs text-slate-500 font-medium">${item.procurement}</p></div>
+                        <div><p class="text-sm font-bold text-slate-900">${item.costInfo || 'N/A'}</p></div>
+                    </div>
+                </div>
+
+                <div class="col-span-2 border-t border-slate-100 pt-3 mt-1 grid grid-cols-2 gap-4">
+                    <div><p class="text-[10px] text-slate-500 uppercase tracking-wide">Expiration Date</p><p class="text-sm font-medium ${item.expiry ? 'text-red-600' : 'text-slate-400'}">${item.expiry || 'Not Applicable'}</p></div>
+                    <div><p class="text-[10px] text-slate-500 uppercase tracking-wide">Batch / Lot ID</p><p class="text-sm font-medium font-mono text-slate-900">${item.batchId || 'N/A'}</p></div>
+                </div>
+            </div>
+        </div>
+        ${item.isControlled === 'Yes' ? `
+        <div class="mt-2 p-4 bg-red-50 border border-red-200 rounded-xl flex gap-3">
+            <i data-lucide="shield-alert" class="w-5 h-5 text-red-600 shrink-0"></i>
+            <div>
+                <p class="text-sm font-bold text-red-700">Controlled Substance</p>
+                <p class="text-xs text-red-600 mt-1">Requires authorized personnel auditing.</p>
+            </div>
+        </div>` : ''}
+    `;
+    lucide.createIcons();
+
+    document.getElementById('drawer-btn-in').onclick = () => { closeDrawer(); window.openModal('in', item.id); };
+    document.getElementById('drawer-btn-out').onclick = () => { closeDrawer(); window.openModal('out', item.id); };
+
+    document.getElementById('drawer-backdrop').classList.remove('hidden');
+    setTimeout(() => {
+        document.getElementById('drawer-backdrop').classList.replace('opacity-0', 'opacity-100');
+        document.getElementById('side-drawer').classList.add('drawer-open');
+    }, 10);
+};
+
+window.closeDrawer = function() {
+    document.getElementById('side-drawer').classList.remove('drawer-open');
+    document.getElementById('drawer-backdrop').classList.replace('opacity-100', 'opacity-0');
+    setTimeout(() => document.getElementById('drawer-backdrop').classList.add('hidden'), 300);
+};
+
+// INIT
+renderList();
+    </script>
+</body>
+</html>

@@ -1,0 +1,1054 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DAS SIYAM - Settings Command Center</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        tailwind.config = { 
+            theme: { 
+                extend: { 
+                    fontFamily: { sans: ['Inter', 'sans-serif'] }, 
+                    colors: { 
+                        brand: { 
+                            primary: '#1E1B4B', 
+                            action: '#D97706',  
+                            secondary: '#0D9488', 
+                            surface: '#F8FAFC', 
+                            accent: '#2563EB'
+                        },
+                        semantic: {
+                            warning: '#F59E0B',
+                            critical: '#EF4444'
+                        }
+                    } 
+                } 
+            } 
+        }
+    </script>
+    <style>
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        
+        .nav-link-active { 
+            background: #EFF6FF; 
+            color: #2563EB; 
+            border-right: 3px solid #2563EB; 
+        }
+
+        /* Staff POV Locked State Styles */
+        .staff-locked {
+            opacity: 0.65;
+            pointer-events: none;
+            filter: grayscale(80%);
+            transition: all 0.3s ease;
+        }
+        
+        .toggle-checkbox:checked {
+            right: 0;
+            border-color: #2563EB;
+        }
+        .toggle-checkbox:checked + .toggle-label {
+            background-color: #2563EB;
+        }
+        
+        .pov-active { background-color: #2563EB; color: white; }
+        .pov-inactive { background-color: transparent; color: #94A3B8; }
+
+        /* Modal Animation */
+        .modal-enter { opacity: 1 !important; transform: scale(1) translateY(0) !important; }
+    </style>
+</head>
+<body class="bg-brand-surface font-sans h-screen flex flex-col overflow-hidden">
+
+    <!-- PROTOTYPE POV SWITCHER -->
+    <div class="bg-slate-900 px-6 py-2 flex items-center justify-between shrink-0 z-[100] border-b border-black">
+        <div class="flex items-center gap-3">
+            <div class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
+            <span class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Settings Perspective Switcher (Final)</span>
+        </div>
+        <div class="flex bg-slate-800 rounded-full p-1 border border-slate-700">
+            <button onclick="switchPerspective('admin')" id="btn-pov-admin" class="px-5 py-1 text-xs font-bold rounded-full transition-all pov-active shadow-sm">ADMIN POV</button>
+            <button onclick="switchPerspective('staff')" id="btn-pov-staff" class="px-5 py-1 text-xs font-bold rounded-full transition-all pov-inactive hover:text-white">STAFF POV</button>
+        </div>
+    </div>
+
+    <!-- WORKSPACE CONTAINER -->
+    <div class="flex-1 flex overflow-hidden relative">
+        
+        <!-- SETTINGS SIDE NAV -->
+        <aside class="w-64 bg-white border-r border-slate-200 flex flex-col shrink-0 z-20 shadow-[1px_0_4px_rgba(0,0,0,0.02)]">
+            <nav class="flex-1 py-6 space-y-1 overflow-y-auto custom-scrollbar">
+                
+                <p class="px-6 text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">Admin Settings</p>
+                <button onclick="switchPanel('general')" id="nav-general" class="setting-nav-btn w-full px-6 py-3 flex items-center justify-between text-sm font-bold text-slate-600 hover:bg-slate-50 nav-link-active transition-colors">
+                    <span class="flex items-center gap-3"><i data-lucide="settings-2" class="w-4 h-4"></i> General Configuration</span>
+                    <i data-lucide="lock" class="w-3 h-3 text-slate-300 lock-icon hidden"></i>
+                </button>
+                <button onclick="switchPanel('lists')" id="nav-lists" class="setting-nav-btn w-full px-6 py-3 flex items-center justify-between text-sm font-bold text-slate-600 hover:bg-slate-50 transition-colors">
+                    <span class="flex items-center gap-3"><i data-lucide="database" class="w-4 h-4"></i> Data Categories</span>
+                    <i data-lucide="lock" class="w-3 h-3 text-slate-300 lock-icon hidden"></i>
+                </button>
+                <button onclick="switchPanel('personnel')" id="nav-personnel" class="setting-nav-btn w-full px-6 py-3 flex items-center justify-between text-sm font-bold text-slate-600 hover:bg-slate-50 transition-colors">
+                    <span class="flex items-center gap-3"><i data-lucide="users" class="w-4 h-4"></i> Personnel</span>
+                    <i data-lucide="lock" class="w-3 h-3 text-slate-300 lock-icon hidden"></i>
+                </button>
+
+                <div class="pt-6 mt-6 border-t border-slate-100">
+                    <p class="px-6 text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">Preferences</p>
+                    <button onclick="switchPanel('interface')" id="nav-interface" class="setting-nav-btn w-full px-6 py-3 flex items-center gap-3 text-sm font-bold text-slate-600 hover:bg-slate-50 transition-colors">
+                        <i data-lucide="monitor" class="w-4 h-4"></i> Interface
+                    </button>
+                    <button onclick="switchPanel('alerts')" id="nav-alerts" class="setting-nav-btn w-full px-6 py-3 flex items-center gap-3 text-sm font-bold text-slate-600 hover:bg-slate-50 transition-colors">
+                        <i data-lucide="bell" class="w-4 h-4"></i> Alerts
+                    </button>
+                </div>
+            </nav>
+
+            <!-- AUTHORIZATION BADGE -->
+            <div class="p-5 bg-slate-50 border-t border-slate-200 shrink-0">
+                <div id="auth-badge" class="flex items-start gap-3 bg-white p-3 rounded-xl border border-blue-200 shadow-sm relative overflow-hidden transition-colors duration-300">
+                    <div id="auth-bg" class="absolute inset-0 bg-blue-50/50 opacity-100 transition-opacity"></div>
+                    <div id="auth-icon-wrapper" class="w-8 h-8 rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center shrink-0 relative z-10">
+                        <i id="auth-icon" data-lucide="shield-check" class="w-4 h-4"></i>
+                    </div>
+                    <div class="relative z-10">
+                        <p id="auth-status" class="text-xs font-black text-blue-900 uppercase tracking-wider">Admin Access</p>
+                        <p id="auth-sub" class="text-[10px] text-blue-600 font-bold mt-0.5 leading-tight">PIN verified. Global write access granted.</p>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- CENTER WORKSPACE -->
+        <main class="flex-1 overflow-y-auto custom-scrollbar bg-white relative">
+            
+            <div id="admin-lock-overlay" class="absolute top-6 left-6 right-6 bg-slate-100 border border-slate-200 rounded-xl p-4 flex items-center justify-between z-10 hidden opacity-0 transition-opacity duration-300 shadow-sm">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 bg-slate-200 rounded flex items-center justify-center text-slate-500"><i data-lucide="lock" class="w-4 h-4"></i></div>
+                    <div>
+                        <p class="text-sm font-bold text-slate-800">Viewing Shelter Standards</p>
+                        <p class="text-[10px] text-slate-500 font-medium">These settings are locked. An Admin PIN is required to modify global logic.</p>
+                    </div>
+                </div>
+                <button class="px-4 py-2 bg-white border border-slate-300 rounded-lg text-xs font-bold text-slate-700 hover:bg-slate-50 shadow-sm">Enter PIN to Unlock</button>
+            </div>
+
+            <div class="p-8 pb-20 max-w-3xl mt-2" id="panels-container">
+                
+                <!-- PANEL: GENERAL -->
+                <div id="panel-general" class="setting-panel space-y-8 animate-in fade-in duration-300">
+                    <div>
+                        <h2 class="text-2xl font-black text-slate-900 tracking-tight">General Configuration</h2>
+                        <p class="text-sm text-slate-500 font-medium mt-1">Global logic rules, data formats, and system backups.</p>
+                    </div>
+
+                    <div class="admin-controlled-area space-y-8">
+                        
+                        <!-- NEW: Clinical Standards -->
+                        <div class="space-y-4">
+                            <label class="block text-xs font-black text-slate-400 uppercase tracking-widest">Clinical Standards</label>
+                            <div class="flex items-center justify-between p-5 bg-slate-50 rounded-xl border border-slate-200">
+                                <div>
+                                    <p class="text-sm font-bold text-slate-900">System Date Format</p>
+                                    <p class="text-xs text-slate-500 font-medium mt-0.5">Standardized display format for Medical Logs and Expirations.</p>
+                                </div>
+                                <select class="border border-slate-200 rounded-md text-sm font-bold text-slate-700 bg-white py-2 px-3 focus:ring-2 focus:ring-brand-accent outline-none cursor-pointer shadow-sm">
+                                    <option value="YYYY-MM-DD">YYYY-MM-DD (e.g., 2026-04-26)</option>
+                                    <option value="DD-MMM-YYYY">DD-MMM-YYYY (e.g., 26-Apr-2026)</option>
+                                    <option value="MM/DD/YYYY">MM/DD/YYYY (e.g., 04/26/2026)</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="w-full h-px bg-slate-100"></div>
+
+                        <!-- NEW: Inventory Defaults -->
+                        <div class="space-y-4">
+                            <label class="block text-xs font-black text-slate-400 uppercase tracking-widest">Inventory Defaults</label>
+                            <div class="flex items-center justify-between p-5 bg-slate-50 rounded-xl border border-slate-200">
+                                <div>
+                                    <p class="text-sm font-bold text-slate-900">Default Low Stock Threshold</p>
+                                    <p class="text-xs text-slate-500 font-medium mt-0.5">Fallback minimum limit if left blank during item creation.</p>
+                                </div>
+                                <div class="flex items-center gap-2 bg-white border border-slate-300 rounded-lg p-1 shadow-sm">
+                                    <input type="number" value="10" class="w-16 px-2 py-1 text-sm font-black text-center focus:outline-none bg-transparent">
+                                    <span class="text-[10px] font-black text-slate-400 pr-3 uppercase tracking-wider">Units</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="w-full h-px bg-slate-100"></div>
+
+                        <!-- RETAINED: System Alerts -->
+                        <div class="space-y-4">
+                            <label class="block text-xs font-black text-slate-400 uppercase tracking-widest">System Alerts</label>
+                            <div class="flex items-center justify-between p-5 bg-slate-50 rounded-xl border border-slate-200">
+                                <div>
+                                    <p class="text-sm font-bold text-slate-900">Expiry Warning Period</p>
+                                    <p class="text-xs text-slate-500 font-medium mt-0.5">Threshold for triggering dashboard expiry alerts.</p>
+                                </div>
+                                <div class="flex items-center gap-2 bg-white border border-slate-300 rounded-lg p-1 shadow-sm">
+                                    <input type="number" value="30" class="w-16 px-2 py-1 text-sm font-black text-center focus:outline-none bg-transparent">
+                                    <span class="text-[10px] font-black text-slate-400 pr-3 uppercase tracking-wider">Days</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="w-full h-px bg-slate-100"></div>
+
+                        <!-- NEW: Data Management -->
+                        <div class="space-y-4">
+                            <label class="block text-xs font-black text-slate-400 uppercase tracking-widest">Data Management</label>
+                            <div class="p-5 bg-slate-50 rounded-xl border border-slate-200 space-y-4">
+                                <div>
+                                    <p class="text-sm font-bold text-slate-900">System Data Export</p>
+                                    <p class="text-xs text-slate-500 font-medium mt-0.5">Download raw CSV backups of the sanctuary's active databases.</p>
+                                </div>
+                                <div class="flex gap-3">
+                                    <button class="flex items-center gap-2 px-4 py-2 bg-white border border-slate-300 text-slate-700 rounded-lg text-xs font-bold hover:bg-slate-100 hover:text-brand-accent transition shadow-sm">
+                                        <i data-lucide="download" class="w-4 h-4"></i> Inventory Ledger
+                                    </button>
+                                    <button class="flex items-center gap-2 px-4 py-2 bg-white border border-slate-300 text-slate-700 rounded-lg text-xs font-bold hover:bg-slate-100 hover:text-brand-accent transition shadow-sm">
+                                        <i data-lucide="download" class="w-4 h-4"></i> Medical History
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- SAVE BUTTON -->
+                        <div class="pt-4 flex justify-end">
+                            <button onclick="saveGeneralSettings()" id="btn-save-general" class="px-6 py-2.5 bg-brand-accent text-white rounded-lg text-sm font-bold hover:bg-blue-700 transition shadow-sm flex items-center gap-2">
+                                <i data-lucide="save" class="w-4 h-4"></i> Save Global Settings
+                            </button>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- PANEL: LISTS (DATA Categories WITH SUB-NAV) -->
+                <div id="panel-lists" class="setting-panel hidden space-y-6 animate-in fade-in duration-300">
+                    <div>
+                        <h2 class="text-2xl font-black text-slate-900 tracking-tight">Data Categories</h2>
+                        <p class="text-sm text-slate-500 font-medium mt-1">Manage dropdown taxonomies and system lists.</p>
+                    </div>
+
+                    <div class="admin-controlled-area">
+                        <!-- Inner Sub-Navigation -->
+                        <div class="flex border-b border-slate-200 mb-6">
+                            <button onclick="switchSubTab('inventory')" id="sub-tab-inventory" class="px-6 py-3 text-sm font-bold text-brand-accent border-b-2 border-brand-accent transition">Inventory Data</button>
+                            <button onclick="switchSubTab('clinical')" id="sub-tab-clinical" class="px-6 py-3 text-sm font-bold text-slate-500 border-b-2 border-transparent hover:text-slate-700 transition">Clinical Data</button>
+                        </div>
+
+                        <!-- TAB A: INVENTORY DATA -->
+                        <div id="sub-inventory-data" class="grid grid-cols-1 gap-8 animate-in fade-in duration-300">
+                            
+                            <!-- Item Groups -->
+                            <div class="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden flex flex-col max-h-[500px]">
+                                <div class="p-5 bg-slate-50 border-b border-slate-200 flex items-center justify-between shrink-0">
+                                    <div>
+                                        <h3 class="text-xs font-black text-slate-800 uppercase tracking-widest">Item Groups</h3>
+                                        <p class="text-[10px] text-slate-500 font-medium mt-0.5">Sub-classifications attached to locked Master Categories.</p>
+                                    </div>
+                                    <button onclick="toggleAdd('itemGroups')" class="flex items-center gap-1.5 px-3 py-1.5 bg-white border border-slate-300 text-slate-700 rounded-lg text-xs font-bold hover:bg-slate-100 shadow-sm transition">
+                                        <i data-lucide="plus" class="w-3.5 h-3.5"></i> Add Group
+                                    </button>
+                                </div>
+                                
+                                <!-- Inline Add Row -->
+                                <div id="add-row-itemGroups" class="hidden p-4 bg-blue-50/50 border-b border-blue-100 shrink-0">
+                                    <div class="flex items-center gap-2">
+                                        <input type="text" id="input-itemGroups-name" placeholder="Group Name..." class="flex-1 border border-blue-200 rounded-md px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent font-medium text-slate-800 shadow-sm">
+                                        <select id="input-itemGroups-master" class="flex-1 border border-blue-200 rounded-md px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent font-medium text-slate-600 shadow-sm appearance-none cursor-pointer bg-white">
+                                            <option value="" disabled selected>Assign Master Category...</option>
+                                            <option value="Medications">Medications</option>
+                                            <option value="Injectables">Injectables</option>
+                                            <option value="Topicals">Topicals</option>
+                                            <option value="Vaccines">Vaccines</option>
+                                            <option value="Diagnostics">Diagnostics</option>
+                                            <option value="Consumables">Consumables</option>
+                                            <option value="Nutrition">Nutrition</option>
+                                            <option value="Equipment">Equipment</option>
+                                            <option value="Chemicals">Chemicals</option>
+                                        </select>
+                                        <button onclick="saveItem('itemGroups')" class="p-1.5 bg-brand-accent text-white rounded hover:bg-blue-700 transition shadow-sm"><i data-lucide="check" class="w-4 h-4"></i></button>
+                                        <button onclick="toggleAdd('itemGroups')" class="p-1.5 bg-white text-slate-400 border border-slate-200 rounded hover:bg-slate-50 transition shadow-sm"><i data-lucide="x" class="w-4 h-4"></i></button>
+                                    </div>
+                                    <p id="error-itemGroups" class="hidden text-xs text-red-500 mt-2 font-medium"></p>
+                                </div>
+
+                                <div class="divide-y divide-slate-100 overflow-y-auto custom-scrollbar flex-1" id="list-itemGroups">
+                                    <!-- JS Rendered -->
+                                </div>
+                                
+                                <div class="p-2 border-t border-slate-100 bg-slate-50 text-center shrink-0">
+                                    <button onclick="toggleArchived('itemGroups')" id="btn-archived-itemGroups" class="text-[10px] font-bold text-slate-500 hover:text-brand-accent uppercase tracking-widest transition">Show Archived</button>
+                                </div>
+                            </div>
+
+                            <!-- Standardized Units List -->
+                            <div class="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden flex flex-col max-h-[500px]">
+                                <div class="p-5 bg-slate-50 border-b border-slate-200 flex items-center justify-between shrink-0">
+                                    <div>
+                                        <h3 class="text-xs font-black text-slate-800 uppercase tracking-widest">Standardized Units (UOM)</h3>
+                                        <p class="text-[10px] text-slate-500 font-medium mt-0.5">Approved purchasing and base units.</p>
+                                    </div>
+                                    <button onclick="toggleAdd('units')" class="flex items-center gap-1.5 px-3 py-1.5 bg-white border border-slate-300 text-slate-700 rounded-lg text-xs font-bold hover:bg-slate-100 shadow-sm transition">
+                                        <i data-lucide="plus" class="w-3.5 h-3.5"></i> Add Unit
+                                    </button>
+                                </div>
+
+                                <!-- Inline Add Row -->
+                                <div id="add-row-units" class="hidden p-4 bg-blue-50/50 border-b border-blue-100 shrink-0">
+                                    <div class="flex items-center gap-2 max-w-sm">
+                                        <input type="text" id="input-units-name" placeholder="e.g., ml, box, pair" maxlength="10" class="flex-1 border border-blue-200 rounded-md px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent font-medium text-slate-800 shadow-sm">
+                                        <button onclick="saveItem('units')" class="p-1.5 bg-brand-accent text-white rounded hover:bg-blue-700 transition shadow-sm"><i data-lucide="check" class="w-4 h-4"></i></button>
+                                        <button onclick="toggleAdd('units')" class="p-1.5 bg-white text-slate-400 border border-slate-200 rounded hover:bg-slate-50 transition shadow-sm"><i data-lucide="x" class="w-4 h-4"></i></button>
+                                    </div>
+                                    <p id="error-units" class="hidden text-xs text-red-500 mt-2 font-medium"></p>
+                                </div>
+
+                                <div class="p-5 grid grid-cols-3 gap-3 overflow-y-auto custom-scrollbar flex-1" id="list-units">
+                                    <!-- JS Rendered -->
+                                </div>
+                                
+                                <div class="p-2 border-t border-slate-100 bg-slate-50 text-center shrink-0">
+                                    <button onclick="toggleArchived('units')" id="btn-archived-units" class="text-[10px] font-bold text-slate-500 hover:text-brand-accent uppercase tracking-widest transition">Show Archived</button>
+                                </div>
+                            </div>
+                            
+                            <!-- Stock-Out Reasons List -->
+                            <div class="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden flex flex-col max-h-[500px]">
+                                <div class="p-5 bg-slate-50 border-b border-slate-200 flex items-center justify-between shrink-0">
+                                    <div>
+                                        <h3 class="text-xs font-black text-slate-800 uppercase tracking-widest">Stock-Out Reasons</h3>
+                                        <p class="text-[10px] text-slate-500 font-medium mt-0.5">Approved reasons for manual ledger deductions.</p>
+                                    </div>
+                                    <button onclick="toggleAdd('reasons')" class="flex items-center gap-1.5 px-3 py-1.5 bg-white border border-slate-300 text-slate-700 rounded-lg text-xs font-bold hover:bg-slate-100 shadow-sm transition">
+                                        <i data-lucide="plus" class="w-3.5 h-3.5"></i> Add Reason
+                                    </button>
+                                </div>
+
+                                <!-- Inline Add Row -->
+                                <div id="add-row-reasons" class="hidden p-4 bg-blue-50/50 border-b border-blue-100 shrink-0">
+                                    <div class="flex items-center gap-2 max-w-lg">
+                                        <input type="text" id="input-reasons-name" placeholder="e.g., Donated to Foster" class="flex-1 border border-blue-200 rounded-md px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent font-medium text-slate-800 shadow-sm">
+                                        <button onclick="saveItem('reasons')" class="p-1.5 bg-brand-accent text-white rounded hover:bg-blue-700 transition shadow-sm"><i data-lucide="check" class="w-4 h-4"></i></button>
+                                        <button onclick="toggleAdd('reasons')" class="p-1.5 bg-white text-slate-400 border border-slate-200 rounded hover:bg-slate-50 transition shadow-sm"><i data-lucide="x" class="w-4 h-4"></i></button>
+                                    </div>
+                                    <p id="error-reasons" class="hidden text-xs text-red-500 mt-2 font-medium"></p>
+                                </div>
+
+                                <div class="divide-y divide-slate-100 overflow-y-auto custom-scrollbar flex-1" id="list-reasons">
+                                    <!-- JS Rendered -->
+                                </div>
+                                
+                                <div class="p-2 border-t border-slate-100 bg-slate-50 text-center shrink-0">
+                                    <button onclick="toggleArchived('reasons')" id="btn-archived-reasons" class="text-[10px] font-bold text-slate-500 hover:text-brand-accent uppercase tracking-widest transition">Show Archived</button>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <!-- TAB B: CLINICAL DATA -->
+                        <div id="sub-clinical-data" class="grid grid-cols-1 gap-8 animate-in fade-in duration-300 hidden">
+                            <!-- Treatment Types List -->
+                            <div class="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden flex flex-col max-h-[500px]">
+                                <div class="p-5 bg-slate-50 border-b border-slate-200 flex items-center justify-between shrink-0">
+                                    <div>
+                                        <h3 class="text-xs font-black text-slate-800 uppercase tracking-widest">Treatment Types</h3>
+                                        <p class="text-[10px] text-slate-500 font-medium mt-0.5">Categorization for Medical Log procedures.</p>
+                                    </div>
+                                    <button onclick="toggleAdd('types')" class="flex items-center gap-1.5 px-3 py-1.5 bg-white border border-slate-300 text-slate-700 rounded-lg text-xs font-bold hover:bg-slate-100 shadow-sm transition">
+                                        <i data-lucide="plus" class="w-3.5 h-3.5"></i> Add Type
+                                    </button>
+                                </div>
+
+                                <!-- Inline Add Row -->
+                                <div id="add-row-types" class="hidden p-4 bg-blue-50/50 border-b border-blue-100 shrink-0">
+                                    <div class="flex items-center gap-2 max-w-lg">
+                                        <input type="text" id="input-types-name" placeholder="e.g., Dental" class="flex-1 border border-blue-200 rounded-md px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent font-medium text-slate-800 shadow-sm">
+                                        <button onclick="saveItem('types')" class="p-1.5 bg-brand-accent text-white rounded hover:bg-blue-700 transition shadow-sm"><i data-lucide="check" class="w-4 h-4"></i></button>
+                                        <button onclick="toggleAdd('types')" class="p-1.5 bg-white text-slate-400 border border-slate-200 rounded hover:bg-slate-50 transition shadow-sm"><i data-lucide="x" class="w-4 h-4"></i></button>
+                                    </div>
+                                    <p id="error-types" class="hidden text-xs text-red-500 mt-2 font-medium"></p>
+                                </div>
+
+                                <div class="divide-y divide-slate-100 overflow-y-auto custom-scrollbar flex-1" id="list-types">
+                                    <!-- JS Rendered -->
+                                </div>
+                                
+                                <div class="p-2 border-t border-slate-100 bg-slate-50 text-center shrink-0">
+                                    <button onclick="toggleArchived('types')" id="btn-archived-types" class="text-[10px] font-bold text-slate-500 hover:text-brand-accent uppercase tracking-widest transition">Show Archived</button>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- PANEL: PERSONNEL -->
+                <div id="panel-personnel" class="setting-panel hidden space-y-6 animate-in fade-in duration-300">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h2 class="text-2xl font-black text-slate-900 tracking-tight">Personnel Management</h2>
+                            <p class="text-sm text-slate-500 font-medium mt-1">Manage staff access and roles for medical log attribution.</p>
+                        </div>
+                    </div>
+
+                    <div class="admin-controlled-area">
+                        <div class="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden flex flex-col max-h-[600px]">
+                            <div class="p-5 bg-slate-50 border-b border-slate-200 flex items-center justify-between shrink-0">
+                                <h3 class="text-xs font-black text-slate-800 uppercase tracking-widest">Active & Inactive Staff</h3>
+                                <button onclick="openPersonnelModal()" class="flex items-center gap-1.5 px-3 py-1.5 bg-brand-accent text-white rounded-lg text-xs font-bold hover:bg-blue-700 shadow-sm transition">
+                                    <i data-lucide="user-plus" class="w-3.5 h-3.5"></i> Add Personnel
+                                </button>
+                            </div>
+                            
+                            <!-- Search & Sort Control Bar -->
+                            <div class="px-5 py-3 border-b border-slate-100 bg-white flex items-center gap-3 shrink-0">
+                                <div class="relative flex-[7]">
+                                    <i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400"></i>
+                                    <input type="text" id="personnel-search" oninput="renderPersonnel()" placeholder="Search by name or role..." class="w-full pl-9 pr-3 py-1.5 text-sm border border-slate-200 rounded-md focus:ring-2 focus:ring-brand-accent outline-none font-medium text-slate-800 shadow-sm transition">
+                                </div>
+                                <div class="flex-[3]">
+                                    <select id="personnel-sort" onchange="renderPersonnel()" class="w-full border border-slate-200 rounded-md text-sm font-bold text-slate-700 bg-slate-50 py-1.5 px-3 focus:ring-2 focus:ring-brand-accent outline-none cursor-pointer shadow-sm transition">
+                                        <option value="az">Name (A-Z)</option>
+                                        <option value="za">Name (Z-A)</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="divide-y divide-slate-100 overflow-y-auto custom-scrollbar flex-1" id="list-personnel">
+                                <!-- JS Rendered Dynamic Personnel List -->
+                            </div>
+
+                            <div class="p-2 border-t border-slate-100 bg-slate-50 text-center shrink-0">
+                                <button onclick="toggleInactivePersonnel()" id="btn-inactive-personnel" class="text-[10px] font-bold text-slate-500 hover:text-brand-accent uppercase tracking-widest transition">Show Inactive Personnel</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PANEL: INTERFACE (STAFF VOLATILE) -->
+                <div id="panel-interface" class="setting-panel hidden space-y-8 animate-in fade-in duration-300">
+                    <div>
+                        <h2 class="text-2xl font-black text-slate-900 tracking-tight">Interface Preferences</h2>
+                        <p class="text-sm text-slate-500 font-medium mt-1">Adjust layout and visual filters for your current shift. These reset when the app is closed.</p>
+                    </div>
+
+                    <!-- Staff controls are NOT in the admin-controlled-area -->
+                    <div class="space-y-6">
+                        
+                        <!-- Visuals -->
+                        <div class="bg-white border border-slate-200 rounded-2xl shadow-sm p-6 space-y-6">
+                            <h3 class="text-xs font-black text-slate-400 uppercase tracking-widest border-b border-slate-100 pb-2">Visual Accessibility</h3>
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <span class="text-sm font-bold text-slate-800">List Spacing</span>
+                                    <p class="text-xs text-slate-500">Adjust spacing in Medical Log tables.</p>
+                                </div>
+                                <select class="text-sm font-bold bg-slate-50 border border-slate-200 rounded-lg px-4 py-2 focus:ring-2 focus:ring-brand-accent outline-none text-slate-700 shadow-sm cursor-pointer">
+                                    <option>Standard</option>
+                                    <option>Compact</option>
+                                    <option>Relaxed</option>
+                                </select>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <span class="text-sm font-bold text-slate-800">High Contrast Text</span>
+                                    <p class="text-xs text-slate-500">Darkens gray text for better readability.</p>
+                                </div>
+                                <label class="relative inline-flex items-center cursor-pointer">
+                                    <input type="checkbox" class="sr-only peer">
+                                    <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-brand-accent"></div>
+                                </label>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- PANEL: ALERTS (STAFF VOLATILE) -->
+                <div id="panel-alerts" class="setting-panel hidden space-y-8 animate-in fade-in duration-300">
+                    <div>
+                        <h2 class="text-2xl font-black text-slate-900 tracking-tight">Alert Preferences</h2>
+                        <p class="text-sm text-slate-500 font-medium mt-1">Manage sensory cues and notification sounds for your current shift.</p>
+                    </div>
+
+                    <!-- Staff controls are NOT in the admin-controlled-area -->
+                    <div class="space-y-6">
+                        <!-- Audio -->
+                        <div class="bg-white border border-slate-200 rounded-2xl shadow-sm p-6 space-y-6">
+                            <h3 class="text-xs font-black text-slate-400 uppercase tracking-widest border-b border-slate-100 pb-2">Audio Alerts</h3>
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <span class="text-sm font-bold text-slate-800">Action Success Sounds</span>
+                                    <p class="text-xs text-slate-500">Play a subtle chime when treatment is logged.</p>
+                                </div>
+                                <label class="relative inline-flex items-center cursor-pointer">
+                                    <input type="checkbox" checked class="sr-only peer">
+                                    <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-brand-accent"></div>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+
+    </div>
+
+    <!-- PERSONNEL MODAL -->
+    <div id="modal-backdrop-personnel" class="fixed inset-0 bg-slate-900/40 backdrop-blur-[2px] z-50 hidden transition-opacity opacity-0 duration-300" onclick="closePersonnelModal()"></div>
+    <div id="modal-wrapper-personnel" class="fixed inset-0 z-50 flex items-center justify-center hidden pointer-events-none p-4">
+        <div id="modal-panel-personnel" class="bg-white rounded-xl shadow-2xl w-full max-w-md flex flex-col pointer-events-auto transform scale-95 translate-y-4 opacity-0 transition-all duration-300 max-h-[90vh]">
+            
+            <div class="px-6 py-4 border-b border-slate-200 flex items-center justify-between bg-slate-50/50 rounded-t-xl shrink-0">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-lg flex items-center justify-center bg-blue-100 text-brand-accent">
+                        <i data-lucide="user" class="w-4 h-4"></i>
+                    </div>
+                    <h2 id="modal-personnel-title" class="text-lg font-semibold text-slate-900">Add Personnel</h2>
+                </div>
+                <button onclick="closePersonnelModal()" class="text-slate-400 hover:text-slate-700 hover:bg-slate-200 p-1.5 rounded-md transition"><i data-lucide="x" class="w-5 h-5"></i></button>
+            </div>
+
+            <div class="p-6 overflow-y-auto custom-scrollbar relative space-y-4">
+                <!-- Hidden Input for Edit Tracking -->
+                <input type="hidden" id="modal-personnel-id" value="">
+                
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-1">Full Name <span class="text-red-500">*</span></label>
+                    <input type="text" id="modal-personnel-name" placeholder="e.g., Benjamin Buena" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-brand-accent outline-none font-medium text-slate-800">
+                    <p id="modal-personnel-error" class="hidden text-xs text-red-500 mt-1 font-medium">Name is required.</p>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-1 flex justify-between">
+                        Role / Designation <span class="text-slate-400 text-xs font-normal">(Optional)</span>
+                    </label>
+                    <input type="text" id="modal-personnel-role" placeholder="e.g., Lead Veterinarian, Volunteer" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-brand-accent outline-none text-slate-700">
+                </div>
+            </div>
+
+            <div class="px-6 py-4 border-t border-slate-200 bg-slate-50 flex justify-end gap-3 rounded-b-xl shrink-0">
+                <button onclick="closePersonnelModal()" class="px-4 py-2 bg-white border border-slate-300 text-slate-700 rounded-lg text-sm font-medium hover:bg-slate-50 transition">Cancel</button>
+                <button onclick="savePersonnel()" class="px-4 py-2 bg-brand-accent text-white rounded-lg text-sm font-medium hover:bg-blue-700 transition shadow-sm">Save Profile</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="assets/js/layout.js"></script>
+    <script>
+        // INIT
+        lucide.createIcons();
+        let currentPov = 'admin';
+
+        // --- SETTINGS STATE & CRUD LOGIC (DATA CATEGORIES) ---
+        const listsState = {
+            itemGroups: [
+                { id: 'g1', name: 'Antibiotics & Antimicrobials', master: 'Medications', archived: false },
+                { id: 'g2', name: 'Core Vaccines', master: 'Vaccines', archived: false }
+            ],
+            units: [
+                { id: 'u1', name: 'vial', archived: false },
+                { id: 'u2', name: 'tab', archived: false },
+                { id: 'u3', name: 'kg', archived: false },
+                { id: 'u4', name: 'bot', archived: false }
+            ],
+            reasons: [
+                { id: 'r1', name: 'Dispensed / Prescribed', archived: false },
+                { id: 'r2', name: 'Spoiled / Expired', archived: false }
+            ],
+            types: [
+                { id: 't1', name: 'Medication', archived: false },
+                { id: 't2', name: 'Surgical', archived: false },
+                { id: 't3', name: 'Wound Care', archived: false }
+            ]
+        };
+
+        const listsUI = {
+            itemGroups: { adding: false, showArchived: false },
+            units: { adding: false, showArchived: false },
+            reasons: { adding: false, showArchived: false },
+            types: { adding: false, showArchived: false }
+        };
+
+        function toggleAdd(listKey) {
+            listsUI[listKey].adding = !listsUI[listKey].adding;
+            const row = document.getElementById(`add-row-${listKey}`);
+            const error = document.getElementById(`error-${listKey}`);
+            
+            if (listsUI[listKey].adding) {
+                row.classList.remove('hidden');
+                document.getElementById(`input-${listKey}-name`).focus();
+            } else {
+                row.classList.add('hidden');
+                error.classList.add('hidden');
+                document.getElementById(`input-${listKey}-name`).value = '';
+                if (listKey === 'itemGroups') document.getElementById(`input-${listKey}-master`).value = '';
+            }
+        }
+
+        function toggleArchived(listKey) {
+            listsUI[listKey].showArchived = !listsUI[listKey].showArchived;
+            const btn = document.getElementById(`btn-archived-${listKey}`);
+            btn.textContent = listsUI[listKey].showArchived ? 'Hide Archived' : 'Show Archived';
+            renderList(listKey);
+        }
+
+        function showError(listKey, msg) {
+            const errorEl = document.getElementById(`error-${listKey}`);
+            errorEl.textContent = msg;
+            errorEl.classList.remove('hidden');
+        }
+
+        function saveItem(listKey) {
+            const nameInput = document.getElementById(`input-${listKey}-name`);
+            let name = nameInput.value.trim();
+            let master = null;
+
+            if (listKey === 'itemGroups') {
+                const masterInput = document.getElementById(`input-${listKey}-master`);
+                master = masterInput.value;
+                if (!master) return showError(listKey, "Please select a Master Category.");
+            }
+
+            if (!name) return showError(listKey, "Name cannot be empty.");
+
+            // Case-insensitive duplicate check
+            const isDuplicate = listsState[listKey].some(item => item.name.toLowerCase() === name.toLowerCase());
+            if (isDuplicate) return showError(listKey, "This item already exists in the system.");
+
+            // Create and push
+            const newItem = { id: Date.now().toString(), name: name, archived: false };
+            if (master) newItem.master = master;
+            listsState[listKey].push(newItem);
+            
+            // Reset and Render
+            toggleAdd(listKey);
+            renderList(listKey);
+        }
+
+        function setArchiveStatus(listKey, id, status) {
+            const item = listsState[listKey].find(i => i.id === id);
+            if (item) item.archived = status;
+            renderList(listKey);
+        }
+
+        function renderList(listKey) {
+            const container = document.getElementById(`list-${listKey}`);
+            if (!container) return; 
+            container.innerHTML = '';
+            
+            const itemsToRender = listsState[listKey].filter(i => listsUI[listKey].showArchived ? true : !i.archived);
+            
+            if (itemsToRender.length === 0) {
+                container.innerHTML = `<div class="p-6 text-center text-xs font-medium text-slate-400">No items to display.</div>`;
+                return;
+            }
+
+            if (listKey === 'units') {
+                // Render as Grid
+                itemsToRender.forEach(item => {
+                    if (item.archived) {
+                        container.innerHTML += `
+                            <div class="px-3 py-2 bg-slate-50 text-slate-400 text-sm font-bold rounded-lg border border-slate-200 text-center relative group opacity-60 transition">
+                                <span class="line-through">${item.name}</span>
+                                <button onclick="setArchiveStatus('${listKey}', '${item.id}', false)" class="absolute -top-2 -right-2 w-5 h-5 bg-white border border-slate-200 rounded-full shadow-sm text-brand-accent opacity-0 group-hover:opacity-100 flex items-center justify-center transition hover:scale-110" title="Restore"><i data-lucide="rotate-ccw" class="w-3 h-3"></i></button>
+                            </div>`;
+                    } else {
+                        container.innerHTML += `
+                            <div class="px-3 py-2 bg-slate-100 text-slate-700 text-sm font-bold rounded-lg border border-slate-200 text-center relative group transition">
+                                ${item.name}
+                                <button onclick="setArchiveStatus('${listKey}', '${item.id}', true)" class="absolute -top-2 -right-2 w-5 h-5 bg-white border border-slate-200 rounded-full shadow-sm text-red-500 opacity-0 group-hover:opacity-100 flex items-center justify-center transition hover:scale-110" title="Archive"><i data-lucide="x" class="w-3 h-3"></i></button>
+                            </div>`;
+                    }
+                });
+            } else {
+                // Render as Rows
+                itemsToRender.forEach(item => {
+                    let subText = '';
+                    if (listKey === 'itemGroups') {
+                        subText = item.archived ? 
+                            `<span class="ml-3 px-2 py-0.5 bg-slate-100 text-slate-400 text-[10px] font-bold uppercase tracking-wider rounded border border-slate-200">${item.master}</span>` : 
+                            `<span class="px-2 py-0.5 bg-slate-100 text-slate-500 text-[10px] font-bold uppercase tracking-wider rounded border border-slate-200">${item.master}</span>`;
+                    }
+
+                    if (item.archived) {
+                        container.innerHTML += `
+                            <div class="p-4 px-5 flex items-center justify-between bg-slate-50/80 border-l-2 border-slate-300 transition">
+                                <div class="flex items-center">
+                                    <span class="text-sm font-medium text-slate-400 line-through">${item.name}</span>
+                                    ${subText}
+                                </div>
+                                <button onclick="setArchiveStatus('${listKey}', '${item.id}', false)" class="text-[10px] font-black text-brand-accent uppercase tracking-wider hover:underline flex items-center gap-1.5 transition">
+                                    <i data-lucide="rotate-ccw" class="w-3 h-3"></i> Restore
+                                </button>
+                            </div>`;
+                    } else {
+                        container.innerHTML += `
+                            <div class="p-4 px-5 flex items-center justify-between group hover:bg-slate-50 transition">
+                                <div class="flex items-center gap-3">
+                                    <span class="text-sm font-bold text-slate-800">${item.name}</span>
+                                    ${subText}
+                                </div>
+                                <button onclick="setArchiveStatus('${listKey}', '${item.id}', true)" class="opacity-0 group-hover:opacity-100 text-slate-400 hover:text-red-500 transition px-2 py-1 bg-white rounded border border-slate-200 shadow-sm" title="Archive">
+                                    <i data-lucide="archive" class="w-4 h-4"></i>
+                                </button>
+                            </div>`;
+                    }
+                });
+            }
+            lucide.createIcons();
+        }
+
+        // --- PERSONNEL STATE & CRUD LOGIC ---
+        let personnelState = [
+            { id: 'p1', name: 'Benjamin Buena', role: 'Lead Veterinarian', status: 'active' },
+            { id: 'p2', name: 'Sarah Jenkins', role: 'Shelter Admin', status: 'active' },
+            { id: 'p3', name: 'Kurt', role: '', status: 'active' },
+            { id: 'p4', name: 'Alvin', role: 'Volunteer', status: 'inactive' }
+        ];
+        
+        let showInactivePersonnel = false;
+
+        function getInitials(name) {
+            if (!name) return '??';
+            const words = name.trim().split(' ');
+            if (words.length === 1) return words[0].substring(0, 2).toUpperCase();
+            return (words[0].charAt(0) + words[1].charAt(0)).toUpperCase();
+        }
+
+        function getAvatarColor(name) {
+            const colors = ['bg-blue-100 text-blue-700', 'bg-teal-100 text-teal-700', 'bg-amber-100 text-amber-700', 'bg-indigo-100 text-indigo-700'];
+            if (!name) return colors[0];
+            return colors[name.length % colors.length];
+        }
+
+        function toggleInactivePersonnel() {
+            showInactivePersonnel = !showInactivePersonnel;
+            const btn = document.getElementById('btn-inactive-personnel');
+            btn.textContent = showInactivePersonnel ? 'Hide Inactive Personnel' : 'Show Inactive Personnel';
+            renderPersonnel();
+        }
+
+        function changePersonnelStatus(id, newStatus) {
+            const person = personnelState.find(p => p.id === id);
+            if (person) person.status = newStatus;
+            renderPersonnel();
+        }
+
+        function openPersonnelModal(id = null) {
+            const title = document.getElementById('modal-personnel-title');
+            const idInput = document.getElementById('modal-personnel-id');
+            const nameInput = document.getElementById('modal-personnel-name');
+            const roleInput = document.getElementById('modal-personnel-role');
+            const error = document.getElementById('modal-personnel-error');
+            
+            error.classList.add('hidden');
+
+            if (id) {
+                const person = personnelState.find(p => p.id === id);
+                if (!person) return;
+                title.textContent = "Edit Personnel";
+                idInput.value = person.id;
+                nameInput.value = person.name;
+                roleInput.value = person.role || '';
+            } else {
+                title.textContent = "Add Personnel";
+                idInput.value = "";
+                nameInput.value = "";
+                roleInput.value = "";
+            }
+
+            const wrapper = document.getElementById('modal-wrapper-personnel');
+            const backdrop = document.getElementById('modal-backdrop-personnel');
+            
+            backdrop.classList.remove('hidden');
+            wrapper.classList.remove('hidden');
+            requestAnimationFrame(() => {
+                backdrop.classList.replace('opacity-0', 'opacity-100');
+                document.getElementById('modal-panel-personnel').classList.add('modal-enter');
+            });
+        }
+
+        function closePersonnelModal() {
+            const wrapper = document.getElementById('modal-wrapper-personnel');
+            const backdrop = document.getElementById('modal-backdrop-personnel');
+            const panel = document.getElementById('modal-panel-personnel');
+            
+            panel.classList.remove('modal-enter');
+            backdrop.classList.replace('opacity-100', 'opacity-0');
+            setTimeout(() => {
+                backdrop.classList.add('hidden');
+                wrapper.classList.add('hidden');
+            }, 300);
+        }
+
+        function savePersonnel() {
+            const id = document.getElementById('modal-personnel-id').value;
+            const name = document.getElementById('modal-personnel-name').value.trim();
+            const role = document.getElementById('modal-personnel-role').value.trim();
+            const error = document.getElementById('modal-personnel-error');
+
+            if (!name) {
+                error.classList.remove('hidden');
+                return;
+            }
+
+            if (id) {
+                const person = personnelState.find(p => p.id === id);
+                if (person) {
+                    person.name = name;
+                    person.role = role;
+                }
+            } else {
+                personnelState.unshift({
+                    id: 'p' + Date.now(),
+                    name: name,
+                    role: role,
+                    status: 'active'
+                });
+            }
+
+            closePersonnelModal();
+            renderPersonnel();
+        }
+
+        function renderPersonnel() {
+            const container = document.getElementById('list-personnel');
+            if (!container) return;
+            container.innerHTML = '';
+
+            const searchInput = document.getElementById('personnel-search');
+            const sortInput = document.getElementById('personnel-sort');
+            
+            const searchQuery = searchInput ? searchInput.value.toLowerCase().trim() : '';
+            const sortOrder = sortInput ? sortInput.value : 'az';
+
+            // 1. Filter by Status Toggle & Search Query (Multi-parameter: Name & Role)
+            let itemsToRender = personnelState.filter(p => {
+                if (!showInactivePersonnel && p.status === 'inactive') return false;
+                
+                if (searchQuery) {
+                    const nameMatch = p.name.toLowerCase().includes(searchQuery);
+                    const roleMatch = (p.role || '').toLowerCase().includes(searchQuery);
+                    if (!nameMatch && !roleMatch) return false;
+                }
+                return true;
+            });
+
+            // 2. Status-Preserved Sorting
+            itemsToRender.sort((a, b) => {
+                // Primary Sort: Keep Active on top
+                if (a.status !== b.status) {
+                    return a.status === 'active' ? -1 : 1;
+                }
+                // Secondary Sort: Alphabetical
+                const nameA = a.name.toLowerCase();
+                const nameB = b.name.toLowerCase();
+                if (sortOrder === 'az') return nameA.localeCompare(nameB);
+                return nameB.localeCompare(nameA); // 'za'
+            });
+
+            if (itemsToRender.length === 0) {
+                container.innerHTML = `<div class="p-6 text-center text-xs font-medium text-slate-400">No personnel found matching your criteria.</div>`;
+                return;
+            }
+
+            itemsToRender.forEach(item => {
+                const initials = getInitials(item.name);
+                const isInactive = item.status === 'inactive';
+                const colorClass = isInactive ? 'bg-slate-200 text-slate-400' : getAvatarColor(item.name);
+                
+                const rowOpacity = isInactive ? 'bg-slate-50/80 opacity-75' : 'hover:bg-slate-50';
+                const textStrikethrough = isInactive ? 'line-through text-slate-600' : 'text-slate-900';
+                
+                container.innerHTML += `
+                    <div class="p-4 px-5 flex items-center justify-between transition ${rowOpacity}">
+                        <div class="flex items-center gap-4">
+                            <div class="w-10 h-10 rounded-full ${colorClass} flex items-center justify-center font-bold text-sm shrink-0 shadow-inner">${initials}</div>
+                            <div>
+                                <p class="text-sm font-bold leading-tight ${textStrikethrough}">${item.name}</p>
+                                <p class="text-xs font-medium text-slate-500 mt-0.5">${item.role || '<span class="italic text-slate-400 text-[10px]">No role assigned</span>'}</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-3 shrink-0">
+                            <button onclick="openPersonnelModal('${item.id}')" class="p-1.5 text-slate-400 hover:text-brand-accent hover:bg-blue-50 rounded transition shadow-sm border border-transparent hover:border-blue-100" title="Edit Personnel">
+                                <i data-lucide="pencil" class="w-4 h-4"></i>
+                            </button>
+                            <select onchange="changePersonnelStatus('${item.id}', this.value)" class="border ${isInactive ? 'border-slate-300 bg-slate-100 text-slate-500' : 'border-slate-200 bg-white text-slate-700'} rounded-md text-xs font-bold py-1.5 px-3 focus:ring-2 focus:ring-brand-accent outline-none cursor-pointer shadow-sm">
+                                <option value="active" ${item.status === 'active' ? 'selected' : ''}>Active</option>
+                                <option value="inactive" ${item.status === 'inactive' ? 'selected' : ''}>Inactive</option>
+                            </select>
+                        </div>
+                    </div>
+                `;
+            });
+            lucide.createIcons();
+        }
+
+        // PANELS LOGIC (Purged of Contextual Guide References)
+        const panels = ['general', 'lists', 'personnel', 'interface', 'alerts'];
+        
+        function switchPanel(panelId) {
+            // Hide all panels
+            panels.forEach(p => {
+                const el = document.getElementById(`panel-${p}`);
+                if(el) el.classList.add('hidden');
+                
+                // Reset Nav styles
+                const nav = document.getElementById(`nav-${p}`);
+                if(nav) {
+                    nav.classList.remove('nav-link-active');
+                    nav.classList.add('text-slate-600');
+                }
+            });
+
+            // Show selected
+            document.getElementById(`panel-${panelId}`).classList.remove('hidden');
+            const targetNav = document.getElementById(`nav-${panelId}`);
+            if(targetNav) {
+                targetNav.classList.add('nav-link-active');
+                targetNav.classList.remove('text-slate-600');
+            }
+
+            // DYNAMIC FLOATING MESSAGE (LOCK OVERLAY) LOGIC
+            const lockOverlay = document.getElementById('admin-lock-overlay');
+            const adminPanels = ['general', 'lists', 'personnel'];
+            
+            if (currentPov === 'staff' && adminPanels.includes(panelId)) {
+                lockOverlay.classList.remove('hidden');
+                setTimeout(() => lockOverlay.classList.remove('opacity-0'), 10);
+            } else {
+                lockOverlay.classList.add('opacity-0');
+                setTimeout(() => lockOverlay.classList.add('hidden'), 300);
+            }
+        }
+
+        // SUB-TAB LOGIC (For Data Categories)
+        function switchSubTab(tabId) {
+            if (tabId === 'inventory') {
+                document.getElementById('sub-inventory-data').classList.remove('hidden');
+                document.getElementById('sub-clinical-data').classList.add('hidden');
+                document.getElementById('sub-tab-inventory').className = "px-6 py-3 text-sm font-bold text-brand-accent border-b-2 border-brand-accent transition";
+                document.getElementById('sub-tab-clinical').className = "px-6 py-3 text-sm font-bold text-slate-500 border-b-2 border-transparent hover:text-slate-700 transition";
+            } else {
+                document.getElementById('sub-inventory-data').classList.add('hidden');
+                document.getElementById('sub-clinical-data').classList.remove('hidden');
+                document.getElementById('sub-tab-clinical').className = "px-6 py-3 text-sm font-bold text-brand-accent border-b-2 border-brand-accent transition";
+                document.getElementById('sub-tab-inventory').className = "px-6 py-3 text-sm font-bold text-slate-500 border-b-2 border-transparent hover:text-slate-700 transition";
+            }
+        }
+
+        // POV LOGIC (Simulating Shared PC Authority)
+        function switchPerspective(pov) {
+            currentPov = pov;
+            const btnAdmin = document.getElementById('btn-pov-admin');
+            const btnStaff = document.getElementById('btn-pov-staff');
+            
+            const authBadge = document.getElementById('auth-badge');
+            const authBg = document.getElementById('auth-bg');
+            const authIconWrapper = document.getElementById('auth-icon-wrapper');
+            const authIcon = document.getElementById('auth-icon');
+            const authStatus = document.getElementById('auth-status');
+            const authSub = document.getElementById('auth-sub');
+            
+            const lockOverlay = document.getElementById('admin-lock-overlay');
+            const controlledAreas = document.querySelectorAll('.admin-controlled-area');
+            const lockIcons = document.querySelectorAll('.lock-icon');
+
+            if (pov === 'admin') {
+                // Top Switcher Styling
+                btnAdmin.className = "px-5 py-1 text-xs font-bold rounded-full transition-all pov-active shadow-sm";
+                btnStaff.className = "px-5 py-1 text-xs font-bold rounded-full transition-all pov-inactive hover:text-white cursor-pointer";
+                
+                // Auth Badge Styling
+                authBadge.className = "flex items-start gap-3 bg-white p-3 rounded-xl border border-blue-200 shadow-sm relative overflow-hidden transition-colors duration-300";
+                authBg.className = "absolute inset-0 bg-blue-50/50 opacity-100 transition-opacity";
+                authIconWrapper.className = "w-8 h-8 rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center shrink-0 relative z-10";
+                authIcon.setAttribute('data-lucide', 'shield-check');
+                authStatus.textContent = "Admin Access";
+                authStatus.className = "text-xs font-black text-blue-900 uppercase tracking-wider";
+                authSub.textContent = "PIN verified. Global write access granted.";
+                
+                // Unlock Admin Areas
+                controlledAreas.forEach(area => area.classList.remove('staff-locked'));
+                lockIcons.forEach(icon => icon.classList.add('hidden'));
+
+                // Show Admin links in Gear Dropdown
+                document.getElementById('gear-dropdown-admin').classList.remove('hidden');
+
+                switchPanel('general'); // Reset view to top
+
+            } else { // STAFF POV
+                // Top Switcher Styling
+                btnStaff.className = "px-5 py-1 text-xs font-bold rounded-full transition-all pov-active shadow-sm";
+                btnAdmin.className = "px-5 py-1 text-xs font-bold rounded-full transition-all pov-inactive hover:text-white cursor-pointer";
+                
+                // Auth Badge Styling
+                authBadge.className = "flex items-start gap-3 bg-white p-3 rounded-xl border border-slate-200 shadow-sm relative overflow-hidden transition-colors duration-300";
+                authBg.className = "absolute inset-0 bg-slate-50 opacity-100 transition-opacity";
+                authIconWrapper.className = "w-8 h-8 rounded-lg bg-slate-200 text-slate-500 flex items-center justify-center shrink-0 relative z-10";
+                authIcon.setAttribute('data-lucide', 'user');
+                authStatus.textContent = "Staff Access";
+                authStatus.className = "text-xs font-black text-slate-800 uppercase tracking-wider";
+                authSub.textContent = "Viewing global settings in read-only mode.";
+                
+                // Lock Admin Areas
+                controlledAreas.forEach(area => area.classList.add('staff-locked'));
+                lockIcons.forEach(icon => icon.classList.remove('hidden'));
+
+                // Hide Admin links in Gear Dropdown
+                document.getElementById('gear-dropdown-admin').classList.add('hidden');
+
+                switchPanel('interface'); // Jump staff to their allowed section
+            }
+            lucide.createIcons();
+        }
+
+        // GEAR ICON CLICK LOGIC
+        function goToDefaultSettings() {
+            if (currentPov === 'admin') {
+                switchPanel('general');
+            } else {
+                switchPanel('interface');
+            }
+        }
+
+        // SAVE GENERAL SETTINGS LOGIC
+        function saveGeneralSettings() {
+            const btn = document.getElementById('btn-save-general');
+            const originalText = btn.innerHTML;
+            
+            // Visual success feedback
+            btn.innerHTML = `<i data-lucide="check" class="w-4 h-4"></i> Saved Successfully`;
+            btn.classList.replace('bg-brand-accent', 'bg-emerald-500');
+            btn.classList.replace('hover:bg-blue-700', 'hover:bg-emerald-600');
+            lucide.createIcons();
+            
+            setTimeout(() => {
+                btn.innerHTML = originalText;
+                btn.classList.replace('bg-emerald-500', 'bg-brand-accent');
+                btn.classList.replace('hover:bg-emerald-600', 'hover:bg-blue-700');
+                lucide.createIcons();
+            }, 2000);
+        }
+
+        // INITIALIZE ALL DYNAMIC LISTS ON LOAD
+        renderList('itemGroups');
+        renderList('units');
+        renderList('reasons');
+        renderList('types');
+        renderPersonnel();
+
+    </script>
+</body>
+</html>

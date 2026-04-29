@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DAS SIYAM - Reports & Analytics</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'] },
+                    colors: {
+                        brand: {
+                            primary: '#0F172A',
+                            action: '#2563EB',
+                            surface: '#F8FAFC',
+                            panel: '#FFFFFF',
+                            border: '#E2E8F0',
+                            muted: '#64748B'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Print/PDF Export Optimization */
+        @media print {
+            body { background-color: white !important; }
+            .no-print { display: none !important; }
+            .print-full-width { width: 100% !important; margin: 0 !important; padding: 0 !important; }
+            .shadow-sm { box-shadow: none !important; border: 1px solid #E2E8F0 !important; }
+            table { break-inside: auto; }
+            tr { break-inside: avoid; break-after: auto; }
+            @page { margin: 10mm; size: A4 landscape; }
+        }
+        
+        /* Custom UI Scrollbar */
+        .custom-scrollbar::-webkit-scrollbar { height: 6px; width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+    </style>
+</head>
+<body class="bg-brand-surface text-brand-primary min-h-screen flex font-sans">
+
+
+    <!-- Main Content Area -->
+    <main class="flex-1 flex flex-col h-screen overflow-hidden print-full-width">
+        
+        <!-- Header -->
+        <header class="bg-brand-panel border-b border-brand-border px-8 py-5 flex items-center justify-between no-print shrink-0">
+            <div>
+                <h2 class="text-xl font-bold text-slate-900">Monthly Usage Summary</h2>
+                <p class="text-sm text-brand-muted mt-0.5">Operational tracking and supply forecast.</p>
+            </div>
+            <div class="flex items-center gap-3">
+                <div class="bg-slate-50 border border-slate-200 text-slate-700 text-sm font-medium px-4 py-2 rounded-lg flex items-center gap-2">
+                    <i data-lucide="calendar" class="w-4 h-4 text-slate-400"></i>
+                    Current Month (Last 30 Days)
+                </div>
+                <button onclick="window.print()" class="bg-brand-action hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 shadow-sm">
+                    <i data-lucide="printer" class="w-4 h-4"></i>
+                    Export PDF
+                </button>
+            </div>
+        </header>
+
+        <!-- Scrollable Workspace -->
+        <div class="flex-1 overflow-auto p-8 print-full-width custom-scrollbar">
+            <div class="max-w-7xl mx-auto space-y-6">
+
+                <!-- KPI Row: High Impact Metrics -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <!-- Metric 1: Volume -->
+                    <div class="bg-brand-panel rounded-xl border border-brand-border p-6 shadow-sm flex items-start gap-4">
+                        <div class="p-3 bg-blue-50 text-blue-600 rounded-lg shrink-0">
+                            <i data-lucide="boxes" class="w-6 h-6"></i>
+                        </div>
+                        <div>
+                            <p class="text-sm text-brand-muted font-medium mb-1">Total Units Consumed</p>
+                            <p class="text-3xl font-bold text-slate-900 tracking-tight" id="kpi-total-units">--</p>
+                        </div>
+                    </div>
+                    <!-- Metric 2: Top Item -->
+                    <div class="bg-brand-panel rounded-xl border border-brand-border p-6 shadow-sm flex items-start gap-4">
+                        <div class="p-3 bg-rose-50 text-rose-600 rounded-lg shrink-0">
+                            <i data-lucide="trending-down" class="w-6 h-6"></i>
+                        </div>
+                        <div>
+                            <p class="text-sm text-brand-muted font-medium mb-1">Most Consumed Item</p>
+                            <p class="text-xl font-bold text-slate-900 leading-tight mt-1" id="kpi-top-item">--</p>
+                            <p class="text-xs text-slate-500 mt-1" id="kpi-top-item-val">-- units</p>
+                        </div>
+                    </div>
+                    <!-- Metric 3: Top Category -->
+                    <div class="bg-brand-panel rounded-xl border border-brand-border p-6 shadow-sm flex items-start gap-4">
+                        <div class="p-3 bg-amber-50 text-amber-600 rounded-lg shrink-0">
+                            <i data-lucide="pie-chart" class="w-6 h-6"></i>
+                        </div>
+                        <div>
+                            <p class="text-sm text-brand-muted font-medium mb-1">Highest Burn Category</p>
+                            <p class="text-xl font-bold text-slate-900 leading-tight mt-1" id="kpi-top-cat">--</p>
+                            <p class="text-xs text-slate-500 mt-1" id="kpi-top-cat-val">-- total units</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Master Ledger Table Container -->
+                <div class="bg-brand-panel rounded-xl border border-brand-border shadow-sm flex flex-col">
+                    
+                    <!-- Table Controls (HCI Optimized for 10+ Categories) -->
+                    <div class="p-4 border-b border-brand-border bg-slate-50/50 flex flex-col md:flex-row md:items-center justify-between gap-4 no-print">
+                        
+                        <!-- Search Box -->
+                        <div class="relative max-w-sm w-full">
+                            <i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400"></i>
+                            <input type="text" id="filter-search" placeholder="Search items..." 
+                                class="w-full pl-9 pr-4 py-2 bg-white border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-shadow">
+                        </div>
+
+                        <!-- Dropdown Filters & Sorters -->
+                        <div class="flex items-center gap-3">
+                            <!-- Category Filter Dropdown -->
+                            <div class="relative">
+                                <select id="filter-category" class="appearance-none bg-white border border-slate-300 text-slate-700 text-sm rounded-lg pl-4 pr-10 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 cursor-pointer shadow-sm">
+                                    <option value="All">All Categories</option>
+                                    <!-- Dynamic categories injected here -->
+                                </select>
+                                <i data-lucide="chevron-down" class="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none"></i>
+                            </div>
+
+                            <!-- Sorting Dropdown -->
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                                    <i data-lucide="arrow-up-down" class="w-4 h-4 text-slate-400"></i>
+                                </div>
+                                <select id="filter-sort" class="appearance-none bg-white border border-slate-300 text-slate-700 text-sm rounded-lg pl-9 pr-10 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 cursor-pointer shadow-sm">
+                                    <option value="consumed_desc">Most Consumed</option>
+                                    <option value="stock_asc">Lowest Stock Level</option>
+                                    <option value="alpha_asc">Alphabetical (A-Z)</option>
+                                    <option value="alpha_desc">Alphabetical (Z-A)</option>
+                                </select>
+                                <i data-lucide="chevron-down" class="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Table Data -->
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-sm border-collapse">
+                            <thead>
+                                <tr class="border-b border-brand-border bg-white text-brand-muted uppercase text-[11px] font-semibold tracking-wider">
+                                    <th class="px-6 py-4">Item Details</th>
+                                    <th class="px-6 py-4">Category</th>
+                                    <th class="px-6 py-4">Stock Movement</th>
+                                    <th class="px-6 py-4 text-right">Estimated Expense</th>
+                                    <th class="px-6 py-4">Forecast (Days Left)</th>
+                                </tr>
+                            </thead>
+                            <tbody id="ledger-table-body" class="divide-y divide-brand-border text-slate-700">
+                                <!-- Rows injected via JS -->
+                            </tbody>
+                        </table>
+                        <!-- Empty State -->
+                        <div id="empty-state" class="hidden p-12 text-center flex flex-col items-center">
+                            <div class="w-12 h-12 bg-slate-100 rounded-full flex items-center justify-center text-slate-400 mb-3">
+                                <i data-lucide="search-x" class="w-6 h-6"></i>
+                            </div>
+                            <h3 class="text-sm font-medium text-slate-900">No items found</h3>
+                            <p class="text-xs text-slate-500 mt-1">Try adjusting your search or category filter.</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Context Footer -->
+                    <div class="px-6 py-3 bg-slate-50 border-t border-brand-border text-xs text-slate-500 flex justify-between items-center no-print">
+                        <div class="flex items-center gap-2">
+                            <i data-lucide="info" class="w-4 h-4"></i>
+                            <span>Predictive population logic relies on active shelter census (Dogs: <span id="footer-dogs" class="font-bold text-slate-700">0</span>, Cats: <span id="footer-cats" class="font-bold text-slate-700">0</span>)</span>
+                        </div>
+                        <div>Consumption rates: 0.5kg/dog & 0.2kg/cat</div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <script src="assets/js/layout.js"></script>
+    <script>
+        // =====================================================================
+        // DATA LAYER: Simulation of central Database
+        // =====================================================================
+        const shelterCensus = { dogs: 42, cats: 28 };
+        const CONSUMPTION_CONSTANTS = { dogFoodKg: 0.5, catFoodKg: 0.2 };
+
+        // Extensive mock data representing various operational categories
+        const inventoryData = [
+            { id: 1, name: "Adult Dog Food (Pedigree)", cat: "Nutrition", unit: "kg", target: "dog", stock: 85, opening: 350, consumed: 265, price: 130 },
+            { id: 2, name: "Adult Cat Food (Whiskas)", cat: "Nutrition", unit: "kg", target: "cat", stock: 12, opening: 100, consumed: 88, price: 180 },
+            { id: 3, name: "Puppy Kibble", cat: "Nutrition", unit: "kg", target: "dog", stock: 15, opening: 60, consumed: 45, price: 160 },
+            { id: 4, name: "Doxycycline 100mg", cat: "Medical", unit: "tabs", target: "shared", stock: 45, opening: 200, consumed: 155, price: 12 },
+            { id: 5, name: "Co-Amoxiclav 250mg", cat: "Medical", unit: "tabs", target: "shared", stock: 120, opening: 150, consumed: 30, price: 25 },
+            { id: 6, name: "Bleach (Disinfectant)", cat: "Cleaning", unit: "liters", target: "shared", stock: 4, opening: 20, consumed: 16, price: 80 },
+            { id: 7, name: "Garbage Bags (Large)", cat: "Supplies", unit: "rolls", target: "shared", stock: 8, opening: 30, consumed: 22, price: 45 },
+            { id: 8, name: "Vitamin C Syrup", cat: "Medical", unit: "bottles", target: "shared", stock: 2, opening: 10, consumed: 8, price: 150 },
+            { id: 9, name: "Tick & Flea Soap", cat: "Hygiene", unit: "bars", target: "shared", stock: 30, opening: 80, consumed: 50, price: 65 },
+            { id: 10, name: "Floor Cleaner", cat: "Cleaning", unit: "liters", target: "shared", stock: 2, opening: 15, consumed: 13, price: 120 },
+            { id: 11, name: "Syringes (3ml)", cat: "Medical", unit: "pcs", target: "shared", stock: 150, opening: 400, consumed: 250, price: 5 }
+        ];
+
+        // State Management
+        let currentData = [];
+        let uiState = {
+            search: '',
+            category: 'All',
+            sortBy: 'consumed_desc'
+        };
+
+        // =====================================================================
+        // LOGIC ENGINE
+        // =====================================================================
+        function processData() {
+            // Populate dynamic categories into dropdown
+            const categories = ["All", ...new Set(inventoryData.map(item => item.cat))];
+            const selectEl = document.getElementById('filter-category');
+            
+            // Only update dropdown options if it's currently empty (prevents reset on re-render)
+            if(selectEl.options.length <= 1) {
+                selectEl.innerHTML = categories.map(c => `<option value="${c}">${c === 'All' ? 'All Categories' : c}</option>`).join('');
+            }
+
+            // Calculate Base Logistics for every item
+            currentData = inventoryData.map(item => {
+                const expense = item.consumed * item.price;
+                let dailyPace = 0;
+                let isPredictive = false;
+
+                // Bifurcated Logic
+                if (item.cat === "Nutrition") {
+                    isPredictive = true;
+                    if (item.target === "dog") dailyPace = shelterCensus.dogs * CONSUMPTION_CONSTANTS.dogFoodKg;
+                    else if (item.target === "cat") dailyPace = shelterCensus.cats * CONSUMPTION_CONSTANTS.catFoodKg;
+                    else dailyPace = item.consumed / 30; // fallback
+                } else {
+                    dailyPace = item.consumed / 30; // Historical velocity
+                }
+
+                const daysLeft = dailyPace > 0 ? (item.stock / dailyPace) : 999;
+
+                return {
+                    ...item,
+                    expense,
+                    dailyPace: Math.round(dailyPace * 10) / 10,
+                    daysLeft: Math.round(daysLeft),
+                    isPredictive
+                };
+            });
+        }
+
+        function calculateKPIs() {
+            let totalUnits = 0;
+            let highestItem = { name: 'None', consumed: -1 };
+            const categoryMap = {};
+
+            currentData.forEach(item => {
+                totalUnits += item.consumed;
+                
+                if (item.consumed > highestItem.consumed) {
+                    highestItem = item;
+                }
+
+                if (!categoryMap[item.cat]) categoryMap[item.cat] = 0;
+                categoryMap[item.cat] += item.consumed;
+            });
+
+            // Find top category by volume
+            let topCat = { name: 'None', consumed: -1 };
+            for (const [name, consumed] of Object.entries(categoryMap)) {
+                if (consumed > topCat.consumed) {
+                    topCat = { name, consumed };
+                }
+            }
+
+            document.getElementById('kpi-total-units').textContent = totalUnits.toLocaleString();
+            document.getElementById('kpi-top-item').textContent = highestItem.name;
+            document.getElementById('kpi-top-item-val').textContent = `${highestItem.consumed.toLocaleString()} units`;
+            document.getElementById('kpi-top-cat').textContent = topCat.name;
+            document.getElementById('kpi-top-cat-val').textContent = `${topCat.consumed.toLocaleString()} units`;
+        }
+
+        function filterAndSortData() {
+            let filtered = [...currentData];
+
+            // 1. Apply Search Filter
+            if (uiState.search) {
+                const term = uiState.search.toLowerCase();
+                filtered = filtered.filter(item => item.name.toLowerCase().includes(term));
+            }
+
+            // 2. Apply Category Filter
+            if (uiState.category !== 'All') {
+                filtered = filtered.filter(item => item.cat === uiState.category);
+            }
+
+            // 3. Apply Sorting
+            filtered.sort((a, b) => {
+                switch (uiState.sortBy) {
+                    case 'consumed_desc': return b.consumed - a.consumed;
+                    case 'stock_asc': return a.stock - b.stock;
+                    case 'alpha_asc': return a.name.localeCompare(b.name);
+                    case 'alpha_desc': return b.name.localeCompare(a.name);
+                    default: return 0;
+                }
+            });
+
+            return filtered;
+        }
+
+        // =====================================================================
+        // UI RENDERING
+        // =====================================================================
+        function formatMoney(amount) {
+            return new Intl.NumberFormat('en-PH', { style: 'currency', currency: 'PHP', minimumFractionDigits: 0 }).format(amount);
+        }
+
+        function renderTable() {
+            const tableBody = document.getElementById('ledger-table-body');
+            const emptyState = document.getElementById('empty-state');
+            
+            const displayData = filterAndSortData();
+
+            if (displayData.length === 0) {
+                tableBody.innerHTML = '';
+                emptyState.classList.remove('hidden');
+                return;
+            }
+
+            emptyState.classList.add('hidden');
+            let html = '';
+
+            displayData.forEach(item => {
+                // Determine Visual Severity for Stock
+                let stockStatusColor = 'text-slate-900';
+                if (item.daysLeft <= 7 || item.stock === 0) stockStatusColor = 'text-rose-600';
+                else if (item.daysLeft <= 14) stockStatusColor = 'text-amber-600';
+
+                // Format Days Left Badge
+                let badgeClass = 'bg-slate-100 text-slate-700';
+                let iconClass = 'text-slate-400';
+                if (item.daysLeft <= 7 || item.stock === 0) {
+                    badgeClass = 'bg-rose-100 text-rose-700 font-bold';
+                    iconClass = 'text-rose-500';
+                } else if (item.daysLeft <= 14) {
+                    badgeClass = 'bg-amber-100 text-amber-700';
+                    iconClass = 'text-amber-500';
+                }
+
+                const logicIcon = item.isPredictive ? 'calculator' : 'history';
+
+                html += `
+                    <tr class="hover:bg-slate-50 transition-colors group">
+                        <td class="px-6 py-4">
+                            <div class="font-semibold text-slate-900">${item.name}</div>
+                            <div class="text-[11px] text-slate-500 mt-1">₱${item.price.toLocaleString()} / ${item.unit}</div>
+                        </td>
+                        <td class="px-6 py-4">
+                            <span class="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-medium border border-slate-200 bg-white text-slate-600 shadow-sm">
+                                ${item.cat}
+                            </span>
+                        </td>
+                        <td class="px-6 py-4">
+                            <!-- Stacked Column Design -->
+                            <div class="font-bold text-sm ${stockStatusColor}">${item.stock.toLocaleString()} ${item.unit} remaining</div>
+                            <div class="text-[11px] text-slate-500 mt-1 flex items-center gap-2">
+                                <span>Started: ${item.opening.toLocaleString()}</span>
+                                <span class="w-1 h-1 rounded-full bg-slate-300"></span>
+                                <span>Used: <strong class="text-slate-700">${item.consumed.toLocaleString()}</strong></span>
+                            </div>
+                        </td>
+                        <td class="px-6 py-4 text-right">
+                            <div class="font-medium text-slate-800">${formatMoney(item.expense)}</div>
+                        </td>
+                        <td class="px-6 py-4">
+                            <div class="flex items-center gap-3">
+                                <span class="inline-flex items-center px-2 py-1 rounded text-xs ${badgeClass}">
+                                    ${item.stock === 0 ? 'Empty' : item.daysLeft + ' days'}
+                                </span>
+                                <div class="text-xs text-slate-400 flex items-center gap-1 opacity-80 group-hover:opacity-100 transition-opacity">
+                                    <i data-lucide="${logicIcon}" class="w-3 h-3 ${iconClass}"></i>
+                                    ~${item.dailyPace}/${item.unit.substring(0,2)}
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            });
+
+            tableBody.innerHTML = html;
+            lucide.createIcons();
+        }
+
+        // =====================================================================
+        // EVENT LISTENERS & BOOT
+        // =====================================================================
+        function attachListeners() {
+            document.getElementById('filter-search').addEventListener('input', (e) => {
+                uiState.search = e.target.value;
+                renderTable();
+            });
+
+            document.getElementById('filter-category').addEventListener('change', (e) => {
+                uiState.category = e.target.value;
+                renderTable();
+            });
+
+            document.getElementById('filter-sort').addEventListener('change', (e) => {
+                uiState.sortBy = e.target.value;
+                renderTable();
+            });
+        }
+
+        window.onload = () => {
+            document.getElementById('footer-dogs').textContent = shelterCensus.dogs;
+            document.getElementById('footer-cats').textContent = shelterCensus.cats;
+            
+            processData();
+            calculateKPIs();
+            renderTable();
+            attachListeners();
+            lucide.createIcons();
+        };
+    </script>
+</body>
+</html>
