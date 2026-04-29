@@ -14,18 +14,20 @@
                     fontFamily: { sans: ['Inter', 'sans-serif'] }, 
                     colors: { 
                         brand: { 
-                            primary: '#1E1B4B', // Indigo 950 (Nav/Anchor)
-                            action: '#D97706',  // Terracotta 500 (Primary Action)
-                            actionDark: '#B45309', // Terracotta 600 (Hover)
-                            secondary: '#0D9488', // Teal 600 (Accents)
-                            secondaryDark: '#0F766E', // Teal 700
-                            surface: '#F8FAFC', // Slate 50 Background
-                            panel: '#FFFFFF'
+                            primary: '#0F172A',       // Enterprise Sidebar (Slate 900)
+                            action: '#2563EB',        // Primary Buttons (Blue 600)
+                            actionDark: '#1D4ED8',    // Button Hover (Blue 700)
+                            secondary: '#0EA5E9',     // Accents (Sky 500)
+                            secondaryDark: '#0284C7', // Accents Dark (Sky 600)
+                            surface: '#F8FAFC',       // Backgrounds
+                            panel: '#FFFFFF',         // Cards
+                            accent: '#2563EB',        // Legacy Support
+                            bg: '#F8FAFC'             // Legacy Support
                         },
                         semantic: {
-                            critical: '#EF4444', // Red 500
-                            criticalBg: '#FEF2F2', // Red 50
-                            criticalBorder: '#FECACA', // Red 200
+                            critical: '#EF4444',      // Red 500 (Medical warnings)
+                            criticalBg: '#FEF2F2',    // Red 50
+                            criticalBorder: '#FECACA' // Red 200
                         }
                     } 
                 } 
@@ -80,7 +82,7 @@
         .toast-visible { transform: translateY(0) !important; opacity: 1 !important; }
     </style>
 </head>
-<body class="bg-brand-surface text-slate-800 font-sans h-screen flex flex-col overflow-hidden relative">
+<body class="bg-brand-surface text-slate-800 font-sans h-screen flex overflow-hidden relative">
 
     <main class="flex-1 flex flex-col max-w-7xl mx-auto w-full p-6 overflow-hidden z-10 relative">
         
@@ -346,20 +348,29 @@
         let stagedSupplies = []; 
 
         // --- 2. INITIALIZATION & DATA TABLE RENDERING ---
+        // --- 2. INITIALIZATION & DATA TABLE RENDERING ---
         function init() {
             // Re-fetch data on init in case it was changed on another page
             inventoryState = db.read('inventory');
             medicalHistory = db.read('medicalLogs');
-
+            
             document.getElementById('form-date').value = new Date().toISOString().split('T')[0]; // Set to today's date automatically
-
+            
+            // Populate Personnel
             const staffSelect = document.getElementById('form-personnel');
             staffSelect.innerHTML = '<option value="" disabled selected>Select Staff...</option>';
-            staffList.forEach(name => staffSelect.add(new Option(name, name)));
-
+            staffList.filter(s => s.status === 'active').forEach(p => staffSelect.add(new Option(p.name, p.name)));
+            
+            // Populate Patients
             const patientSelect = document.getElementById('form-animal');
             patientSelect.innerHTML = '<option value="" disabled selected>Select Patient...</option>';
             patientList.forEach(p => patientSelect.add(new Option(`${p.name} (${p.type})`, p.id)));
+
+            // Populate Dynamic Treatment Types from Settings DB
+            const settings = db.read('settingsLists');
+            const typeSelect = document.getElementById('form-type');
+            typeSelect.innerHTML = '<option value="" disabled selected>Select Category...</option>';
+            settings.types.filter(t => !t.archived).forEach(t => typeSelect.add(new Option(t.name, t.name)));
 
             refreshInventoryDropdown();
             renderTable();

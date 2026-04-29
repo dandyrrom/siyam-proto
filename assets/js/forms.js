@@ -1,9 +1,8 @@
 // assets/js/forms.js
 
-// 1. Exact Modal HTML from inventory.html
+// 1. Exact Modal HTML (Inputs converted to strict Select Dropdowns)
 const globalModalHTML = `
     <div id="modal-backdrop" class="fixed inset-0 bg-slate-900/40 backdrop-blur-[2px] z-50 hidden transition-opacity opacity-0 duration-300" onclick="closeModal()"></div>
-
     <div id="modal-wrapper" class="fixed inset-0 z-50 flex items-center justify-center hidden pointer-events-none p-4">
         <div id="modal-panel" class="bg-white rounded-xl shadow-2xl w-full max-w-3xl flex flex-col pointer-events-auto transform scale-95 translate-y-4 opacity-0 transition-all duration-300 max-h-[90vh]">
             
@@ -19,6 +18,7 @@ const globalModalHTML = `
 
             <div class="p-6 overflow-y-auto custom-scrollbar relative">
                 
+                <!-- FORM 1: CREATE MASTER ITEM -->
                 <div id="form-create" class="hidden form-section space-y-6">
                     <div class="bg-slate-50 p-5 rounded-lg border border-slate-200">
                         <h3 class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-4 border-b border-slate-200 pb-2">Core Identity</h3>
@@ -40,14 +40,9 @@ const globalModalHTML = `
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-slate-700 mb-1">Item Group</label>
-                                <input type="text" id="create-item-group" list="group-suggestions" placeholder="e.g., Antibiotics, Wound Care" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-brand-accent outline-none">
-                                <datalist id="group-suggestions">
-                                    <option value="Antibiotics & Antimicrobials"></option>
-                                    <option value="Vitamins & Supplements"></option>
-                                    <option value="Wound Care & Bandaging"></option>
-                                    <option value="Injectables & Sedatives"></option>
-                                    <option value="Nutrition"></option>
-                                </datalist>
+                                <select id="create-item-group" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-brand-accent outline-none bg-white shadow-sm">
+                                    <option value="" disabled selected>Select Group...</option>
+                                </select>
                             </div>
                         </div>
                         <div class="grid grid-cols-3 gap-4">
@@ -73,7 +68,12 @@ const globalModalHTML = `
                     <div class="bg-slate-50 p-5 rounded-lg border border-slate-200">
                         <h3 class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-4 border-b border-slate-200 pb-2">Base Metrics & Storage</h3>
                         <div class="grid grid-cols-3 gap-4">
-                            <div><label class="block text-xs font-medium text-slate-500 mb-1">Base Unit <span class="text-red-500">*</span></label><input type="text" id="create-base-unit" placeholder="e.g., tab, ml, pcs" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-brand-accent"></div>
+                            <div>
+                                <label class="block text-xs font-medium text-slate-500 mb-1">Base Unit <span class="text-red-500">*</span></label>
+                                <select id="create-base-unit" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-brand-accent bg-white shadow-sm">
+                                    <option value="" disabled selected>Select Unit...</option>
+                                </select>
+                            </div>
                             <div><label class="block text-xs font-medium text-slate-500 mb-1">Alert Threshold <span class="text-red-500">*</span></label><input type="number" id="create-min-threshold" placeholder="10" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-brand-accent"></div>
                             <div>
                                 <label class="block text-xs font-medium text-slate-500 mb-1">Storage Protocol <span class="text-red-500">*</span></label>
@@ -89,11 +89,18 @@ const globalModalHTML = `
 
                     <div class="bg-blue-50 p-5 rounded-lg border border-blue-200">
                         <h3 class="text-xs font-bold text-blue-800 uppercase tracking-wider mb-4 border-b border-blue-200 pb-2">Opening Balance (Initial Batch Setup)</h3>
+                        
                         <div class="grid grid-cols-3 gap-4 mb-4">
-                            <div><label class="block text-xs font-medium text-slate-700 mb-1">Purchasing Unit <span class="text-red-500">*</span></label><input type="text" id="create-purch-unit" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-brand-accent"></div>
+                            <div>
+                                <label class="block text-xs font-medium text-slate-700 mb-1">Purchasing Unit <span class="text-red-500">*</span></label>
+                                <select id="create-purch-unit" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-brand-accent bg-white shadow-sm">
+                                    <option value="" disabled selected>Select Unit...</option>
+                                </select>
+                            </div>
                             <div><label class="block text-xs font-medium text-slate-700 mb-1">Multiplier <span class="text-red-500">*</span></label><input type="number" id="create-multiplier" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-brand-accent"></div>
                             <div><label class="block text-xs font-medium text-slate-700 mb-1">Qty Received <span class="text-red-500">*</span></label><input type="number" id="create-init-qty" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-brand-accent"></div>
                         </div>
+
                         <div class="grid grid-cols-2 gap-4 mb-4">
                             <div>
                                 <label class="block text-sm font-medium text-slate-700 mb-1">Procurement Channel <span class="text-red-500">*</span></label>
@@ -105,14 +112,17 @@ const globalModalHTML = `
                             </div>
                             <div><label class="block text-sm font-medium text-slate-700 mb-1">Physical Location</label><input type="text" id="create-location" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-brand-accent"></div>
                         </div>
+
                         <div id="create-finance-purchase" class="grid grid-cols-2 gap-4 mb-4">
                             <div><label class="block text-sm font-medium text-slate-700 mb-1">Actual Total Cost (₱) <span class="text-red-500">*</span></label><input type="number" id="create-actual-cost" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-brand-accent"></div>
                             <div><label class="block text-sm font-medium text-slate-700 mb-1">Receipt / PO #</label><input type="text" id="create-receipt" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-brand-accent"></div>
                         </div>
+                        
                         <div id="create-finance-donation" class="grid grid-cols-2 gap-4 mb-4 hidden">
                             <div><label class="block text-sm font-medium text-slate-700 mb-1">Est. Market Value (₱) <span class="text-red-500">*</span></label><input type="number" id="create-est-value" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-brand-accent"></div>
                             <div><label class="block text-sm font-medium text-slate-700 mb-1">Donor Name / Intent ID</label><input type="text" id="create-donor" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-brand-accent"></div>
                         </div>
+
                         <div class="grid grid-cols-2 gap-4 border-t border-blue-200 pt-4">
                             <div><label class="block text-sm font-medium text-slate-700 mb-1">Expiration Date <span id="req-exp" class="text-red-500 hidden">*</span></label><input type="date" id="create-expiry" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-brand-accent"></div>
                             <div><label class="block text-sm font-medium text-slate-700 mb-1">Batch / Lot ID <span id="req-batch" class="text-red-500 hidden">*</span></label><input type="text" id="create-batch" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-brand-accent"></div>
@@ -120,15 +130,22 @@ const globalModalHTML = `
                     </div>
                 </div>
 
+                <!-- FORM 2: STOCK IN (RECEIVE BATCH) -->
                 <div id="form-in" class="hidden form-section space-y-6">
                     <div class="bg-blue-50/50 p-4 rounded-lg border border-blue-100">
                         <label class="block text-sm font-bold text-slate-700 mb-2">Select Item <span class="text-red-500">*</span></label>
                         <select id="in-item-select" onchange="handleItemSelect('in')" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-brand-accent outline-none bg-white shadow-sm"></select>
                     </div>
+                    
                     <div class="bg-slate-50 p-4 rounded-lg border border-slate-200 space-y-4">
                         <h3 class="text-xs font-bold text-slate-500 uppercase tracking-wider border-b border-slate-200 pb-2">Quantity & Logistics</h3>
                         <div class="grid grid-cols-3 gap-4">
-                            <div><label class="block text-xs font-medium text-slate-700 mb-1">Packaging (e.g., Box) <span class="text-red-500">*</span></label><input type="text" id="in-purch-unit" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-brand-accent bg-white"></div>
+                            <div>
+                                <label class="block text-xs font-medium text-slate-700 mb-1">Packaging (e.g., Box) <span class="text-red-500">*</span></label>
+                                <select id="in-purch-unit" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-brand-accent bg-white shadow-sm">
+                                    <option value="" disabled selected>Select Unit...</option>
+                                </select>
+                            </div>
                             <div><label class="block text-xs font-medium text-slate-700 mb-1">Multiplier (Base/Pack) <span class="text-red-500">*</span></label><input type="number" id="in-multiplier" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-brand-accent bg-white"></div>
                             <div><label class="block text-xs font-medium text-slate-700 mb-1">Qty Received (Packs) <span class="text-red-500">*</span></label><input type="number" id="in-qty" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-brand-accent"></div>
                         </div>
@@ -143,6 +160,7 @@ const globalModalHTML = `
                             </div>
                             <div><label class="block text-sm font-medium text-slate-700 mb-1">Physical Location</label><input type="text" id="in-location" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-brand-accent"></div>
                         </div>
+
                         <div id="in-finance-purchase" class="grid grid-cols-2 gap-4">
                             <div><label class="block text-xs font-medium text-slate-700 mb-1">Actual Total Cost (₱) <span class="text-red-500">*</span></label><input type="number" id="in-actual-cost" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-brand-accent"></div>
                             <div><label class="block text-xs font-medium text-slate-700 mb-1">Receipt / PO #</label><input type="text" id="in-receipt" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-brand-accent"></div>
@@ -152,44 +170,56 @@ const globalModalHTML = `
                             <div><label class="block text-xs font-medium text-slate-700 mb-1">Donor Name / Intent ID</label><input type="text" id="in-donor" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-brand-accent"></div>
                         </div>
                     </div>
+
                     <div class="bg-slate-50 p-4 rounded-lg border border-slate-200 space-y-4">
                         <h3 class="text-xs font-bold text-slate-500 uppercase tracking-wider border-b border-slate-200 pb-2">Batch Data</h3>
                         <div class="grid grid-cols-3 gap-4">
                             <div><label class="block text-xs font-medium text-slate-700 mb-1">New Expiration Date</label><input type="date" id="in-new-expiry" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm outline-none"></div>
                             <div><label class="block text-xs font-medium text-slate-700 mb-1">New Batch / Lot ID</label><input type="text" id="in-new-batch" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm outline-none"></div>
-                            <div><label class="block text-xs font-medium text-slate-700 mb-1">Received By <span class="text-red-500">*</span></label><input type="text" id="in-personnel" placeholder="Personnel Name" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm outline-none"></div>
+                            <div>
+                                <label class="block text-xs font-medium text-slate-700 mb-1">Received By <span class="text-red-500">*</span></label>
+                                <select id="in-personnel" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm outline-none bg-white shadow-sm">
+                                    <option value="" disabled selected>Select Staff...</option>
+                                </select>
+                            </div>
                         </div>
                     </div>
                 </div>
 
+                <!-- FORM 3: STOCK OUT (DEDUCT) -->
                 <div id="form-out" class="hidden form-section space-y-6">
                      <div class="bg-red-50/50 p-4 rounded-lg border border-red-100">
                         <label class="block text-sm font-bold text-slate-700 mb-2">Select Item <span class="text-red-500">*</span></label>
                         <select id="out-item-select" onchange="handleOutSelect()" class="w-full border border-white rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-brand-accent outline-none bg-white shadow-sm"></select>
                     </div>
+                    
                     <div class="bg-slate-50 p-4 rounded-lg border border-slate-200">
                         <h3 class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-4 border-b border-slate-200 pb-2">Quantity</h3>
                         <label class="block text-sm font-medium text-slate-700 mb-1">Quantity Deducted (<span id="out-base-label" class="text-brand-accent">Base Unit</span>) <span class="text-red-500">*</span></label>
                         <input type="number" id="out-qty" placeholder="e.g., 5" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-brand-accent outline-none">
                         <p id="out-available-hint" class="text-xs font-medium text-amber-600 text-right mt-1">Available: --</p>
                     </div>
+
                     <div class="bg-slate-50 p-4 rounded-lg border border-slate-200 space-y-4">
                         <h3 class="text-xs font-bold text-slate-500 uppercase tracking-wider border-b border-slate-200 pb-2">Reason & Impact Tracking</h3>
                         <div class="grid grid-cols-2 gap-4">
                             <div>
                                 <label class="block text-sm font-medium text-slate-700 mb-1">Deduction Reason <span class="text-red-500">*</span></label>
-                                <select id="out-reason" onchange="handleReasonChange()" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-brand-accent outline-none bg-white">
-                                    <option value="Administered to Patient">Administered to Patient</option>
-                                    <option value="Used in Clinic Main">Used in Clinic Main</option>
-                                    <option value="Spoiled / Expired">Spoiled / Expired</option>
-                                    <option value="Inventory Discrepancy">Inventory Discrepancy</option>
+                                <select id="out-reason" onchange="handleReasonChange()" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-brand-accent outline-none bg-white shadow-sm">
+                                    <option value="" disabled selected>Select Reason...</option>
                                 </select>
                             </div>
-                            <div><label class="block text-sm font-medium text-slate-700 mb-1">Personnel / Auth By <span class="text-red-500">*</span></label><input type="text" id="out-personnel" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-brand-accent outline-none"></div>
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700 mb-1">Personnel / Auth By <span class="text-red-500">*</span></label>
+                                <select id="out-personnel" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-brand-accent outline-none bg-white shadow-sm">
+                                    <option value="" disabled selected>Select Staff...</option>
+                                </select>
+                            </div>
                         </div>
                         <div id="out-subject-container" class="block">
                             <label class="block text-sm font-medium text-slate-700 mb-1">Subject / Dispensed To <span class="text-red-500">*</span></label>
                             <input type="text" id="out-subject" placeholder="e.g., Dog: Bingo, Kennel B" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-brand-accent outline-none">
+                            <p class="text-[10px] text-slate-500 mt-1">Required for Impact Statement Generation.</p>
                         </div>
                     </div>
                 </div>
@@ -210,10 +240,9 @@ document.addEventListener("DOMContentLoaded", () => {
     if (typeof lucide !== 'undefined') lucide.createIcons();
 });
 
-
 // 2. Extracted Logic Variables
 let currentModalMode = null;
-let currentDonationContext = null; // Stores data if opened from donation.html
+let currentDonationContext = null; 
 
 // 3. Extracted Helper Functions
 const categorySchemas = {
@@ -300,6 +329,53 @@ function populateSelects() {
     }
 }
 
+// 4. Populate Configured Settings into Dropdowns
+function populateFormSettings() {
+    const settings = db.read('settingsLists');
+    const staffList = db.read('staff').filter(s => s.status === 'active');
+
+    // Groups
+    const igSelect = document.getElementById('create-item-group');
+    if (igSelect) {
+        igSelect.innerHTML = '<option value="" disabled selected>Select Group...</option>';
+        settings.itemGroups.filter(g => !g.archived).forEach(g => igSelect.add(new Option(g.name, g.name)));
+    }
+    
+    // Units
+    const baseUnit = document.getElementById('create-base-unit');
+    const purchUnit = document.getElementById('create-purch-unit');
+    const inPurchUnit = document.getElementById('in-purch-unit');
+    if (baseUnit) {
+        baseUnit.innerHTML = '<option value="" disabled selected>Select Unit...</option>';
+        purchUnit.innerHTML = '<option value="" disabled selected>Select Unit...</option>';
+        inPurchUnit.innerHTML = '<option value="" disabled selected>Select Unit...</option>';
+        settings.units.filter(u => !u.archived).forEach(u => {
+            baseUnit.add(new Option(u.name, u.name));
+            purchUnit.add(new Option(u.name, u.name));
+            inPurchUnit.add(new Option(u.name, u.name));
+        });
+    }
+
+    // Reasons
+    const reasonSel = document.getElementById('out-reason');
+    if (reasonSel) {
+        reasonSel.innerHTML = '<option value="" disabled selected>Select Reason...</option>';
+        settings.reasons.filter(r => !r.archived).forEach(r => reasonSel.add(new Option(r.name, r.name)));
+    }
+
+    // Personnel
+    const inPers = document.getElementById('in-personnel');
+    const outPers = document.getElementById('out-personnel');
+    if (inPers) {
+        inPers.innerHTML = '<option value="" disabled selected>Select Staff...</option>';
+        outPers.innerHTML = '<option value="" disabled selected>Select Staff...</option>';
+        staffList.forEach(s => {
+            inPers.add(new Option(s.name, s.name));
+            outPers.add(new Option(s.name, s.name));
+        });
+    }
+}
+
 window.handleItemSelect = function(mode) {
     if(mode === 'in' && document.getElementById('in-item-select').value === "NEW_ITEM") {
         openModal('create', null, currentDonationContext);
@@ -327,12 +403,15 @@ window.handleOutSelect = function() {
     document.getElementById('out-available-hint').textContent = `Total Available: ${item.totalBaseUnits} ${item.baseUnit}`;
 };
 
-// 4. Modal Open/Close Logic (with Context Injection)
+// 5. Modal Open/Close Logic 
 window.openModal = function(mode, preselectedId = null, donationContext = null) {
     currentModalMode = mode;
     currentDonationContext = donationContext;
 
     if(mode === 'in' || mode === 'out') populateSelects();
+    
+    // Inject Dynamic Form Data
+    populateFormSettings();
     
     document.querySelectorAll('.form-section').forEach(f => f.classList.add('hidden'));
     document.getElementById(`form-${mode}`).classList.remove('hidden');
@@ -346,7 +425,6 @@ window.openModal = function(mode, preselectedId = null, donationContext = null) 
     document.getElementById('modal-title').textContent = ctx.title;
     document.getElementById('modal-submit-btn').textContent = ctx.btn;
     
-    // Inject Donation Context if present
     if (donationContext) {
         if(mode === 'in') {
             document.getElementById('in-procurement').value = 'Private Donation';
@@ -379,11 +457,11 @@ window.closeModal = function() {
     setTimeout(() => {
         document.getElementById('modal-backdrop').classList.add('hidden');
         document.getElementById('modal-wrapper').classList.add('hidden');
-        currentDonationContext = null; // Clear context
+        currentDonationContext = null; 
     }, 300);
 };
 
-// 5. Shared Submit Logic
+// 6. Shared Submit Logic
 window.submitModal = function() {
     let inventoryState = db.read('inventory');
 
@@ -425,7 +503,6 @@ window.submitModal = function() {
             expiry, batchId: batch, addedDate: new Date().toISOString().split('T')[0]
         });
 
-        // Auto-redirect to 'in' if opened from donation context
         if(currentDonationContext) {
             db.write('inventory', inventoryState);
             closeModal();
@@ -466,10 +543,8 @@ window.submitModal = function() {
 
     db.write('inventory', inventoryState);
     
-    // Callback to page-specific refresh function if it exists
     if(typeof window.renderList === 'function') window.renderList();
     
-    // Tell Donation page it succeeded
     if(currentDonationContext && typeof window.finalizeDonationReceive === 'function') {
         window.finalizeDonationReceive(currentDonationContext.donationId);
     }

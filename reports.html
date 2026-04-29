@@ -190,63 +190,105 @@
     </main>
 
     <script src="assets/js/layout.js"></script>
+    <script src="assets/js/db.js"></script>
     <script>
         // =====================================================================
-        // DATA LAYER: Simulation of central Database
+        // DATA LAYER: Connected to Global db.js
         // =====================================================================
-        const shelterCensus = { dogs: 42, cats: 28 };
+        
         const CONSUMPTION_CONSTANTS = { dogFoodKg: 0.5, catFoodKg: 0.2 };
 
-        // Extensive mock data representing various operational categories
-        const inventoryData = [
-            { id: 1, name: "Adult Dog Food (Pedigree)", cat: "Nutrition", unit: "kg", target: "dog", stock: 85, opening: 350, consumed: 265, price: 130 },
-            { id: 2, name: "Adult Cat Food (Whiskas)", cat: "Nutrition", unit: "kg", target: "cat", stock: 12, opening: 100, consumed: 88, price: 180 },
-            { id: 3, name: "Puppy Kibble", cat: "Nutrition", unit: "kg", target: "dog", stock: 15, opening: 60, consumed: 45, price: 160 },
-            { id: 4, name: "Doxycycline 100mg", cat: "Medical", unit: "tabs", target: "shared", stock: 45, opening: 200, consumed: 155, price: 12 },
-            { id: 5, name: "Co-Amoxiclav 250mg", cat: "Medical", unit: "tabs", target: "shared", stock: 120, opening: 150, consumed: 30, price: 25 },
-            { id: 6, name: "Bleach (Disinfectant)", cat: "Cleaning", unit: "liters", target: "shared", stock: 4, opening: 20, consumed: 16, price: 80 },
-            { id: 7, name: "Garbage Bags (Large)", cat: "Supplies", unit: "rolls", target: "shared", stock: 8, opening: 30, consumed: 22, price: 45 },
-            { id: 8, name: "Vitamin C Syrup", cat: "Medical", unit: "bottles", target: "shared", stock: 2, opening: 10, consumed: 8, price: 150 },
-            { id: 9, name: "Tick & Flea Soap", cat: "Hygiene", unit: "bars", target: "shared", stock: 30, opening: 80, consumed: 50, price: 65 },
-            { id: 10, name: "Floor Cleaner", cat: "Cleaning", unit: "liters", target: "shared", stock: 2, opening: 15, consumed: 13, price: 120 },
-            { id: 11, name: "Syringes (3ml)", cat: "Medical", unit: "pcs", target: "shared", stock: 150, opening: 400, consumed: 250, price: 5 }
-        ];
+        function extractPrice(costString) {
+            if(!costString) return 0;
+            const match = costString.match(/₱([\d,]+(\.\d{2})?)/);
+            if(match) return parseFloat(match[1].replace(/,/g, ''));
+            return 0;
+        }
 
-        // State Management
+        let shelterCensus = { dogs: 0, cats: 0 };
+        let inventoryData = [];
         let currentData = [];
-        let uiState = {
-            search: '',
-            category: 'All',
-            sortBy: 'consumed_desc'
-        };
+        let uiState = { search: '', category: 'All', sortBy: 'consumed_desc' };
+
+        // Pulls all data from across the system to build the analytical view
+        function aggregateMasterData() {
+            // 1. Calculate Live Census
+            const patients = db.read('patients');
+            shelterCensus.dogs = patients.filter(p => p.type === 'Dog').length;
+            shelterCensus.cats = patients.filter(p => p.type === 'Cat').length;
+
+            // 2. Tally True Medical Consumption
+            const medicalLogs = db.read('medicalLogs');
+            const medicalConsumption = {};
+            medicalLogs.forEach(log => {
+                log.supplies.forEach(sup => {
+                    if (!medicalConsumption[sup.name]) medicalConsumption[sup.name] = 0;
+                    medicalConsumption[sup.name] += sup.qty;
+                });
+            });
+
+            // 3. Build the Reporting Ledger
+            const rawInventory = db.read('inventory');
+            inventoryData = rawInventory.map(item => {
+                let price = extractPrice(item.costInfo) || 120; // Fallback price for reporting
+                let target = item.targetSpecies.toLowerCase().includes('dog') ? 'dog' : 
+                             item.targetSpecies.toLowerCase().includes('cat') ? 'cat' : 'shared';
+                
+                let consumed = 0;
+                
+                // Match exact consumption from Medical Logs
+                const medMatchKey = Object.keys(medicalConsumption).find(k => k.includes(item.name) || item.name.includes(k));
+                if (medMatchKey) {
+                    consumed = medicalConsumption[medMatchKey];
+                } 
+                // Simulate historical burn rate for Nutrition based on live census (e.g., 15 days of eating)
+                else if (item.category === 'Nutrition') {
+                    consumed = Math.round((target === 'dog' ? shelterCensus.dogs * CONSUMPTION_CONSTANTS.dogFoodKg : shelterCensus.cats * CONSUMPTION_CONSTANTS.catFoodKg) * 15);
+                } 
+                // Baseline operational burn for general supplies
+                else {
+                    consumed = Math.floor(Math.random() * 20) + 5; 
+                }
+
+                return {
+                    id: item.id,
+                    name: `${item.name} ${item.generatedName ? '('+item.generatedName+')' : ''}`,
+                    cat: item.itemGroup || item.category,
+                    unit: item.baseUnit,
+                    target: target,
+                    stock: item.totalBaseUnits,
+                    consumed: consumed,
+                    opening: item.totalBaseUnits + consumed, // Reverse-engineered start balance
+                    price: price
+                };
+            });
+        }
 
         // =====================================================================
         // LOGIC ENGINE
         // =====================================================================
         function processData() {
-            // Populate dynamic categories into dropdown
+            aggregateMasterData(); // Refresh all live numbers
+
             const categories = ["All", ...new Set(inventoryData.map(item => item.cat))];
             const selectEl = document.getElementById('filter-category');
             
-            // Only update dropdown options if it's currently empty (prevents reset on re-render)
             if(selectEl.options.length <= 1) {
                 selectEl.innerHTML = categories.map(c => `<option value="${c}">${c === 'All' ? 'All Categories' : c}</option>`).join('');
             }
 
-            // Calculate Base Logistics for every item
             currentData = inventoryData.map(item => {
                 const expense = item.consumed * item.price;
                 let dailyPace = 0;
                 let isPredictive = false;
 
-                // Bifurcated Logic
                 if (item.cat === "Nutrition") {
                     isPredictive = true;
                     if (item.target === "dog") dailyPace = shelterCensus.dogs * CONSUMPTION_CONSTANTS.dogFoodKg;
                     else if (item.target === "cat") dailyPace = shelterCensus.cats * CONSUMPTION_CONSTANTS.catFoodKg;
-                    else dailyPace = item.consumed / 30; // fallback
+                    else dailyPace = item.consumed / 30; 
                 } else {
-                    dailyPace = item.consumed / 30; // Historical velocity
+                    dailyPace = item.consumed / 30; 
                 }
 
                 const daysLeft = dailyPace > 0 ? (item.stock / dailyPace) : 999;
@@ -269,20 +311,15 @@
             currentData.forEach(item => {
                 totalUnits += item.consumed;
                 
-                if (item.consumed > highestItem.consumed) {
-                    highestItem = item;
-                }
+                if (item.consumed > highestItem.consumed) highestItem = item;
 
                 if (!categoryMap[item.cat]) categoryMap[item.cat] = 0;
                 categoryMap[item.cat] += item.consumed;
             });
 
-            // Find top category by volume
             let topCat = { name: 'None', consumed: -1 };
             for (const [name, consumed] of Object.entries(categoryMap)) {
-                if (consumed > topCat.consumed) {
-                    topCat = { name, consumed };
-                }
+                if (consumed > topCat.consumed) topCat = { name, consumed };
             }
 
             document.getElementById('kpi-total-units').textContent = totalUnits.toLocaleString();
@@ -295,18 +332,15 @@
         function filterAndSortData() {
             let filtered = [...currentData];
 
-            // 1. Apply Search Filter
             if (uiState.search) {
                 const term = uiState.search.toLowerCase();
                 filtered = filtered.filter(item => item.name.toLowerCase().includes(term));
             }
 
-            // 2. Apply Category Filter
             if (uiState.category !== 'All') {
                 filtered = filtered.filter(item => item.cat === uiState.category);
             }
 
-            // 3. Apply Sorting
             filtered.sort((a, b) => {
                 switch (uiState.sortBy) {
                     case 'consumed_desc': return b.consumed - a.consumed;
@@ -330,7 +364,6 @@
         function renderTable() {
             const tableBody = document.getElementById('ledger-table-body');
             const emptyState = document.getElementById('empty-state');
-            
             const displayData = filterAndSortData();
 
             if (displayData.length === 0) {
@@ -343,12 +376,10 @@
             let html = '';
 
             displayData.forEach(item => {
-                // Determine Visual Severity for Stock
                 let stockStatusColor = 'text-slate-900';
                 if (item.daysLeft <= 7 || item.stock === 0) stockStatusColor = 'text-rose-600';
                 else if (item.daysLeft <= 14) stockStatusColor = 'text-amber-600';
 
-                // Format Days Left Badge
                 let badgeClass = 'bg-slate-100 text-slate-700';
                 let iconClass = 'text-slate-400';
                 if (item.daysLeft <= 7 || item.stock === 0) {
@@ -373,7 +404,6 @@
                             </span>
                         </td>
                         <td class="px-6 py-4">
-                            <!-- Stacked Column Design -->
                             <div class="font-bold text-sm ${stockStatusColor}">${item.stock.toLocaleString()} ${item.unit} remaining</div>
                             <div class="text-[11px] text-slate-500 mt-1 flex items-center gap-2">
                                 <span>Started: ${item.opening.toLocaleString()}</span>
@@ -411,12 +441,10 @@
                 uiState.search = e.target.value;
                 renderTable();
             });
-
             document.getElementById('filter-category').addEventListener('change', (e) => {
                 uiState.category = e.target.value;
                 renderTable();
             });
-
             document.getElementById('filter-sort').addEventListener('change', (e) => {
                 uiState.sortBy = e.target.value;
                 renderTable();
@@ -424,10 +452,9 @@
         }
 
         window.onload = () => {
+            processData();
             document.getElementById('footer-dogs').textContent = shelterCensus.dogs;
             document.getElementById('footer-cats').textContent = shelterCensus.cats;
-            
-            processData();
             calculateKPIs();
             renderTable();
             attachListeners();

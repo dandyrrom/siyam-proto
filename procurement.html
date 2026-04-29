@@ -7,38 +7,34 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Phosphor Icons for clean, modern iconography -->
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f8fafc; /* Slate 50 */
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        tailwind.config = { 
+            theme: { 
+                extend: { 
+                    fontFamily: { sans: ['Inter', 'sans-serif'] }, 
+                    colors: { 
+                        brand: { 
+                            primary: '#0F172A',       // Enterprise Sidebar (Slate 900)
+                            action: '#2563EB',        // Primary Buttons (Blue 600)
+                            actionDark: '#1D4ED8',    // Button Hover (Blue 700)
+                            secondary: '#0EA5E9',     // Accents (Sky 500)
+                            secondaryDark: '#0284C7', // Accents Dark (Sky 600)
+                            surface: '#F8FAFC',       // Backgrounds
+                            panel: '#FFFFFF',         // Cards
+                            accent: '#2563EB',        // Legacy Support
+                            bg: '#F8FAFC'             // Legacy Support
+                        },
+                        semantic: {
+                            critical: '#EF4444',      // Red 500 (Medical warnings)
+                            criticalBg: '#FEF2F2',    // Red 50
+                            criticalBorder: '#FECACA' // Red 200
+                        }
+                    } 
+                } 
+            } 
         }
-        
-        /* Custom scrollbar for a polished look */
-        ::-webkit-scrollbar {
-            width: 8px;
-            height: 8px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #f1f5f9; 
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #cbd5e1; 
-            border-radius: 4px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #94a3b8; 
-        }
-
-        .input-clean {
-            transition: all 0.2s;
-        }
-        .input-clean:focus {
-            outline: none;
-            border-color: #3b82f6;
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-        }
-    </style>
+    </script>
 </head>
 <body class="flex h-screen overflow-hidden text-slate-800 relative">
 
@@ -194,16 +190,41 @@
     </div>
 
     <script src="assets/js/layout.js"></script>
+    <script src="assets/js/db.js"></script>
     <script>
         // --- 1. MOCK DATABASE (Simulating the Master Inventory) ---
         // Scenarios included: standard item, conversion required (multiplier), zero price fallback, zero price warning.
-        const inventoryDB = [
-            { id: 'i1', name: 'Adult Dog Food (Beef)', category: 'Food', base_unit: 'sacks', purchasing_unit: 'sacks', multiplier: 1, current_stock: 2, min_threshold: 5, max_capacity: 15, latest_price: 1450, market_price: 1500 },
-            { id: 'i2', name: 'Co-amoxiclav 500mg', category: 'Medical', base_unit: 'tabs', purchasing_unit: 'boxes', multiplier: 50, current_stock: 15, min_threshold: 100, max_capacity: 300, latest_price: 850, market_price: 900 },
-            { id: 'i3', name: 'Puppy Milk Replacer', category: 'Food', base_unit: 'cans', purchasing_unit: 'cans', multiplier: 1, current_stock: 1, min_threshold: 4, max_capacity: 10, latest_price: 0, market_price: 0 }, // Scenario: Needs Price
-            { id: 'i4', name: 'Bleach (Disinfectant)', category: 'Supplies', base_unit: 'gallons', purchasing_unit: 'gallons', multiplier: 1, current_stock: 3, min_threshold: 5, max_capacity: 12, latest_price: 0, market_price: 280 }, // Scenario: Uses Market Price
-            { id: 'i5', name: 'Cat Litter (Sand)', category: 'Supplies', base_unit: 'bags', purchasing_unit: 'bags', multiplier: 1, current_stock: 20, min_threshold: 10, max_capacity: 40, latest_price: 350, market_price: 350 }, // Currently healthy stock
-        ];
+
+// --- 1. LIVE INVENTORY INTEGRATION (Data Mapper) ---
+        // This extracts numeric prices from your text-based cost info
+        function extractPrice(costString) {
+            if(!costString) return 0;
+            const match = costString.match(/₱([\d,]+(\.\d{2})?)/);
+            if(match) return parseFloat(match[1].replace(/,/g, ''));
+            return 0;
+        }
+
+        // Pull live data from db.js and map it to the Procurement Schema
+        const rawDB = db.read('inventory');
+        const inventoryDB = rawDB.map(item => {
+            let price = extractPrice(item.costInfo);
+            // Provide a realistic market fallback if an item was 100% donated and lacks a purchase history
+            let marketPrice = price > 0 ? price : 250; 
+            
+            return {
+                id: item.id,
+                name: `${item.name} ${item.generatedName ? '('+item.generatedName+')' : ''}`,
+                category: item.itemGroup || item.category,
+                base_unit: item.baseUnit,
+                purchasing_unit: item.latestPurchasingUnit || 'Unit',
+                multiplier: item.latestMultiplier || 1,
+                current_stock: item.totalBaseUnits,
+                min_threshold: item.minThreshold,
+                max_capacity: item.minThreshold * 4, // Auto-calculates an ideal "Max Capacity"
+                latest_price: price,
+                market_price: marketPrice
+            };
+        });
 
         // --- 2. STATE MANAGEMENT ---
         let currentMode = 'survival'; // 'survival', 'full', 'custom'

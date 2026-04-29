@@ -14,15 +14,20 @@
                     fontFamily: { sans: ['Inter', 'sans-serif'] }, 
                     colors: { 
                         brand: { 
-                            primary: '#1E1B4B', 
-                            action: '#D97706',  
-                            secondary: '#0D9488', 
-                            surface: '#F8FAFC', 
-                            accent: '#2563EB'
+                            primary: '#0F172A',       // Enterprise Sidebar (Slate 900)
+                            action: '#2563EB',        // Primary Buttons (Blue 600)
+                            actionDark: '#1D4ED8',    // Button Hover (Blue 700)
+                            secondary: '#0EA5E9',     // Accents (Sky 500)
+                            secondaryDark: '#0284C7', // Accents Dark (Sky 600)
+                            surface: '#F8FAFC',       // Backgrounds
+                            panel: '#FFFFFF',         // Cards
+                            accent: '#2563EB',        // Legacy Support
+                            bg: '#F8FAFC'             // Legacy Support
                         },
                         semantic: {
-                            warning: '#F59E0B',
-                            critical: '#EF4444'
+                            critical: '#EF4444',      // Red 500 (Medical warnings)
+                            criticalBg: '#FEF2F2',    // Red 50
+                            criticalBorder: '#FECACA' // Red 200
                         }
                     } 
                 } 
@@ -63,19 +68,22 @@
         .modal-enter { opacity: 1 !important; transform: scale(1) translateY(0) !important; }
     </style>
 </head>
-<body class="bg-brand-surface font-sans h-screen flex flex-col overflow-hidden">
+<body class="bg-brand-surface font-sans h-screen flex overflow-hidden">
 
-    <!-- PROTOTYPE POV SWITCHER -->
-    <div class="bg-slate-900 px-6 py-2 flex items-center justify-between shrink-0 z-[100] border-b border-black">
-        <div class="flex items-center gap-3">
-            <div class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
-            <span class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Settings Perspective Switcher (Final)</span>
+    <div class="flex-1 flex flex-col min-w-0">  
+        <!-- PROTOTYPE POV SWITCHER -->
+        <div class="bg-slate-900 px-6 py-2 flex items-center justify-between shrink-0 z-[100] border-b border-black">
+            <div class="flex items-center gap-3">
+                <div class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
+                <span class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Settings Perspective Switcher (Final)</span>
+            </div>
+            <div class="flex bg-slate-800 rounded-full p-1 border border-slate-700">
+                <button onclick="switchPerspective('admin')" id="btn-pov-admin" class="px-5 py-1 text-xs font-bold rounded-full transition-all pov-active shadow-sm">ADMIN POV</button>
+                <button onclick="switchPerspective('staff')" id="btn-pov-staff" class="px-5 py-1 text-xs font-bold rounded-full transition-all pov-inactive hover:text-white">STAFF POV</button>
+            </div>
         </div>
-        <div class="flex bg-slate-800 rounded-full p-1 border border-slate-700">
-            <button onclick="switchPerspective('admin')" id="btn-pov-admin" class="px-5 py-1 text-xs font-bold rounded-full transition-all pov-active shadow-sm">ADMIN POV</button>
-            <button onclick="switchPerspective('staff')" id="btn-pov-staff" class="px-5 py-1 text-xs font-bold rounded-full transition-all pov-inactive hover:text-white">STAFF POV</button>
-        </div>
-    </div>
+    
+    
 
     <!-- WORKSPACE CONTAINER -->
     <div class="flex-1 flex overflow-hidden relative">
@@ -503,6 +511,7 @@
         </main>
 
     </div>
+    </div>
 
     <!-- PERSONNEL MODAL -->
     <div id="modal-backdrop-personnel" class="fixed inset-0 bg-slate-900/40 backdrop-blur-[2px] z-50 hidden transition-opacity opacity-0 duration-300" onclick="closePersonnelModal()"></div>
@@ -545,33 +554,15 @@
     </div>
 
     <script src="assets/js/layout.js"></script>
+    <script src="assets/js/db.js"></script> 
     <script>
         // INIT
         lucide.createIcons();
         let currentPov = 'admin';
 
-        // --- SETTINGS STATE & CRUD LOGIC (DATA CATEGORIES) ---
-        const listsState = {
-            itemGroups: [
-                { id: 'g1', name: 'Antibiotics & Antimicrobials', master: 'Medications', archived: false },
-                { id: 'g2', name: 'Core Vaccines', master: 'Vaccines', archived: false }
-            ],
-            units: [
-                { id: 'u1', name: 'vial', archived: false },
-                { id: 'u2', name: 'tab', archived: false },
-                { id: 'u3', name: 'kg', archived: false },
-                { id: 'u4', name: 'bot', archived: false }
-            ],
-            reasons: [
-                { id: 'r1', name: 'Dispensed / Prescribed', archived: false },
-                { id: 'r2', name: 'Spoiled / Expired', archived: false }
-            ],
-            types: [
-                { id: 't1', name: 'Medication', archived: false },
-                { id: 't2', name: 'Surgical', archived: false },
-                { id: 't3', name: 'Wound Care', archived: false }
-            ]
-        };
+        // --- 1. STATE MANAGEMENT (Wired to Global DB) ---
+        let listsState = db.read('settingsLists');
+        let personnelState = db.read('staff');
 
         const listsUI = {
             itemGroups: { adding: false, showArchived: false },
@@ -580,6 +571,7 @@
             types: { adding: false, showArchived: false }
         };
 
+        // --- 2. CRUD LOGIC (DATA CATEGORIES) ---
         function toggleAdd(listKey) {
             listsUI[listKey].adding = !listsUI[listKey].adding;
             const row = document.getElementById(`add-row-${listKey}`);
@@ -622,16 +614,15 @@
 
             if (!name) return showError(listKey, "Name cannot be empty.");
 
-            // Case-insensitive duplicate check
             const isDuplicate = listsState[listKey].some(item => item.name.toLowerCase() === name.toLowerCase());
             if (isDuplicate) return showError(listKey, "This item already exists in the system.");
 
-            // Create and push
             const newItem = { id: Date.now().toString(), name: name, archived: false };
             if (master) newItem.master = master;
-            listsState[listKey].push(newItem);
             
-            // Reset and Render
+            listsState[listKey].push(newItem);
+            db.write('settingsLists', listsState); // GLOBAL SAVE
+            
             toggleAdd(listKey);
             renderList(listKey);
         }
@@ -639,6 +630,7 @@
         function setArchiveStatus(listKey, id, status) {
             const item = listsState[listKey].find(i => i.id === id);
             if (item) item.archived = status;
+            db.write('settingsLists', listsState); // GLOBAL SAVE
             renderList(listKey);
         }
 
@@ -655,7 +647,6 @@
             }
 
             if (listKey === 'units') {
-                // Render as Grid
                 itemsToRender.forEach(item => {
                     if (item.archived) {
                         container.innerHTML += `
@@ -672,7 +663,6 @@
                     }
                 });
             } else {
-                // Render as Rows
                 itemsToRender.forEach(item => {
                     let subText = '';
                     if (listKey === 'itemGroups') {
@@ -709,14 +699,7 @@
             lucide.createIcons();
         }
 
-        // --- PERSONNEL STATE & CRUD LOGIC ---
-        let personnelState = [
-            { id: 'p1', name: 'Benjamin Buena', role: 'Lead Veterinarian', status: 'active' },
-            { id: 'p2', name: 'Sarah Jenkins', role: 'Shelter Admin', status: 'active' },
-            { id: 'p3', name: 'Kurt', role: '', status: 'active' },
-            { id: 'p4', name: 'Alvin', role: 'Volunteer', status: 'inactive' }
-        ];
-        
+        // --- 3. PERSONNEL STATE & CRUD LOGIC ---
         let showInactivePersonnel = false;
 
         function getInitials(name) {
@@ -742,6 +725,7 @@
         function changePersonnelStatus(id, newStatus) {
             const person = personnelState.find(p => p.id === id);
             if (person) person.status = newStatus;
+            db.write('staff', personnelState); // GLOBAL SAVE
             renderPersonnel();
         }
 
@@ -818,6 +802,7 @@
                 });
             }
 
+            db.write('staff', personnelState); // GLOBAL SAVE
             closePersonnelModal();
             renderPersonnel();
         }
@@ -833,7 +818,6 @@
             const searchQuery = searchInput ? searchInput.value.toLowerCase().trim() : '';
             const sortOrder = sortInput ? sortInput.value : 'az';
 
-            // 1. Filter by Status Toggle & Search Query (Multi-parameter: Name & Role)
             let itemsToRender = personnelState.filter(p => {
                 if (!showInactivePersonnel && p.status === 'inactive') return false;
                 
@@ -845,17 +829,12 @@
                 return true;
             });
 
-            // 2. Status-Preserved Sorting
             itemsToRender.sort((a, b) => {
-                // Primary Sort: Keep Active on top
-                if (a.status !== b.status) {
-                    return a.status === 'active' ? -1 : 1;
-                }
-                // Secondary Sort: Alphabetical
+                if (a.status !== b.status) return a.status === 'active' ? -1 : 1;
                 const nameA = a.name.toLowerCase();
                 const nameB = b.name.toLowerCase();
                 if (sortOrder === 'az') return nameA.localeCompare(nameB);
-                return nameB.localeCompare(nameA); // 'za'
+                return nameB.localeCompare(nameA); 
             });
 
             if (itemsToRender.length === 0) {
@@ -895,16 +874,13 @@
             lucide.createIcons();
         }
 
-        // PANELS LOGIC (Purged of Contextual Guide References)
+        // --- 4. PANELS LOGIC ---
         const panels = ['general', 'lists', 'personnel', 'interface', 'alerts'];
         
         function switchPanel(panelId) {
-            // Hide all panels
             panels.forEach(p => {
                 const el = document.getElementById(`panel-${p}`);
                 if(el) el.classList.add('hidden');
-                
-                // Reset Nav styles
                 const nav = document.getElementById(`nav-${p}`);
                 if(nav) {
                     nav.classList.remove('nav-link-active');
@@ -912,7 +888,6 @@
                 }
             });
 
-            // Show selected
             document.getElementById(`panel-${panelId}`).classList.remove('hidden');
             const targetNav = document.getElementById(`nav-${panelId}`);
             if(targetNav) {
@@ -920,7 +895,6 @@
                 targetNav.classList.remove('text-slate-600');
             }
 
-            // DYNAMIC FLOATING MESSAGE (LOCK OVERLAY) LOGIC
             const lockOverlay = document.getElementById('admin-lock-overlay');
             const adminPanels = ['general', 'lists', 'personnel'];
             
@@ -933,7 +907,6 @@
             }
         }
 
-        // SUB-TAB LOGIC (For Data Categories)
         function switchSubTab(tabId) {
             if (tabId === 'inventory') {
                 document.getElementById('sub-inventory-data').classList.remove('hidden');
@@ -948,7 +921,7 @@
             }
         }
 
-        // POV LOGIC (Simulating Shared PC Authority)
+        // --- 5. POV SWITCHER ---
         function switchPerspective(pov) {
             currentPov = pov;
             const btnAdmin = document.getElementById('btn-pov-admin');
@@ -966,11 +939,9 @@
             const lockIcons = document.querySelectorAll('.lock-icon');
 
             if (pov === 'admin') {
-                // Top Switcher Styling
                 btnAdmin.className = "px-5 py-1 text-xs font-bold rounded-full transition-all pov-active shadow-sm";
                 btnStaff.className = "px-5 py-1 text-xs font-bold rounded-full transition-all pov-inactive hover:text-white cursor-pointer";
                 
-                // Auth Badge Styling
                 authBadge.className = "flex items-start gap-3 bg-white p-3 rounded-xl border border-blue-200 shadow-sm relative overflow-hidden transition-colors duration-300";
                 authBg.className = "absolute inset-0 bg-blue-50/50 opacity-100 transition-opacity";
                 authIconWrapper.className = "w-8 h-8 rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center shrink-0 relative z-10";
@@ -979,21 +950,14 @@
                 authStatus.className = "text-xs font-black text-blue-900 uppercase tracking-wider";
                 authSub.textContent = "PIN verified. Global write access granted.";
                 
-                // Unlock Admin Areas
                 controlledAreas.forEach(area => area.classList.remove('staff-locked'));
                 lockIcons.forEach(icon => icon.classList.add('hidden'));
 
-                // Show Admin links in Gear Dropdown
-                document.getElementById('gear-dropdown-admin').classList.remove('hidden');
-
-                switchPanel('general'); // Reset view to top
-
-            } else { // STAFF POV
-                // Top Switcher Styling
+                switchPanel('general');
+            } else { 
                 btnStaff.className = "px-5 py-1 text-xs font-bold rounded-full transition-all pov-active shadow-sm";
                 btnAdmin.className = "px-5 py-1 text-xs font-bold rounded-full transition-all pov-inactive hover:text-white cursor-pointer";
                 
-                // Auth Badge Styling
                 authBadge.className = "flex items-start gap-3 bg-white p-3 rounded-xl border border-slate-200 shadow-sm relative overflow-hidden transition-colors duration-300";
                 authBg.className = "absolute inset-0 bg-slate-50 opacity-100 transition-opacity";
                 authIconWrapper.className = "w-8 h-8 rounded-lg bg-slate-200 text-slate-500 flex items-center justify-center shrink-0 relative z-10";
@@ -1002,33 +966,18 @@
                 authStatus.className = "text-xs font-black text-slate-800 uppercase tracking-wider";
                 authSub.textContent = "Viewing global settings in read-only mode.";
                 
-                // Lock Admin Areas
                 controlledAreas.forEach(area => area.classList.add('staff-locked'));
                 lockIcons.forEach(icon => icon.classList.remove('hidden'));
 
-                // Hide Admin links in Gear Dropdown
-                document.getElementById('gear-dropdown-admin').classList.add('hidden');
-
-                switchPanel('interface'); // Jump staff to their allowed section
+                switchPanel('interface');
             }
             lucide.createIcons();
         }
 
-        // GEAR ICON CLICK LOGIC
-        function goToDefaultSettings() {
-            if (currentPov === 'admin') {
-                switchPanel('general');
-            } else {
-                switchPanel('interface');
-            }
-        }
-
-        // SAVE GENERAL SETTINGS LOGIC
         function saveGeneralSettings() {
             const btn = document.getElementById('btn-save-general');
             const originalText = btn.innerHTML;
             
-            // Visual success feedback
             btn.innerHTML = `<i data-lucide="check" class="w-4 h-4"></i> Saved Successfully`;
             btn.classList.replace('bg-brand-accent', 'bg-emerald-500');
             btn.classList.replace('hover:bg-blue-700', 'hover:bg-emerald-600');
@@ -1048,7 +997,6 @@
         renderList('reasons');
         renderList('types');
         renderPersonnel();
-
     </script>
 </body>
 </html>
