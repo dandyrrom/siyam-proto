@@ -298,6 +298,37 @@
                                 </div>
                             </div>
 
+                            <!-- NEW: Purchasing Units List -->
+                            <div class="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden flex flex-col max-h-[500px]">
+                                <div class="p-5 bg-slate-50 border-b border-slate-200 flex items-center justify-between shrink-0">
+                                    <div>
+                                        <h3 class="text-xs font-black text-slate-800 uppercase tracking-widest">Purchasing Units</h3>
+                                        <p class="text-[10px] text-slate-500 font-medium mt-0.5">Approved bulk packaging formats.</p>
+                                    </div>
+                                    <button onclick="toggleAdd('purchasingUnits')" class="flex items-center gap-1.5 px-3 py-1.5 bg-white border border-slate-300 text-slate-700 rounded-lg text-xs font-bold hover:bg-slate-100 shadow-sm transition">
+                                        <i data-lucide="plus" class="w-3.5 h-3.5"></i> Add Unit
+                                    </button>
+                                </div>
+
+                                <!-- Inline Add Row -->
+                                <div id="add-row-purchasingUnits" class="hidden p-4 bg-blue-50/50 border-b border-blue-100 shrink-0">
+                                    <div class="flex items-center gap-2 max-w-sm">
+                                        <input type="text" id="input-purchasingUnits-name" placeholder="e.g., Box, Sack, Case" maxlength="15" class="flex-1 border border-blue-200 rounded-md px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent font-medium text-slate-800 shadow-sm">
+                                        <button onclick="saveItem('purchasingUnits')" class="p-1.5 bg-brand-accent text-white rounded hover:bg-blue-700 transition shadow-sm"><i data-lucide="check" class="w-4 h-4"></i></button>
+                                        <button onclick="toggleAdd('purchasingUnits')" class="p-1.5 bg-white text-slate-400 border border-slate-200 rounded hover:bg-slate-50 transition shadow-sm"><i data-lucide="x" class="w-4 h-4"></i></button>
+                                    </div>
+                                    <p id="error-purchasingUnits" class="hidden text-xs text-red-500 mt-2 font-medium"></p>
+                                </div>
+
+                                <div class="p-5 grid grid-cols-3 gap-3 overflow-y-auto custom-scrollbar flex-1" id="list-purchasingUnits">
+                                    <!-- JS Rendered -->
+                                </div>
+                                
+                                <div class="p-2 border-t border-slate-100 bg-slate-50 text-center shrink-0">
+                                    <button onclick="toggleArchived('purchasingUnits')" id="btn-archived-purchasingUnits" class="text-[10px] font-bold text-slate-500 hover:text-brand-accent uppercase tracking-widest transition">Show Archived</button>
+                                </div>
+                            </div>
+
                             <!-- Standardized Units List -->
                             <div class="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden flex flex-col max-h-[500px]">
                                 <div class="p-5 bg-slate-50 border-b border-slate-200 flex items-center justify-between shrink-0">
@@ -326,6 +357,68 @@
                                 
                                 <div class="p-2 border-t border-slate-100 bg-slate-50 text-center shrink-0">
                                     <button onclick="toggleArchived('units')" id="btn-archived-units" class="text-[10px] font-bold text-slate-500 hover:text-brand-accent uppercase tracking-widest transition">Show Archived</button>
+                                </div>
+                            </div>
+
+                            <!-- NEW: Stock Destinations List -->
+                            <div class="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden flex flex-col max-h-[500px]">
+                                <div class="p-5 bg-slate-50 border-b border-slate-200 flex items-center justify-between shrink-0">
+                                    <div>
+                                        <h3 class="text-xs font-black text-slate-800 uppercase tracking-widest">Stock Destinations</h3>
+                                        <p class="text-[10px] text-slate-500 font-medium mt-0.5">Approved targets for manual deductions.</p>
+                                    </div>
+                                    <button onclick="toggleAdd('stockDestinations')" class="flex items-center gap-1.5 px-3 py-1.5 bg-white border border-slate-300 text-slate-700 rounded-lg text-xs font-bold hover:bg-slate-100 shadow-sm transition">
+                                        <i data-lucide="plus" class="w-3.5 h-3.5"></i> Add Destination
+                                    </button>
+                                </div>
+
+                                <!-- Inline Add Row -->
+                                <div id="add-row-stockDestinations" class="hidden p-4 bg-blue-50/50 border-b border-blue-100 shrink-0">
+                                    <div class="flex items-center gap-2 max-w-lg">
+                                        <input type="text" id="input-stockDestinations-name" placeholder="e.g., Foster Home, Internal Clinic" class="flex-1 border border-blue-200 rounded-md px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent font-medium text-slate-800 shadow-sm">
+                                        <button onclick="saveItem('stockDestinations')" class="p-1.5 bg-brand-accent text-white rounded hover:bg-blue-700 transition shadow-sm"><i data-lucide="check" class="w-4 h-4"></i></button>
+                                        <button onclick="toggleAdd('stockDestinations')" class="p-1.5 bg-white text-slate-400 border border-slate-200 rounded hover:bg-slate-50 transition shadow-sm"><i data-lucide="x" class="w-4 h-4"></i></button>
+                                    </div>
+                                    <p id="error-stockDestinations" class="hidden text-xs text-red-500 mt-2 font-medium"></p>
+                                </div>
+
+                                <div class="divide-y divide-slate-100 overflow-y-auto custom-scrollbar flex-1" id="list-stockDestinations">
+                                    <!-- JS Rendered -->
+                                </div>
+                                
+                                <div class="p-2 border-t border-slate-100 bg-slate-50 text-center shrink-0">
+                                    <button onclick="toggleArchived('stockDestinations')" id="btn-archived-stockDestinations" class="text-[10px] font-bold text-slate-500 hover:text-brand-accent uppercase tracking-widest transition">Show Archived</button>
+                                </div>
+                            </div>
+
+                            <!-- NEW: Storage Locations List -->
+                            <div class="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden flex flex-col max-h-[500px]">
+                                <div class="p-5 bg-slate-50 border-b border-slate-200 flex items-center justify-between shrink-0">
+                                    <div>
+                                        <h3 class="text-xs font-black text-slate-800 uppercase tracking-widest">Storage Locations</h3>
+                                        <p class="text-[10px] text-slate-500 font-medium mt-0.5">Physical shelves, fridges, or rooms.</p>
+                                    </div>
+                                    <button onclick="toggleAdd('storageLocations')" class="flex items-center gap-1.5 px-3 py-1.5 bg-white border border-slate-300 text-slate-700 rounded-lg text-xs font-bold hover:bg-slate-100 shadow-sm transition">
+                                        <i data-lucide="plus" class="w-3.5 h-3.5"></i> Add Location
+                                    </button>
+                                </div>
+
+                                <!-- Inline Add Row -->
+                                <div id="add-row-storageLocations" class="hidden p-4 bg-blue-50/50 border-b border-blue-100 shrink-0">
+                                    <div class="flex items-center gap-2 max-w-lg">
+                                        <input type="text" id="input-storageLocations-name" placeholder="e.g., Main Fridge, Storage Room 1" class="flex-1 border border-blue-200 rounded-md px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent font-medium text-slate-800 shadow-sm">
+                                        <button onclick="saveItem('storageLocations')" class="p-1.5 bg-brand-accent text-white rounded hover:bg-blue-700 transition shadow-sm"><i data-lucide="check" class="w-4 h-4"></i></button>
+                                        <button onclick="toggleAdd('storageLocations')" class="p-1.5 bg-white text-slate-400 border border-slate-200 rounded hover:bg-slate-50 transition shadow-sm"><i data-lucide="x" class="w-4 h-4"></i></button>
+                                    </div>
+                                    <p id="error-storageLocations" class="hidden text-xs text-red-500 mt-2 font-medium"></p>
+                                </div>
+
+                                <div class="divide-y divide-slate-100 overflow-y-auto custom-scrollbar flex-1" id="list-storageLocations">
+                                    <!-- JS Rendered -->
+                                </div>
+                                
+                                <div class="p-2 border-t border-slate-100 bg-slate-50 text-center shrink-0">
+                                    <button onclick="toggleArchived('storageLocations')" id="btn-archived-storageLocations" class="text-[10px] font-bold text-slate-500 hover:text-brand-accent uppercase tracking-widest transition">Show Archived</button>
                                 </div>
                             </div>
                             
@@ -567,6 +660,9 @@
         const listsUI = {
             itemGroups: { adding: false, showArchived: false },
             units: { adding: false, showArchived: false },
+            purchasingUnits: { adding: false, showArchived: false }, // NEW
+            storageLocations: { adding: false, showArchived: false }, // NEW
+            stockDestinations: { adding: false, showArchived: false }, // NEW
             reasons: { adding: false, showArchived: false },
             types: { adding: false, showArchived: false }
         };
@@ -646,7 +742,8 @@
                 return;
             }
 
-            if (listKey === 'units') {
+            // UPDATED: Render Purchasing Units as a Grid (like Base Units)
+            if (listKey === 'units' || listKey === 'purchasingUnits') {
                 itemsToRender.forEach(item => {
                     if (item.archived) {
                         container.innerHTML += `
@@ -663,6 +760,7 @@
                     }
                 });
             } else {
+                // Render as standard full-width Rows
                 itemsToRender.forEach(item => {
                     let subText = '';
                     if (listKey === 'itemGroups') {
@@ -994,6 +1092,9 @@
         // INITIALIZE ALL DYNAMIC LISTS ON LOAD
         renderList('itemGroups');
         renderList('units');
+        renderList('purchasingUnits'); // NEW
+        renderList('storageLocations'); // NEW
+        renderList('stockDestinations'); // NEW
         renderList('reasons');
         renderList('types');
         renderPersonnel();

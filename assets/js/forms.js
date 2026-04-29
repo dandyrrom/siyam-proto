@@ -110,7 +110,12 @@ const globalModalHTML = `
                                     <option value="Municipal Allocation">Municipal Allocation</option>
                                 </select>
                             </div>
-                            <div><label class="block text-sm font-medium text-slate-700 mb-1">Physical Location</label><input type="text" id="create-location" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-brand-accent"></div>
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700 mb-1">Physical Location</label>
+                                <select id="create-location" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-brand-accent bg-white shadow-sm">
+                                    <option value="" disabled selected>Select Location...</option>
+                                </select>
+                            </div>
                         </div>
 
                         <div id="create-finance-purchase" class="grid grid-cols-2 gap-4 mb-4">
@@ -149,6 +154,7 @@ const globalModalHTML = `
                             <div><label class="block text-xs font-medium text-slate-700 mb-1">Multiplier (Base/Pack) <span class="text-red-500">*</span></label><input type="number" id="in-multiplier" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-brand-accent bg-white"></div>
                             <div><label class="block text-xs font-medium text-slate-700 mb-1">Qty Received (Packs) <span class="text-red-500">*</span></label><input type="number" id="in-qty" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-brand-accent"></div>
                         </div>
+
                         <div class="grid grid-cols-2 gap-4 border-t border-slate-200 pt-4">
                             <div>
                                 <label class="block text-sm font-medium text-slate-700 mb-1">Procurement Channel <span class="text-red-500">*</span></label>
@@ -158,7 +164,12 @@ const globalModalHTML = `
                                     <option value="Municipal Allocation">Municipal Allocation</option>
                                 </select>
                             </div>
-                            <div><label class="block text-sm font-medium text-slate-700 mb-1">Physical Location</label><input type="text" id="in-location" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-brand-accent"></div>
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700 mb-1">Physical Location</label>
+                                <select id="in-location" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-brand-accent bg-white shadow-sm">
+                                    <option value="" disabled selected>Select Location...</option>
+                                </select>
+                            </div>
                         </div>
 
                         <div id="in-finance-purchase" class="grid grid-cols-2 gap-4">
@@ -205,7 +216,7 @@ const globalModalHTML = `
                         <div class="grid grid-cols-2 gap-4">
                             <div>
                                 <label class="block text-sm font-medium text-slate-700 mb-1">Deduction Reason <span class="text-red-500">*</span></label>
-                                <select id="out-reason" onchange="handleReasonChange()" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-brand-accent outline-none bg-white shadow-sm">
+                                <select id="out-reason" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-brand-accent outline-none bg-white shadow-sm">
                                     <option value="" disabled selected>Select Reason...</option>
                                 </select>
                             </div>
@@ -218,7 +229,9 @@ const globalModalHTML = `
                         </div>
                         <div id="out-subject-container" class="block">
                             <label class="block text-sm font-medium text-slate-700 mb-1">Subject / Dispensed To <span class="text-red-500">*</span></label>
-                            <input type="text" id="out-subject" placeholder="e.g., Dog: Bingo, Kennel B" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-brand-accent outline-none">
+                            <select id="out-subject" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-brand-accent outline-none bg-white shadow-sm">
+                                <option value="" disabled selected>Select Destination...</option>
+                            </select>
                             <p class="text-[10px] text-slate-500 mt-1">Required for Impact Statement Generation.</p>
                         </div>
                     </div>
@@ -304,13 +317,6 @@ window.handleProcurementChange = function(mode) {
     }
 };
 
-window.handleReasonChange = function() {
-    const reason = document.getElementById('out-reason').value;
-    const subjDiv = document.getElementById('out-subject-container');
-    if(reason === 'Administered to Patient') subjDiv.classList.replace('hidden', 'block');
-    else subjDiv.classList.replace('block', 'hidden');
-};
-
 function populateSelects() {
     const state = db.read('inventory');
     const inSel = document.getElementById('in-item-select');
@@ -333,7 +339,7 @@ function populateSelects() {
 function populateFormSettings() {
     const settings = db.read('settingsLists');
     const staffList = db.read('staff').filter(s => s.status === 'active');
-
+    
     // Groups
     const igSelect = document.getElementById('create-item-group');
     if (igSelect) {
@@ -341,19 +347,42 @@ function populateFormSettings() {
         settings.itemGroups.filter(g => !g.archived).forEach(g => igSelect.add(new Option(g.name, g.name)));
     }
     
-    // Units
+    // Units (Base)
     const baseUnit = document.getElementById('create-base-unit');
-    const purchUnit = document.getElementById('create-purch-unit');
-    const inPurchUnit = document.getElementById('in-purch-unit');
     if (baseUnit) {
         baseUnit.innerHTML = '<option value="" disabled selected>Select Unit...</option>';
+        settings.units.filter(u => !u.archived).forEach(u => baseUnit.add(new Option(u.name, u.name)));
+    }
+
+    // Purchasing Units
+    const purchUnit = document.getElementById('create-purch-unit');
+    const inPurchUnit = document.getElementById('in-purch-unit');
+    if (purchUnit) {
         purchUnit.innerHTML = '<option value="" disabled selected>Select Unit...</option>';
         inPurchUnit.innerHTML = '<option value="" disabled selected>Select Unit...</option>';
-        settings.units.filter(u => !u.archived).forEach(u => {
-            baseUnit.add(new Option(u.name, u.name));
+        settings.purchasingUnits.filter(u => !u.archived).forEach(u => {
             purchUnit.add(new Option(u.name, u.name));
             inPurchUnit.add(new Option(u.name, u.name));
         });
+    }
+
+    // Storage Locations
+    const createLoc = document.getElementById('create-location');
+    const inLoc = document.getElementById('in-location');
+    if (createLoc) {
+        createLoc.innerHTML = '<option value="" disabled selected>Select Location...</option>';
+        inLoc.innerHTML = '<option value="" disabled selected>Select Location...</option>';
+        settings.storageLocations.filter(loc => !loc.archived).forEach(loc => {
+            createLoc.add(new Option(loc.name, loc.name));
+            inLoc.add(new Option(loc.name, loc.name));
+        });
+    }
+
+    // Stock Destinations
+    const outSubj = document.getElementById('out-subject');
+    if (outSubj) {
+        outSubj.innerHTML = '<option value="" disabled selected>Select Destination...</option>';
+        settings.stockDestinations.filter(d => !d.archived).forEach(d => outSubj.add(new Option(d.name, d.name)));
     }
 
     // Reasons
@@ -362,7 +391,7 @@ function populateFormSettings() {
         reasonSel.innerHTML = '<option value="" disabled selected>Select Reason...</option>';
         settings.reasons.filter(r => !r.archived).forEach(r => reasonSel.add(new Option(r.name, r.name)));
     }
-
+    
     // Personnel
     const inPers = document.getElementById('in-personnel');
     const outPers = document.getElementById('out-personnel');
@@ -381,7 +410,6 @@ window.handleItemSelect = function(mode) {
         openModal('create', null, currentDonationContext);
         return;
     }
-
     const id = document.getElementById(`${mode}-item-select`).value;
     const state = db.read('inventory');
     const item = state.find(i => i.id === id);
@@ -407,7 +435,6 @@ window.handleOutSelect = function() {
 window.openModal = function(mode, preselectedId = null, donationContext = null) {
     currentModalMode = mode;
     currentDonationContext = donationContext;
-
     if(mode === 'in' || mode === 'out') populateSelects();
     
     // Inject Dynamic Form Data
@@ -482,6 +509,7 @@ window.submitModal = function() {
         const loc = document.getElementById('create-location').value.trim();
         
         const totalBase = (initQty * mult);
+
         const proc = document.getElementById('create-procurement').value;
         let costInfoStr = '';
         if(proc === 'Commercial Purchase') costInfoStr = `Total: ₱${document.getElementById('create-actual-cost').value || 0}`;
@@ -525,17 +553,18 @@ window.submitModal = function() {
         item.latestMultiplier = mult;
         item.latestLocation = document.getElementById('in-location').value.trim() || item.latestLocation;
         item.procurement = document.getElementById('in-procurement').value; 
-        
+
         if(item.procurement === 'Commercial Purchase') item.costInfo = `Total: ₱${document.getElementById('in-actual-cost').value || 0}`;
         else item.costInfo = `Est: ₱${document.getElementById('in-est-value').value || 0}`;
         
         if(document.getElementById('in-new-expiry').value) item.expiry = document.getElementById('in-new-expiry').value; 
-        if(document.getElementById('in-new-batch').value) item.batchId = document.getElementById('in-new-batch').value;
+        if(document.getElementById('in-new-batch').value) item.batchId = document.getElementById('in-new-batch').value; 
 
     } else if (currentModalMode === 'out') {
         const item = inventoryState.find(i => i.id === document.getElementById('out-item-select').value);
         if(!item) return;
         const qty = parseInt(document.getElementById('out-qty').value);
+        
         if(isNaN(qty) || qty <= 0) return alert("Invalid deduction quantity.");
         if(qty > item.totalBaseUnits) return alert("Insufficient stock.");
         item.totalBaseUnits -= qty;

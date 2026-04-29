@@ -31,7 +31,7 @@ const initialData = {
     donations: [
         { id: 'DN-1043', donor: 'Juan Dela Cruz', items: '5 Gallons Bleach', date: 'Oct 26, 2:00 PM', status: 'Approved' }
     ],
-    // --- UPDATED SCHEMAS FOR SETTINGS MODULE ---
+
     staff: [
         { id: 'p1', name: 'Benjamin Buena', role: 'Lead Veterinarian', status: 'active' },
         { id: 'p2', name: 'Rachelle', role: 'Shelter Admin', status: 'active' },
@@ -49,6 +49,24 @@ const initialData = {
             { id: 'u3', name: 'kg', archived: false },
             { id: 'u4', name: 'bot', archived: false }
         ],
+        // NEW: Phase 1 Additions
+        purchasingUnits: [
+            { id: 'pu1', name: 'Box', archived: false },
+            { id: 'pu2', name: 'Sack', archived: false },
+            { id: 'pu3', name: 'Case', archived: false }
+        ],
+        storageLocations: [
+            { id: 'loc1', name: 'Main Fridge', archived: false },
+            { id: 'loc2', name: 'Pharmacy Cabinet', archived: false },
+            { id: 'loc3', name: 'Storage Room 1', archived: false }
+        ],
+        stockDestinations: [
+            { id: 'dest1', name: 'Internal Clinic', archived: false },
+            { id: 'dest2', name: 'Foster Home', archived: false },
+            { id: 'dest3', name: 'Adopted', archived: false },
+            { id: 'dest4', name: 'Expired/Disposal', archived: false }
+        ],
+        // END NEW
         reasons: [
             { id: 'r1', name: 'Dispensed / Prescribed', archived: false },
             { id: 'r2', name: 'Spoiled / Expired', archived: false }
