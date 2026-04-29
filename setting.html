@@ -66,11 +66,22 @@
 
         /* Modal Animation */
         .modal-enter { opacity: 1 !important; transform: scale(1) translateY(0) !important; }
+
+        /* Animation for Syncing state */
+        @keyframes pulse-subtle {
+            0%, 100% { opacity: 1; }
+            50% { opacity: .7; }
+        }
+        .syncing-active {
+            animation: pulse-subtle 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+            pointer-events: none;
+        }
     </style>
 </head>
 <body class="bg-brand-surface font-sans h-screen flex overflow-hidden">
 
-    <div class="flex-1 flex flex-col min-w-0">  
+    <div class="flex-1 flex flex-col min-w-0">
+  
         <!-- PROTOTYPE POV SWITCHER -->
         <div class="bg-slate-900 px-6 py-2 flex items-center justify-between shrink-0 z-[100] border-b border-black">
             <div class="flex items-center gap-3">
@@ -82,9 +93,7 @@
                 <button onclick="switchPerspective('staff')" id="btn-pov-staff" class="px-5 py-1 text-xs font-bold rounded-full transition-all pov-inactive hover:text-white">STAFF POV</button>
             </div>
         </div>
-    
-    
-
+      
     <!-- WORKSPACE CONTAINER -->
     <div class="flex-1 flex overflow-hidden relative">
         
@@ -157,7 +166,7 @@
 
                     <div class="admin-controlled-area space-y-8">
                         
-                        <!-- NEW: Clinical Standards -->
+                        <!-- RETAINED: Clinical Standards -->
                         <div class="space-y-4">
                             <label class="block text-xs font-black text-slate-400 uppercase tracking-widest">Clinical Standards</label>
                             <div class="flex items-center justify-between p-5 bg-slate-50 rounded-xl border border-slate-200">
@@ -175,7 +184,7 @@
 
                         <div class="w-full h-px bg-slate-100"></div>
 
-                        <!-- NEW: Inventory Defaults -->
+                        <!-- RETAINED: Inventory Defaults -->
                         <div class="space-y-4">
                             <label class="block text-xs font-black text-slate-400 uppercase tracking-widest">Inventory Defaults</label>
                             <div class="flex items-center justify-between p-5 bg-slate-50 rounded-xl border border-slate-200">
@@ -209,7 +218,35 @@
 
                         <div class="w-full h-px bg-slate-100"></div>
 
-                        <!-- NEW: Data Management -->
+                        <!-- NEW: External Integrations (PawPlacer Sync) -->
+                        <div class="space-y-4">
+                            <label class="block text-xs font-black text-slate-400 uppercase tracking-widest">External Integrations</label>
+                            <div class="p-5 bg-indigo-50/30 rounded-xl border border-indigo-100 space-y-4 shadow-sm relative overflow-hidden">
+                                <!-- Subtle accent line to denote external tool -->
+                                <div class="absolute left-0 top-0 bottom-0 w-1 bg-brand-accent"></div>
+                                
+                                <div class="flex items-start justify-between">
+                                    <div>
+                                        <div class="flex items-center gap-2">
+                                            <p class="text-sm font-bold text-slate-900">PawPlacer Sync Service</p>
+                                            <span class="px-2 py-0.5 rounded text-[10px] font-bold tracking-wider bg-white text-brand-accent border border-indigo-200 uppercase shadow-sm">Active</span>
+                                        </div>
+                                        <p class="text-xs text-slate-500 font-medium mt-1 pr-6 leading-relaxed">Connect and synchronize animal records from PawPlacer to maintain an accurate local census for medical logging and predictive restocking.</p>
+                                        <p class="text-[10px] text-slate-400 font-bold mt-3 uppercase tracking-wider">Last Synced: <span id="last-sync-time" class="text-slate-600 font-normal">Never</span></p>
+                                    </div>
+                                    <div class="shrink-0">
+                                        <button id="btn-sync-now" onclick="triggerSync()" class="px-4 py-2 bg-brand-accent text-white rounded-lg text-sm font-bold hover:bg-blue-700 transition-colors shadow-sm flex items-center gap-2">
+                                            <i data-lucide="refresh-cw" class="w-4 h-4" id="sync-icon"></i>
+                                            <span id="sync-text">Sync Now</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="w-full h-px bg-slate-100"></div>
+
+                        <!-- RETAINED: Data Management -->
                         <div class="space-y-4">
                             <label class="block text-xs font-black text-slate-400 uppercase tracking-widest">Data Management</label>
                             <div class="p-5 bg-slate-50 rounded-xl border border-slate-200 space-y-4">
@@ -234,7 +271,6 @@
                                 <i data-lucide="save" class="w-4 h-4"></i> Save Global Settings
                             </button>
                         </div>
-
                     </div>
                 </div>
 
@@ -298,7 +334,7 @@
                                 </div>
                             </div>
 
-                            <!-- NEW: Purchasing Units List -->
+                            <!-- Purchasing Units List -->
                             <div class="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden flex flex-col max-h-[500px]">
                                 <div class="p-5 bg-slate-50 border-b border-slate-200 flex items-center justify-between shrink-0">
                                     <div>
@@ -360,7 +396,7 @@
                                 </div>
                             </div>
 
-                            <!-- NEW: Stock Destinations List -->
+                            <!-- Stock Destinations List -->
                             <div class="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden flex flex-col max-h-[500px]">
                                 <div class="p-5 bg-slate-50 border-b border-slate-200 flex items-center justify-between shrink-0">
                                     <div>
@@ -391,7 +427,7 @@
                                 </div>
                             </div>
 
-                            <!-- NEW: Storage Locations List -->
+                            <!-- Storage Locations List -->
                             <div class="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden flex flex-col max-h-[500px]">
                                 <div class="p-5 bg-slate-50 border-b border-slate-200 flex items-center justify-between shrink-0">
                                     <div>
@@ -452,7 +488,6 @@
                                     <button onclick="toggleArchived('reasons')" id="btn-archived-reasons" class="text-[10px] font-bold text-slate-500 hover:text-brand-accent uppercase tracking-widest transition">Show Archived</button>
                                 </div>
                             </div>
-
                         </div>
 
                         <!-- TAB B: CLINICAL DATA -->
@@ -548,6 +583,7 @@
                         <!-- Visuals -->
                         <div class="bg-white border border-slate-200 rounded-2xl shadow-sm p-6 space-y-6">
                             <h3 class="text-xs font-black text-slate-400 uppercase tracking-widest border-b border-slate-100 pb-2">Visual Accessibility</h3>
+
                             <div class="flex items-center justify-between">
                                 <div>
                                     <span class="text-sm font-bold text-slate-800">List Spacing</span>
@@ -559,6 +595,7 @@
                                     <option>Relaxed</option>
                                 </select>
                             </div>
+
                             <div class="flex items-center justify-between">
                                 <div>
                                     <span class="text-sm font-bold text-slate-800">High Contrast Text</span>
@@ -586,6 +623,7 @@
                         <!-- Audio -->
                         <div class="bg-white border border-slate-200 rounded-2xl shadow-sm p-6 space-y-6">
                             <h3 class="text-xs font-black text-slate-400 uppercase tracking-widest border-b border-slate-100 pb-2">Audio Alerts</h3>
+
                             <div class="flex items-center justify-between">
                                 <div>
                                     <span class="text-sm font-bold text-slate-800">Action Success Sounds</span>
@@ -596,18 +634,18 @@
                                     <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-brand-accent"></div>
                                 </label>
                             </div>
+
                         </div>
                     </div>
                 </div>
-
             </div>
         </main>
-
     </div>
     </div>
 
     <!-- PERSONNEL MODAL -->
     <div id="modal-backdrop-personnel" class="fixed inset-0 bg-slate-900/40 backdrop-blur-[2px] z-50 hidden transition-opacity opacity-0 duration-300" onclick="closePersonnelModal()"></div>
+    
     <div id="modal-wrapper-personnel" class="fixed inset-0 z-50 flex items-center justify-center hidden pointer-events-none p-4">
         <div id="modal-panel-personnel" class="bg-white rounded-xl shadow-2xl w-full max-w-md flex flex-col pointer-events-auto transform scale-95 translate-y-4 opacity-0 transition-all duration-300 max-h-[90vh]">
             
@@ -646,6 +684,37 @@
         </div>
     </div>
 
+    <!-- NEW: SYNC SUMMARY MODAL -->
+    <div id="modal-backdrop-sync" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[200] hidden transition-opacity opacity-0 duration-300"></div>
+    <div id="modal-wrapper-sync" class="fixed inset-0 z-[200] flex items-center justify-center hidden pointer-events-none p-4">
+        <div id="modal-panel-sync" class="bg-white rounded-xl shadow-2xl w-full max-w-sm flex flex-col pointer-events-auto transform scale-95 translate-y-4 opacity-0 transition-all duration-300">
+            <div class="px-6 py-5 border-b border-slate-100 flex items-center justify-between">
+                <h2 class="text-lg font-black text-slate-900 tracking-tight">Sync Successful</h2>
+                <div class="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-600">
+                    <i data-lucide="check" class="w-4 h-4 font-bold"></i>
+                </div>
+            </div>
+            <div class="p-6 space-y-4">
+                <div class="flex items-center justify-between bg-slate-50 p-3 rounded-lg border border-slate-100">
+                    <span class="text-sm font-medium text-slate-600">New Arrivals Synced</span>
+                    <span id="sync-count-added" class="text-lg font-black text-brand-action">0</span>
+                </div>
+                <div class="flex items-center justify-between bg-slate-50 p-3 rounded-lg border border-slate-100">
+                    <span class="text-sm font-medium text-slate-600">Health Updates Applied</span>
+                    <span id="sync-count-updated" class="text-lg font-black text-brand-secondary">0</span>
+                </div>
+                <div class="flex items-center justify-between bg-slate-50 p-3 rounded-lg border border-slate-100">
+                    <span class="text-sm font-medium text-slate-600">Local Records Archived</span>
+                    <span id="sync-count-archived" class="text-lg font-black text-slate-400">0</span>
+                </div>
+            </div>
+            <div class="px-6 py-4 bg-slate-50 rounded-b-xl border-t border-slate-100 flex justify-end">
+                <button onclick="closeSyncModal()" class="px-6 py-2 bg-slate-800 text-white rounded-lg text-sm font-bold hover:bg-slate-900 transition-colors shadow-sm">Understood</button>
+            </div>
+        </div>
+    </div>
+
+
     <script src="assets/js/layout.js"></script>
     <script src="assets/js/db.js"></script> 
     <script>
@@ -656,16 +725,138 @@
         // --- 1. STATE MANAGEMENT (Wired to Global DB) ---
         let listsState = db.read('settingsLists');
         let personnelState = db.read('staff');
-
+        
         const listsUI = {
             itemGroups: { adding: false, showArchived: false },
             units: { adding: false, showArchived: false },
-            purchasingUnits: { adding: false, showArchived: false }, // NEW
-            storageLocations: { adding: false, showArchived: false }, // NEW
-            stockDestinations: { adding: false, showArchived: false }, // NEW
+            purchasingUnits: { adding: false, showArchived: false },
+            storageLocations: { adding: false, showArchived: false },
+            stockDestinations: { adding: false, showArchived: false },
             reasons: { adding: false, showArchived: false },
             types: { adding: false, showArchived: false }
         };
+
+        // Initialize sync timestamp on load
+        document.addEventListener('DOMContentLoaded', () => {
+            const lastSync = localStorage.getItem('siyam_last_sync');
+            if (lastSync) document.getElementById('last-sync-time').textContent = lastSync;
+        });
+
+        // --- NEW: PAWPLACER SYNC LOGIC (DELTA ENGINE) ---
+        function triggerSync() {
+            const btn = document.getElementById('btn-sync-now');
+            const icon = document.getElementById('sync-icon');
+            const text = document.getElementById('sync-text');
+
+            // 1. Enter Loading State
+            btn.classList.add('syncing-active');
+            btn.classList.replace('bg-brand-accent', 'bg-indigo-800');
+            icon.setAttribute('data-lucide', 'loader-2');
+            icon.classList.add('animate-spin');
+            text.textContent = "Handshaking...";
+            lucide.createIcons();
+
+            // Simulate API Latency (1.5 seconds)
+            setTimeout(() => {
+                executeDeltaEngine();
+
+                // 2. Exit Loading State
+                btn.classList.remove('syncing-active');
+                btn.classList.replace('bg-indigo-800', 'bg-brand-accent');
+                icon.setAttribute('data-lucide', 'refresh-cw');
+                icon.classList.remove('animate-spin');
+                text.textContent = "Sync Now";
+                lucide.createIcons();
+            }, 1500);
+        }
+
+        function executeDeltaEngine() {
+            // The Dummy API Payload
+            const DUMMY_PP_DATA = [
+                { id: "P1001", name: "Luna", type: "Dog", breed: "Aspin", status: "Available" },
+                { id: "P1002", name: "Cooper", type: "Dog", breed: "Beagle", status: "Available" },
+                { id: "P1003", name: "Mittens", type: "Cat", breed: "Domestic Shorthair", status: "Available" },
+                { id: "P1004", name: "Charlie", type: "Dog", breed: "Labrador", status: "Medical Treatment" },
+                { id: "P1005", name: "Nala", type: "Cat", breed: "Siamese", status: "Medical Treatment" }
+            ];
+
+            let localPatients = db.read('patients');
+            let counts = { added: 0, updated: 0, archived: 0 };
+
+            // Pass 1: Process Incoming Data (Add/Update)
+            DUMMY_PP_DATA.forEach(incoming => {
+                const localMatchIndex = localPatients.findIndex(p => p.id === incoming.id);
+
+                if (localMatchIndex === -1) {
+                    // CONDITION A: New Arrival
+                    localPatients.push(incoming);
+                    counts.added++;
+                } else {
+                    // CONDITION B: Potential Update
+                    if (localPatients[localMatchIndex].status !== incoming.status) {
+                        localPatients[localMatchIndex].status = incoming.status;
+                        counts.updated++;
+                    }
+                }
+            });
+
+            // Pass 2: Identify Missing Locals (Archive)
+            localPatients.forEach((local, index) => {
+                if (local.status === 'Available' || local.status === 'Medical Treatment') {
+                    const existsInAPI = DUMMY_PP_DATA.some(api => api.id === local.id);
+                    if (!existsInAPI) {
+                        // CONDITION C: Missing from API scope -> Archive
+                        localPatients[index].status = 'Inactive';
+                        counts.archived++;
+                    }
+                }
+            });
+
+            // 3. Save to Global DB
+            db.write('patients', localPatients);
+
+            // 4. Update Timestamp
+            const now = new Date();
+            const timeString = now.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) + ' — ' + now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            localStorage.setItem('siyam_last_sync', timeString);
+            document.getElementById('last-sync-time').textContent = timeString;
+
+            // 5. Show Summary Modal
+            showSyncSummary(counts);
+        }
+
+        function showSyncSummary(counts) {
+            document.getElementById('sync-count-added').textContent = counts.added;
+            document.getElementById('sync-count-updated').textContent = counts.updated;
+            document.getElementById('sync-count-archived').textContent = counts.archived;
+
+            const backdrop = document.getElementById('modal-backdrop-sync');
+            const wrapper = document.getElementById('modal-wrapper-sync');
+            const panel = document.getElementById('modal-panel-sync');
+
+            backdrop.classList.remove('hidden');
+            wrapper.classList.remove('hidden');
+            
+            requestAnimationFrame(() => {
+                backdrop.classList.replace('opacity-0', 'opacity-100');
+                panel.classList.add('modal-enter');
+            });
+        }
+
+        function closeSyncModal() {
+            const backdrop = document.getElementById('modal-backdrop-sync');
+            const wrapper = document.getElementById('modal-wrapper-sync');
+            const panel = document.getElementById('modal-panel-sync');
+
+            panel.classList.remove('modal-enter');
+            backdrop.classList.replace('opacity-100', 'opacity-0');
+            
+            setTimeout(() => {
+                backdrop.classList.add('hidden');
+                wrapper.classList.add('hidden');
+            }, 300);
+        }
+
 
         // --- 2. CRUD LOGIC (DATA CATEGORIES) ---
         function toggleAdd(listKey) {
@@ -929,8 +1120,10 @@
 
             itemsToRender.sort((a, b) => {
                 if (a.status !== b.status) return a.status === 'active' ? -1 : 1;
+
                 const nameA = a.name.toLowerCase();
                 const nameB = b.name.toLowerCase();
+
                 if (sortOrder === 'az') return nameA.localeCompare(nameB);
                 return nameB.localeCompare(nameA); 
             });
@@ -969,6 +1162,7 @@
                     </div>
                 `;
             });
+
             lucide.createIcons();
         }
 
@@ -979,6 +1173,7 @@
             panels.forEach(p => {
                 const el = document.getElementById(`panel-${p}`);
                 if(el) el.classList.add('hidden');
+
                 const nav = document.getElementById(`nav-${p}`);
                 if(nav) {
                     nav.classList.remove('nav-link-active');
@@ -1052,6 +1247,7 @@
                 lockIcons.forEach(icon => icon.classList.add('hidden'));
 
                 switchPanel('general');
+
             } else { 
                 btnStaff.className = "px-5 py-1 text-xs font-bold rounded-full transition-all pov-active shadow-sm";
                 btnAdmin.className = "px-5 py-1 text-xs font-bold rounded-full transition-all pov-inactive hover:text-white cursor-pointer";
@@ -1098,6 +1294,7 @@
         renderList('reasons');
         renderList('types');
         renderPersonnel();
+
     </script>
 </body>
 </html>

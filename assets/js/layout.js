@@ -47,7 +47,7 @@ const sidebarHTML = `
                 <span class="nav-text ml-3 text-sm transition-opacity duration-300">Inventory</span>
             </a>
 
-            <a href="#" class="nav-btn w-full flex items-center h-10 px-3 rounded-lg text-slate-400 hover:bg-white/5 hover:text-white font-medium transition-colors relative overflow-hidden group">
+            <a href="population.html" class="nav-btn w-full flex items-center h-10 px-3 rounded-lg text-slate-400 hover:bg-white/5 hover:text-white font-medium transition-colors relative overflow-hidden group">
                 <i data-lucide="dog" class="w-4 h-4 shrink-0"></i>
                 <span class="nav-text ml-3 text-sm transition-opacity duration-300">Population</span>
             </a>
