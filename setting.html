@@ -770,18 +770,25 @@
             }, 1500);
         }
 
+        // --- PROTOTYPE PAWPLACER SYNC LOGIC (DELTA ENGINE) ---
+        // Note: For this HTML prototype, we use a dummy payload to bypass strict browser CORS policies.
+        // In production (Flutter/Supabase), this will be replaced with a secure backend fetch().
         function executeDeltaEngine() {
-            // The Dummy API Payload
+            // Simulated API Payload from PawPlacer
             const DUMMY_PP_DATA = [
                 { id: "P1001", name: "Luna", type: "Dog", breed: "Aspin", status: "Available" },
                 { id: "P1002", name: "Cooper", type: "Dog", breed: "Beagle", status: "Available" },
                 { id: "P1003", name: "Mittens", type: "Cat", breed: "Domestic Shorthair", status: "Available" },
                 { id: "P1004", name: "Charlie", type: "Dog", breed: "Labrador", status: "Medical Treatment" },
-                { id: "P1005", name: "Nala", type: "Cat", breed: "Siamese", status: "Medical Treatment" }
+                { id: "P1005", name: "Nala", type: "Cat", breed: "Siamese", status: "Medical Treatment" },
+                // Let's add a new arrival to demonstrate the "Added" logic!
+                { id: "P1006", name: "Max", type: "Dog", breed: "Golden Retriever", status: "Available" }
             ];
 
             let localPatients = db.read('patients');
             let counts = { added: 0, updated: 0, archived: 0 };
+
+            console.log("Initiating Simulated PawPlacer Handshake...");
 
             // Pass 1: Process Incoming Data (Add/Update)
             DUMMY_PP_DATA.forEach(incoming => {
