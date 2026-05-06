@@ -51,72 +51,109 @@
 <body class="bg-brand-sand text-brand-slate font-sans h-screen flex overflow-hidden">
 
     <!-- WORKSPACE -->
-    <main class="flex-1 flex flex-col max-w-6xl mx-auto w-full p-6 overflow-hidden">
-        
-        <!-- HEADER & ACTIONS -->
-        <div class="flex items-end justify-between mb-4 shrink-0">
-            <div>
-                <h1 class="text-2xl font-bold text-brand-slate tracking-tight">Supply Inbox</h1>
-                <p class="text-sm text-gray-500 mt-1 font-medium">Typography-driven list. Full financial & clinical schema.</p>
-            </div>
-            <div class="flex items-center gap-3">
-                <button onclick="openModal('in')" class="flex items-center gap-2 px-4 py-2 bg-white border border-brand-forest text-brand-forest rounded text-sm font-medium hover:bg-brand-sand transition">
-                    <i data-lucide="arrow-down-to-line" class="w-4 h-4"></i> Stock In
-                </button>
-                <button onclick="openModal('out')" class="flex items-center gap-2 px-4 py-2 bg-white border border-brand-forest text-brand-forest rounded text-sm font-medium hover:bg-brand-sand transition">
-                    <i data-lucide="arrow-up-from-line" class="w-4 h-4"></i> Stock Out
-                </button>
-                <button onclick="openModal('create')" class="flex items-center gap-2 px-4 py-2 bg-brand-forest text-white rounded text-sm font-medium hover:bg-brand-forestLight transition shadow-ledger">
-                    <i data-lucide="plus" class="w-4 h-4"></i> Add Item
-                </button>
+    <main class="flex-1 flex flex-col min-w-0 relative h-screen overflow-hidden">
+                 
+        <!-- Unified Constrained Wrapper (Option A) -->
+        <div class="flex-1 overflow-hidden flex flex-col w-full">
+
+            <!-- Header flush to sidebar -->
+            <header class="h-16 bg-brand-paper border-b border-brand-sandDark flex items-center justify-between px-6 shrink-0 z-20 w-full">
+                <div class="flex items-center gap-2">
+                    <span class="text-sm font-medium text-gray-500">DAS SIYAM</span>
+                    <i data-lucide="chevron-right" class="w-4 h-4 text-gray-400"></i>
+                    <span class="text-sm font-bold text-brand-slate">Inventory</span>
+                </div>
+                <div class="flex items-center gap-4">
+                    <button class="relative w-8 h-8 rounded bg-brand-sand border border-brand-sandDark flex items-center justify-center text-gray-500 hover:text-brand-forest transition">
+                        <i data-lucide="bell" class="w-4 h-4"></i>
+                    </button>
+                </div>
+            </header>
+
+            <!-- Inner Content Wrapper (Restores padding and layout) -->
+            <div class="flex-1 overflow-hidden flex flex-col p-6">
+
+                <!-- Unified Top Row: Stats & Actions -->
+                <div class="flex flex-col md:flex-row items-start md:items-center justify-between w-full mb-4 gap-4 shrink-0">
+                    
+                    <!-- Quick Stats Summary (Left) -->
+                    <div class="flex items-center gap-3 bg-brand-paper p-2 rounded border border-brand-sandDark shadow-ledger">
+                        <div class="flex flex-col px-4 border-r border-brand-sandDark">
+                            <span class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Total Active</span>
+                            <span id="stat-total" class="text-xl font-bold text-brand-slate leading-none mt-0.5 font-mono">--</span>
+                        </div>
+                        <div class="flex items-center gap-2 px-3">
+                            <div class="w-8 h-8 rounded bg-[#FAFAF8] border border-brand-sandDark flex items-center justify-center text-gray-500"><i data-lucide="dog" class="w-4 h-4"></i></div>
+                            <span id="stat-dogs" class="text-lg font-bold text-brand-slate font-mono">--</span>
+                        </div>
+                        <div class="flex items-center gap-2 px-3 pl-1">
+                            <div class="w-8 h-8 rounded bg-[#FAFAF8] border border-brand-sandDark flex items-center justify-center text-gray-500"><i data-lucide="cat" class="w-4 h-4"></i></div>
+                            <span id="stat-cats" class="text-lg font-bold text-brand-slate font-mono">--</span>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons (Right) -->
+                    <div class="flex items-center gap-3">
+                        <button onclick="openModal('in')" class="flex items-center gap-2 px-4 py-2 bg-white border border-brand-forest text-brand-forest rounded text-sm font-medium hover:bg-brand-sand transition shadow-sm">
+                            <i data-lucide="arrow-down-to-line" class="w-4 h-4"></i> Stock In
+                        </button>
+                        <button onclick="openModal('out')" class="flex items-center gap-2 px-4 py-2 bg-white border border-brand-forest text-brand-forest rounded text-sm font-medium hover:bg-brand-sand transition shadow-sm">
+                            <i data-lucide="arrow-up-from-line" class="w-4 h-4"></i> Stock Out
+                        </button>
+                        <button onclick="openModal('create')" class="flex items-center gap-2 px-4 py-2 bg-brand-forest text-white rounded text-sm font-medium hover:bg-brand-forestLight transition shadow-ledger">
+                            <i data-lucide="plus" class="w-4 h-4"></i> Add Item
+                        </button>
+                    </div>
+                    
+                </div>
+                
+                <!-- CONTROLS BAR -->
+                <div class="flex items-center gap-3 mb-4 shrink-0 bg-brand-paper p-2.5 rounded border border-brand-sandDark shadow-ledger">
+                    <div class="flex bg-brand-sand rounded p-0.5 shrink-0 border border-brand-sandDark">
+                        <button id="btn-flat" onclick="toggleView('flat')" class="px-4 py-1.5 text-sm font-bold rounded bg-brand-forestLight/20 text-brand-forest transition-all">Flat List</button>
+                        <button id="btn-group" onclick="toggleView('group')" class="px-4 py-1.5 text-sm font-medium rounded text-gray-500 hover:text-brand-forest transition-all">Grouped</button>
+                    </div>
+                    <div class="w-px h-6 bg-brand-sandDark mx-1"></div>
+                    <div class="relative flex-1 min-w-[200px]">
+                        <i data-lucide="search" class="w-4 h-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2"></i>
+                        <input type="text" id="search-input" oninput="renderList()" placeholder="Search items, brands, specs..." class="w-full pl-9 pr-3 py-1.5 bg-transparent text-sm focus:outline-none font-medium">
+                    </div>
+                    <div class="w-px h-6 bg-brand-sandDark mx-1"></div>
+                    <div class="flex items-center gap-2 shrink-0">
+                        <i data-lucide="filter" class="w-4 h-4 text-gray-400"></i>
+                        <select id="filter-category" onchange="renderList()" class="bg-transparent text-sm focus:outline-none text-brand-slate font-medium cursor-pointer py-1.5">
+                            <option value="All">All Categories</option>
+                            <option value="Medications">Medications</option>
+                            <option value="Injectables">Injectables</option>
+                            <option value="Topicals">Topicals</option>
+                            <option value="Vaccines">Vaccines</option>
+                            <option value="Diagnostics">Diagnostics</option>
+                            <option value="Consumables">Consumables</option>
+                            <option value="Nutrition">Nutrition</option>
+                            <option value="Equipment">Equipment</option>
+                            <option value="Chemicals">Chemicals</option>
+                        </select>
+                    </div>
+                    <div class="w-px h-6 bg-brand-sandDark mx-1"></div>
+                    <div class="flex items-center gap-2 shrink-0 pr-2">
+                        <i data-lucide="arrow-up-down" class="w-4 h-4 text-gray-400"></i>
+                        <select id="sort-by" onchange="renderList()" class="bg-transparent text-sm focus:outline-none text-brand-slate font-medium cursor-pointer py-1.5">
+                            <option value="name-asc">Alphabetical (A-Z)</option>
+                            <option value="name-desc">Alphabetical (Z-A)</option>
+                            <option value="stock-low">Stock (Low-High)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- INBOX LIST CONTAINER -->
+                <div class="flex-1 bg-brand-paper border border-brand-sandDark rounded shadow-ledger overflow-hidden flex flex-col">
+                    <div class="overflow-y-auto custom-scrollbar flex-1 relative p-2" id="inbox-container">
+                        <!-- Rendered by JS -->
+                    </div>
+                </div>
+                
             </div>
         </div>
-
-        <!-- CONTROLS BAR -->
-        <div class="flex items-center gap-3 mb-4 shrink-0 bg-brand-paper p-2.5 rounded border border-brand-sandDark shadow-ledger">
-            <div class="flex bg-brand-sand rounded p-0.5 shrink-0 border border-brand-sandDark">
-                <button id="btn-flat" onclick="toggleView('flat')" class="px-4 py-1.5 text-sm font-bold rounded bg-brand-forestLight/20 text-brand-forest transition-all">Flat List</button>
-                <button id="btn-group" onclick="toggleView('group')" class="px-4 py-1.5 text-sm font-medium rounded text-gray-500 hover:text-brand-forest transition-all">Grouped</button>
-            </div>
-            <div class="w-px h-6 bg-brand-sandDark mx-1"></div>
-            <div class="relative flex-1 min-w-[200px]">
-                <i data-lucide="search" class="w-4 h-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2"></i>
-                <input type="text" id="search-input" oninput="renderList()" placeholder="Search items, brands, specs..." class="w-full pl-9 pr-3 py-1.5 bg-transparent text-sm focus:outline-none font-medium">
-            </div>
-            <div class="w-px h-6 bg-brand-sandDark mx-1"></div>
-            <div class="flex items-center gap-2 shrink-0">
-                <i data-lucide="filter" class="w-4 h-4 text-gray-400"></i>
-                <select id="filter-category" onchange="renderList()" class="bg-transparent text-sm focus:outline-none text-brand-slate font-medium cursor-pointer py-1.5">
-                    <option value="All">All Categories</option>
-                    <option value="Medications">Medications</option>
-                    <option value="Injectables">Injectables</option>
-                    <option value="Topicals">Topicals</option>
-                    <option value="Vaccines">Vaccines</option>
-                    <option value="Diagnostics">Diagnostics</option>
-                    <option value="Consumables">Consumables</option>
-                    <option value="Nutrition">Nutrition</option>
-                    <option value="Equipment">Equipment</option>
-                    <option value="Chemicals">Chemicals</option>
-                </select>
-            </div>
-            <div class="w-px h-6 bg-brand-sandDark mx-1"></div>
-            <div class="flex items-center gap-2 shrink-0 pr-2">
-                <i data-lucide="arrow-up-down" class="w-4 h-4 text-gray-400"></i>
-                <select id="sort-by" onchange="renderList()" class="bg-transparent text-sm focus:outline-none text-brand-slate font-medium cursor-pointer py-1.5">
-                    <option value="name-asc">Alphabetical (A-Z)</option>
-                    <option value="name-desc">Alphabetical (Z-A)</option>
-                    <option value="stock-low">Stock (Low-High)</option>
-                </select>
-            </div>
-        </div>
-
-        <!-- INBOX LIST CONTAINER -->
-        <div class="flex-1 bg-brand-paper border border-brand-sandDark rounded shadow-ledger overflow-hidden flex flex-col">
-            <div class="overflow-y-auto custom-scrollbar flex-1 relative p-2" id="inbox-container">
-                <!-- Rendered by JS -->
-            </div>
-        </div>
-
     </main>
 
     <!-- SIDE DRAWER (BIODATA) -->

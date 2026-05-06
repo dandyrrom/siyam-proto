@@ -75,7 +75,7 @@ const sidebarHTML = `
 
             <a href="population.html" class="nav-btn w-full flex items-center h-10 px-3 rounded text-brand-sand/80 hover:bg-brand-forestLight/20 hover:text-white font-medium transition-colors group overflow-hidden">
                 <i data-lucide="dog" class="w-4 h-4 shrink-0"></i>
-                <span class="nav-text ml-3 text-sm truncate min-w-0">Population</span>
+                <span class="nav-text ml-3 text-sm truncate min-w-0">Pets</span>
             </a>
 
             <a href="medical.html" class="nav-btn w-full flex items-center h-10 px-3 rounded text-brand-sand/80 hover:bg-brand-forestLight/20 hover:text-white font-medium transition-colors group overflow-hidden">
@@ -92,7 +92,7 @@ const sidebarHTML = `
 
             <a href="procurement.html" class="nav-btn w-full flex items-center h-10 px-3 rounded text-brand-sand/80 hover:bg-brand-forestLight/20 hover:text-white font-medium transition-colors group overflow-hidden">
                 <i data-lucide="shopping-cart" class="w-4 h-4 shrink-0"></i>
-                <span class="nav-text ml-3 text-sm truncate min-w-0">Procurement</span>
+                <span class="nav-text ml-3 text-sm truncate min-w-0">Replenishment</span>
             </a>
 
             <a href="reports.html" class="nav-btn w-full flex items-center h-10 px-3 rounded text-brand-sand/80 hover:bg-brand-forestLight/20 hover:text-white font-medium transition-colors group overflow-hidden">

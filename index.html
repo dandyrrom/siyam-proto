@@ -57,9 +57,8 @@
             <div class="flex items-center gap-2">
                 <span class="text-sm font-medium text-gray-500">DAS SIYAM</span>
                 <i data-lucide="chevron-right" class="w-4 h-4 text-gray-400"></i>
-                <span class="text-sm font-bold text-brand-slate">Command Center</span>
+                <span class="text-sm font-bold text-brand-slate">Dashboard</span>
             </div>
-
             <div class="flex items-center gap-4">
                 <div class="relative hidden sm:block w-48 lg:w-64">
                     <i data-lucide="search" class="w-4 h-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2"></i>
@@ -75,12 +74,6 @@
         <div class="flex-1 overflow-y-auto custom-scrollbar p-6">
             <div class="max-w-[1400px] mx-auto w-full space-y-6">
                 
-                <section class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-2">
-                    <div>
-                        <h1 class="text-2xl font-bold text-brand-slate tracking-tight">Shelter Command Center</h1>
-                        <p class="text-sm text-gray-500 mt-1 font-medium">Operational pulse and actionable tasks.</p>
-                    </div>
-                </section>
 
                 <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
                     
@@ -144,9 +137,14 @@
                                 <h2 class="text-xs font-semibold text-gray-500 uppercase tracking-wider flex items-center gap-2">
                                     <i data-lucide="trending-down" class="w-4 h-4"></i> Monthly Usage Summary
                                 </h2>
+                                <!-- NEW: Report Link -->
+                                <a href="reports.html" class="text-[10px] font-bold text-brand-forest hover:text-brand-forestLight hover:underline flex items-center gap-1 uppercase tracking-wider transition-colors">
+                                    View Full Report <i data-lucide="arrow-right" class="w-3 h-3"></i>
+                                </a>
                             </div>
-                            <div class="p-6 text-center text-gray-500 text-sm font-medium">
-                                Detailed visual graphs will be populated here by the Reports Module.
+                            <!-- NEW: Widget Target Container -->
+                            <div id="top-consumed-widget" class="p-0">
+                                <!-- Javascript will inject the list here -->
                             </div>
                         </div>
                     </div>
@@ -157,25 +155,13 @@
                             <i data-lucide="list-checks" class="w-5 h-5 text-brand-forest"></i>
                             <h2 class="text-lg font-bold text-brand-slate tracking-tight">Action Center</h2>
                         </div>
-
-                        <!-- Action Item -->
-                        <a href="donation.html" class="block bg-brand-paper p-5 rounded border border-brand-sandDark shadow-ledger relative overflow-hidden group hover:bg-brand-sand transition cursor-pointer">
-                            <div class="flex justify-between items-start mb-3">
-                                <div class="p-2 bg-brand-forest/10 rounded text-brand-forest border border-brand-forest/20">
-                                    <i data-lucide="package-plus" class="w-5 h-5"></i>
-                                </div>
-                                <span class="px-2 py-1 bg-brand-terracotta/10 text-brand-terracotta text-[10px] font-bold uppercase tracking-wider rounded border border-brand-terracotta/20">
-                                    Review Needed
-                                </span>
-                            </div>
-                            <h3 class="text-2xl font-bold text-brand-slate leading-none mb-1">2 <span class="text-sm font-medium text-gray-500">Deliveries</span></h3>
-                            <p class="text-xs font-medium text-gray-600 mb-4">Pending donor physical intake.</p>
-                            
-                            <div class="w-full flex items-center justify-center gap-1 py-2 bg-brand-forest text-white rounded text-sm font-medium group-hover:bg-brand-forestLight transition">
-                                Process Intakes &rarr;
-                            </div>
-                        </a>
+                        
+                        <!-- Dynamic Action Container -->
+                        <div id="action-center-container" class="flex flex-col gap-4">
+                            <!-- Populated dynamically by JS based on db states -->
+                        </div>
                     </div>
+
                 </div>
             </div>
         </div>
@@ -183,18 +169,225 @@
 
     <script src="assets/js/layout.js"></script>
     <script src="assets/js/db.js"></script>
+    
     <script>
         document.addEventListener("DOMContentLoaded", () => {
             // Fetch live data from the global database
             const inventory = db.read('inventory');
-            
+            const donations = db.read('donations');
+
             // Calculate Dashboard KPI numbers
             document.getElementById('dash-assets').textContent = inventory.length;
             document.getElementById('dash-zero').textContent = inventory.filter(i => i.totalBaseUnits === 0).length;
             document.getElementById('dash-low').textContent = inventory.filter(i => i.totalBaseUnits > 0 && i.totalBaseUnits <= i.minThreshold).length;
-            
+
+            // ==========================================
+            // DYNAMIC ACTION CENTER LOGIC
+            // ==========================================
+            const pendingCount = donations.filter(d => d.status === 'Pending').length;
+            const arrivedCount = donations.filter(d => d.status === 'Arrived').length;
+            const approvedCount = donations.filter(d => d.status === 'Approved').length;
+
+            const actionContainer = document.getElementById('action-center-container');
+            actionContainer.innerHTML = ''; 
+
+            let hasActions = false;
+
+            // Card 1: Review Needed (Pending / Needs Review)
+            if (pendingCount > 0) {
+                hasActions = true;
+                actionContainer.innerHTML += `
+                    <a href="donation.html" class="block bg-brand-paper p-5 rounded border border-brand-sandDark shadow-ledger relative overflow-hidden group hover:bg-brand-sand transition cursor-pointer">
+                        <div class="flex justify-between items-start mb-3">
+                            <div class="p-2 bg-orange-500/10 rounded text-orange-600 border border-orange-500/20">
+                                <i data-lucide="inbox" class="w-5 h-5"></i>
+                            </div>
+                            <span class="px-2 py-1 bg-brand-terracotta/10 text-brand-terracotta text-[10px] font-bold uppercase tracking-wider rounded border border-brand-terracotta/20">
+                                High Priority
+                            </span>
+                        </div>
+                        <h3 class="text-2xl font-bold text-brand-slate leading-none mb-1">${pendingCount} <span class="text-sm font-medium text-gray-500">Submissions</span></h3>
+                        <p class="text-xs font-medium text-gray-600 mb-4">Awaiting staff review and approval.</p>
+
+                        <div class="w-full flex items-center justify-center gap-1 py-2 bg-brand-slate text-white rounded text-sm font-medium group-hover:bg-gray-800 transition shadow-sm">
+                            Review Forms &rarr;
+                        </div>
+                    </a>
+                `;
+            }
+
+            // Card 2: Ready to Log (Arrived / Ready to Receive)
+            if (arrivedCount > 0) {
+                hasActions = true;
+                actionContainer.innerHTML += `
+                    <a href="donation.html" class="block bg-brand-paper p-5 rounded border border-brand-sandDark shadow-ledger relative overflow-hidden group hover:bg-brand-sand transition cursor-pointer">
+                        <div class="flex justify-between items-start mb-3">
+                            <div class="p-2 bg-brand-forestLight/10 rounded text-brand-forestLight border border-brand-forestLight/20">
+                                <i data-lucide="package" class="w-5 h-5"></i>
+                            </div>
+                            <span class="px-2 py-1 bg-brand-forest/10 text-brand-forest text-[10px] font-bold uppercase tracking-wider rounded border border-brand-forest/20">
+                                Ready to Stock
+                            </span>
+                        </div>
+                        <h3 class="text-2xl font-bold text-brand-slate leading-none mb-1">${arrivedCount} <span class="text-sm font-medium text-gray-500">Drop-offs</span></h3>
+                        <p class="text-xs font-medium text-gray-600 mb-4">Physically arrived. Awaiting inventory stock-in.</p>
+
+                        <div class="w-full flex items-center justify-center gap-1 py-2 bg-brand-forest text-white rounded text-sm font-medium group-hover:bg-brand-forestLight transition shadow-sm">
+                            Log to Inventory &rarr;
+                        </div>
+                    </a>
+                `;
+            }
+
+            // Empty State (Zero Inbox)
+            if (!hasActions) {
+                actionContainer.innerHTML += `
+                    <div class="bg-brand-paper p-6 rounded border border-brand-sandDark shadow-ledger text-center flex flex-col items-center justify-center">
+                        <div class="w-12 h-12 bg-[#FAFAF8] rounded-full flex items-center justify-center text-brand-forest/50 mb-3 border border-brand-sandDark">
+                            <i data-lucide="check-circle" class="w-6 h-6"></i>
+                        </div>
+                        <h3 class="text-sm font-bold text-brand-slate mb-1">Zero Inbox</h3>
+                        <p class="text-xs font-medium text-gray-500">No immediate operational actions required.</p>
+                    </div>
+                `;
+            }
+
+            // Passive Context Card (Approved / Awaiting Arrival)
+            if (approvedCount > 0) {
+                actionContainer.innerHTML += `
+                    <div class="mt-2 px-3 py-2 bg-[#FAFAF8] rounded border border-brand-sandDark flex items-start gap-2 shadow-sm">
+                        <i data-lucide="info" class="w-4 h-4 text-gray-400 shrink-0 mt-0.5"></i>
+                        <p class="text-xs font-medium text-gray-500 leading-relaxed">Additionally, <span class="font-bold text-brand-slate">${approvedCount} approved</span> donation(s) are awaiting physical donor drop-off.</p>
+                    </div>
+                `;
+            }
+
+            // ==========================================
+            // MONTHLY USAGE WIDGET (TOP 4 CONSUMED)
+            // ==========================================
+
+            // 1. Fetch cross-module dependencies
+            const patients = db.read('patients');
+            const medicalLogs = db.read('medicalLogs');
+
+            // 2. Calculate Active Census for predictive consumption
+            const activeDogs = patients.filter(p => p.type === 'Dog' && (p.status === 'Available' || p.status === 'Medical Treatment')).length;
+            const activeCats = patients.filter(p => p.type === 'Cat' && (p.status === 'Available' || p.status === 'Medical Treatment')).length;
+
+            // 3. Accumulate hard clinical data
+            const medicalConsumption = {};
+            medicalLogs.forEach(log => {
+                log.supplies.forEach(sup => {
+                    if (!medicalConsumption[sup.name]) medicalConsumption[sup.name] = 0;
+                    medicalConsumption[sup.name] += sup.qty;
+                });
+            });
+
+            // 4. Map & Calculate Consumption per Item
+            const aggregatedUsage = inventory.map(item => {
+                let consumed = 0;
+                const target = item.targetSpecies.toLowerCase().includes('dog') ? 'dog' : item.targetSpecies.toLowerCase().includes('cat') ? 'cat' : 'shared';
+
+                // Match clinical consumption or calculate predictive nutrition
+                const medMatchKey = Object.keys(medicalConsumption).find(k => k.includes(item.name) || item.name.includes(k));
+                if (medMatchKey) {
+                    consumed = medicalConsumption[medMatchKey];
+                } else if (item.category === 'Nutrition') {
+                    // Standard formula: Count * kg/day * 15 days
+                    consumed = Math.round((target === 'dog' ? activeDogs * 0.5 : activeCats * 0.2) * 15);
+                } else {
+                    // Fallback for non-clinical/non-nutrition items to ensure widget isn't empty in prototype
+                    consumed = Math.floor(Math.random() * 20) + 5; 
+                }
+
+                const currentStock = item.totalBaseUnits;
+                const started = currentStock + consumed;
+                const burnPercentage = started > 0 ? Math.min((consumed / started) * 100, 100) : 0;
+
+                return {
+                    ...item,
+                    consumed,
+                    started,
+                    currentStock,
+                    burnPercentage
+                };
+            });
+
+            // 5. Sort Descending & Slice Top 4
+            const top4Items = aggregatedUsage.sort((a, b) => b.consumed - a.consumed).slice(0, 4);
+
+            // 6. Render UI to DOM
+            const widgetContainer = document.getElementById('top-consumed-widget');
+
+            if (top4Items.length === 0 || top4Items.every(i => i.consumed === 0)) {
+                widgetContainer.innerHTML = `
+                    <div class="flex flex-col items-center justify-center p-8 text-gray-400">
+                        <i data-lucide="bar-chart-2" class="w-8 h-8 mb-2 opacity-50"></i>
+                        <p class="text-sm font-medium">No consumption data available.</p>
+                    </div>
+                `;
+            } else {
+                let listHTML = '<ul class="divide-y divide-brand-sandDark">';
+                
+                top4Items.forEach(item => {
+                    // Determine subtle icon & tint based on category
+                    let icon = 'package';
+                    let iconTint = 'bg-brand-sand text-gray-500';
+                    
+                    if (item.category === 'Nutrition') { 
+                        icon = 'box'; iconTint = 'bg-orange-50 text-orange-600'; 
+                    } else if (item.category === 'Medications' || (item.itemGroup && item.itemGroup.includes('Antibiotics'))) { 
+                        icon = 'pill'; iconTint = 'bg-brand-forestLight/10 text-brand-forestLight'; 
+                    } else if (item.category === 'Injectables' || item.category === 'Vaccines') { 
+                        icon = 'syringe'; iconTint = 'bg-brand-forest/10 text-brand-forest'; 
+                    }
+
+                    // Dynamic Progress Bar Color Logic (Forest -> Orange -> Terracotta)
+                    let barColor = 'bg-brand-forest';
+                    if (item.currentStock === 0) barColor = 'bg-brand-terracotta';
+                    else if (item.currentStock <= item.minThreshold) barColor = 'bg-orange-500';
+
+                    listHTML += `
+                        <li class="p-5 hover:bg-brand-sand/50 transition-colors group">
+                            <div class="flex items-start justify-between mb-3">
+                                <div class="flex items-center gap-4">
+                                    <div class="w-10 h-10 rounded border border-brand-sandDark flex items-center justify-center shrink-0 ${iconTint} shadow-sm group-hover:bg-white transition-colors">
+                                        <i data-lucide="${icon}" class="w-5 h-5"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="text-sm font-bold text-brand-slate leading-tight">${item.name}</h4>
+                                        <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mt-1">${item.category}</p>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <span class="text-xl font-bold text-brand-slate font-mono leading-none">${item.consumed.toLocaleString()}</span>
+                                    <span class="text-xs font-medium text-gray-500 ml-1">${item.baseUnit} used</span>
+                                </div>
+                            </div>
+                            
+                            <div class="flex justify-between items-center text-[11px] font-mono text-gray-500 mb-2 px-0.5">
+                                <span>Started: ${item.started.toLocaleString()} ${item.baseUnit}</span>
+                                <span class="${item.currentStock <= item.minThreshold ? 'text-orange-600 font-bold' : ''}">
+                                    Remaining: ${item.currentStock.toLocaleString()} ${item.baseUnit}
+                                </span>
+                            </div>
+                            
+                            <!-- Progress Bar Track -->
+                            <div class="w-full h-1.5 bg-brand-sandDark rounded-full overflow-hidden shadow-inner">
+                                <!-- Progress Bar Fill -->
+                                <div class="h-full rounded-full ${barColor} transition-all duration-500" style="width: ${item.burnPercentage}%"></div>
+                            </div>
+                        </li>
+                    `;
+                });
+                
+                listHTML += '</ul>';
+                widgetContainer.innerHTML = listHTML;
+            }
+
+            // Re-initialize icons for newly injected DOM elements
             if (typeof lucide !== 'undefined') lucide.createIcons();
-        });
+                    });
     </script>
 </body>
 </html>
