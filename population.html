@@ -4,35 +4,36 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DAS SIYAM - Population Census</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Typography: Inter & Monospace -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <script>
         tailwind.config = { 
             theme: { 
                 extend: { 
-                    fontFamily: { sans: ['Inter', 'sans-serif'] }, 
+                    fontFamily: { 
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', 'monospace'],
+                    }, 
                     colors: { 
-                        brand: { 
-                            primary: '#0F172A',       // Enterprise Sidebar (Slate 900)
-                            action: '#2563EB',        // Primary Buttons (Blue 600)
-                            actionDark: '#1D4ED8',    // Button Hover (Blue 700)
-                            secondary: '#0EA5E9',     // Accents (Sky 500)
-                            secondaryDark: '#0284C7', // Accents Dark (Sky 600)
-                            surface: '#F8FAFC',       // Backgrounds
-                            panel: '#FFFFFF',         // Cards
-                            accent: '#2563EB',        // Legacy Support
-                            bg: '#F8FAFC'             // Legacy Support
-                        },
-                        semantic: {
-                            critical: '#EF4444',      // Red 500 (Medical warnings)
-                            warning: '#F59E0B',       // Amber 500
-                            optimal: '#10B981',       // Emerald 500
-                            info: '#3B82F6',          // Blue 500
-                            criticalBg: '#FEF2F2',    // Red 50
-                            criticalBorder: '#FECACA' // Red 200
+                        brand: {
+                            forest: '#1E4D40',
+                            forestLight: '#2A6B59',
+                            sand: '#F7F5F0',
+                            sandDark: '#EADDCD',
+                            terracotta: '#D96C5B',
+                            slate: '#2C3E50',
+                            paper: '#FFFFFF'
                         }
-                    } 
+                    },
+                    boxShadow: {
+                        'ledger': '0 2px 4px rgba(0,0,0,0.02)',
+                    }
                 } 
             } 
         }
@@ -40,68 +41,68 @@
     <style>
         .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
         .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #EADDCD; border-radius: 4px; }
         
         /* Drawer Transitions (Matched to Ledger) */
         #side-drawer { transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
         .drawer-open { transform: translateX(0) !important; }
     </style>
 </head>
-<body class="bg-brand-surface text-slate-800 font-sans h-screen flex overflow-hidden relative">
-
+<body class="bg-brand-sand text-brand-slate font-sans h-screen flex overflow-hidden relative selection:bg-brand-forestLight/20 selection:text-brand-forest">
+    
     <main class="flex-1 flex flex-col max-w-7xl mx-auto w-full p-6 overflow-hidden z-10 relative">
         
         <!-- Header -->
         <div class="flex items-end justify-between mb-4 shrink-0">
             <div>
                 <div class="flex items-center gap-2 mb-1">
-                    <span class="px-2 py-0.5 rounded bg-blue-100 text-blue-700 text-[10px] font-bold uppercase tracking-wider border border-blue-200 shadow-sm">Read-Only</span>
-                    <span class="text-xs font-bold text-slate-400 uppercase tracking-widest">PawPlacer Synced</span>
+                    <span class="px-2 py-0.5 rounded bg-brand-forestLight/10 text-brand-forestLight text-[10px] font-bold uppercase tracking-wider border border-brand-forestLight/20 shadow-sm">Read-Only</span>
+                    <span class="text-xs font-bold text-gray-400 uppercase tracking-widest">PawPlacer Synced</span>
                 </div>
-                <h1 class="text-2xl font-black text-slate-900 tracking-tight">Active Population Census</h1>
-                <p class="text-sm text-slate-500 mt-1 font-medium">Live roster of animals currently residing in the sanctuary.</p>
+                <h1 class="text-2xl font-bold text-brand-slate tracking-tight">Active Population Census</h1>
+                <p class="text-sm text-gray-500 mt-1 font-medium">Live roster of animals currently residing in the sanctuary.</p>
             </div>
             
             <!-- Quick Stats Summary -->
-            <div class="flex items-center gap-3 bg-white p-2 rounded-xl border border-slate-200 shadow-sm">
-                <div class="flex flex-col px-4 border-r border-slate-100">
-                    <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Total Active</span>
-                    <span id="stat-total" class="text-xl font-black text-slate-800 leading-none mt-0.5">--</span>
+            <div class="flex items-center gap-3 bg-brand-paper p-2 rounded border border-brand-sandDark shadow-ledger">
+                <div class="flex flex-col px-4 border-r border-brand-sandDark">
+                    <span class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Total Active</span>
+                    <span id="stat-total" class="text-xl font-bold text-brand-slate leading-none mt-0.5 font-mono">--</span>
                 </div>
                 <div class="flex items-center gap-2 px-3">
-                    <div class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-600"><i data-lucide="dog" class="w-4 h-4"></i></div>
-                    <span id="stat-dogs" class="text-lg font-bold text-slate-700">--</span>
+                    <div class="w-8 h-8 rounded bg-[#FAFAF8] border border-brand-sandDark flex items-center justify-center text-gray-500"><i data-lucide="dog" class="w-4 h-4"></i></div>
+                    <span id="stat-dogs" class="text-lg font-bold text-brand-slate font-mono">--</span>
                 </div>
                 <div class="flex items-center gap-2 px-3 pl-1">
-                    <div class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-600"><i data-lucide="cat" class="w-4 h-4"></i></div>
-                    <span id="stat-cats" class="text-lg font-bold text-slate-700">--</span>
+                    <div class="w-8 h-8 rounded bg-[#FAFAF8] border border-brand-sandDark flex items-center justify-center text-gray-500"><i data-lucide="cat" class="w-4 h-4"></i></div>
+                    <span id="stat-cats" class="text-lg font-bold text-brand-slate font-mono">--</span>
                 </div>
             </div>
         </div>
 
         <!-- Controls Bar -->
-        <div class="flex items-center gap-3 mb-4 shrink-0 bg-white p-2.5 rounded-xl border border-slate-200 shadow-sm overflow-x-auto">
+        <div class="flex items-center gap-3 mb-4 shrink-0 bg-brand-paper p-2.5 rounded border border-brand-sandDark shadow-ledger overflow-x-auto">
             <div class="relative flex-1 min-w-[200px]">
-                <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2"></i>
-                <input type="text" id="search-input" oninput="renderPopulation()" placeholder="Search by Name, Breed, or ID..." class="w-full pl-9 pr-3 py-1.5 bg-transparent text-sm focus:outline-none font-medium">
+                <i data-lucide="search" class="w-4 h-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2"></i>
+                <input type="text" id="search-input" oninput="renderPopulation()" placeholder="Search by Name, Breed, or ID..." class="w-full pl-9 pr-3 py-1.5 bg-brand-sand border border-brand-sandDark rounded text-sm focus:outline-none focus:ring-1 focus:ring-brand-forest font-medium text-brand-slate transition-colors">
             </div>
             
-            <div class="w-px h-6 bg-slate-200 mx-1"></div>
+            <div class="w-px h-6 bg-brand-sandDark mx-1"></div>
             
             <div class="flex items-center gap-2 shrink-0">
-                <i data-lucide="filter" class="w-4 h-4 text-slate-400"></i>
-                <select id="filter-species" onchange="renderPopulation()" class="bg-transparent text-sm focus:outline-none text-slate-700 font-bold cursor-pointer py-1.5 appearance-none pr-4">
+                <i data-lucide="filter" class="w-4 h-4 text-gray-400"></i>
+                <select id="filter-species" onchange="renderPopulation()" class="bg-transparent text-sm focus:outline-none text-brand-slate font-bold cursor-pointer py-1.5 appearance-none pr-4">
                     <option value="All">All Species</option>
                     <option value="Dog">Dogs Only</option>
                     <option value="Cat">Cats Only</option>
                 </select>
             </div>
             
-            <div class="w-px h-6 bg-slate-200 mx-1"></div>
+            <div class="w-px h-6 bg-brand-sandDark mx-1"></div>
             
             <div class="flex items-center gap-2 shrink-0 pr-2">
-                <i data-lucide="activity" class="w-4 h-4 text-slate-400"></i>
-                <select id="filter-status" onchange="renderPopulation()" class="bg-transparent text-sm focus:outline-none text-slate-700 font-bold cursor-pointer py-1.5 appearance-none pr-4">
+                <i data-lucide="activity" class="w-4 h-4 text-gray-400"></i>
+                <select id="filter-status" onchange="renderPopulation()" class="bg-transparent text-sm focus:outline-none text-brand-slate font-bold cursor-pointer py-1.5 appearance-none pr-4">
                     <option value="All">All Active Statuses</option>
                     <option value="Available">Available</option>
                     <option value="Medical Treatment">Medical Treatment</option>
@@ -110,16 +111,16 @@
         </div>
 
         <!-- Data Grid -->
-        <div class="flex-1 bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden flex flex-col">
+        <div class="flex-1 bg-brand-paper border border-brand-sandDark rounded shadow-ledger overflow-hidden flex flex-col">
             <div class="overflow-y-auto custom-scrollbar flex-1 relative p-2">
                 <div id="population-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
                     <!-- Cards rendered by JS -->
                 </div>
                 
                 <!-- Empty State -->
-                <div id="empty-state" class="hidden flex-col items-center justify-center h-full py-12 text-slate-400">
+                <div id="empty-state" class="hidden flex-col items-center justify-center h-full py-12 text-gray-400">
                     <i data-lucide="ghost" class="w-12 h-12 mb-3 opacity-50"></i>
-                    <p class="text-sm font-medium text-slate-600">No active animals found.</p>
+                    <p class="text-sm font-medium text-gray-500">No active animals found.</p>
                     <p class="text-xs mt-1">Adjust your filters or ensure the Admin has synced PawPlacer data.</p>
                 </div>
             </div>
@@ -129,49 +130,48 @@
     <!-- SIDE DRAWER (BIODATA & MEDICAL HISTORY) -->
     <div id="drawer-backdrop" class="fixed inset-x-0 bottom-0 top-14 bg-slate-900/20 backdrop-blur-[1px] z-30 hidden opacity-0 transition-opacity" onclick="closeDrawer()"></div>
     
-    <div id="side-drawer" class="fixed top-14 right-0 bottom-0 w-[480px] bg-white shadow-2xl z-40 translate-x-full flex flex-col border-l border-slate-200">
+    <div id="side-drawer" class="fixed top-14 right-0 bottom-0 w-[480px] bg-brand-paper shadow-2xl z-40 translate-x-full flex flex-col border-l border-brand-sandDark">
         <!-- Drawer Header -->
-        <div class="p-6 border-b border-slate-200 bg-slate-50 flex items-start justify-between shrink-0">
+        <div class="p-6 border-b border-brand-sandDark bg-[#FAFAF8] flex items-start justify-between shrink-0">
             <div>
-                <span id="drawer-id-badge" class="px-2 py-0.5 rounded text-[10px] font-bold tracking-widest uppercase mb-2 inline-block bg-slate-200 text-slate-600 border border-slate-300">P####</span>
+                <span id="drawer-id-badge" class="px-2 py-0.5 rounded text-[10px] font-bold tracking-widest uppercase mb-2 inline-block bg-brand-sand text-gray-600 border border-brand-sandDark font-mono">P####</span>
                 
                 <div class="flex items-center gap-3 mt-1">
-                    <div id="drawer-avatar" class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center text-brand-accent shadow-inner">
+                    <div id="drawer-avatar" class="w-12 h-12 rounded bg-brand-forest/10 border border-brand-forest/20 flex items-center justify-center text-brand-forest">
                         <i data-lucide="dog" id="drawer-species-icon" class="w-6 h-6"></i>
                     </div>
                     <div>
-                        <h2 id="drawer-title" class="text-2xl font-black text-slate-900 leading-tight">Name</h2>
-                        <p id="drawer-subtitle" class="text-sm font-medium text-slate-500">Breed</p>
+                        <h2 id="drawer-title" class="text-xl font-bold text-brand-slate leading-tight">Name</h2>
+                        <p id="drawer-subtitle" class="text-sm font-medium text-gray-500">Breed</p>
                     </div>
                 </div>
             </div>
-            <button onclick="closeDrawer()" class="p-1.5 text-slate-400 hover:bg-slate-200 hover:text-slate-700 rounded transition"><i data-lucide="x" class="w-5 h-5"></i></button>
+            <button onclick="closeDrawer()" class="p-1.5 text-gray-400 hover:bg-brand-sand hover:text-brand-forest rounded transition"><i data-lucide="x" class="w-5 h-5"></i></button>
         </div>
         
         <!-- Drawer Content -->
-        <div class="flex-1 overflow-y-auto p-6 space-y-6 custom-scrollbar bg-white">
+        <div class="flex-1 overflow-y-auto p-6 space-y-6 custom-scrollbar bg-brand-paper">
             
             <!-- Status Card -->
-            <div id="drawer-status-card" class="p-4 rounded-xl border flex items-center justify-between shadow-sm">
+            <div id="drawer-status-card" class="p-4 rounded border flex items-center justify-between shadow-ledger">
                 <div>
-                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-0.5">Current Status</p>
-                    <p id="drawer-status-text" class="text-sm font-black text-slate-900">Available</p>
+                    <p class="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-0.5">Current Status</p>
+                    <p id="drawer-status-text" class="text-sm font-bold text-brand-slate">Available</p>
                 </div>
                 <i data-lucide="activity" class="w-5 h-5 opacity-50"></i>
             </div>
 
             <!-- Recent Medical History -->
             <div>
-                <h3 class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3 border-b border-slate-100 pb-1 flex items-center justify-between">
+                <h3 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3 border-b-2 border-brand-sandDark pb-2 flex items-center justify-between">
                     <span>Recent Medical Logs</span>
-                    <a href="medical.html" class="text-brand-accent hover:underline lowercase normal-case text-[10px]">Open Medical Module</a>
+                    <a href="medical.html" class="text-brand-forest hover:text-brand-forestLight hover:underline lowercase normal-case text-[10px]">Open Medical Module</a>
                 </h3>
                 
                 <div id="drawer-medical-history" class="space-y-3">
                     <!-- Logs injected via JS -->
                 </div>
             </div>
-
         </div>
     </div>
 
@@ -194,7 +194,6 @@
 
         // --- 2. STATS CALCULATION ---
         function updateStats() {
-            // Only count "Active" statuses for the dashboard (Available & Medical Treatment)
             const activePatients = patientsState.filter(p => p.status === 'Available' || p.status === 'Medical Treatment');
             
             const total = activePatients.length;
@@ -208,9 +207,10 @@
 
         // --- 3. RENDER LOGIC ---
         function getStatusConfig(status) {
-            if (status === 'Medical Treatment') return { color: 'bg-amber-50 text-amber-700 border-amber-200', icon: 'stethoscope' };
-            if (status === 'Available') return { color: 'bg-emerald-50 text-emerald-700 border-emerald-200', icon: 'check-circle-2' };
-            return { color: 'bg-slate-100 text-slate-600 border-slate-200', icon: 'info' };
+            // Mapped to Semantic Palette
+            if (status === 'Medical Treatment') return { color: 'bg-orange-50 text-orange-600 border-orange-200', icon: 'stethoscope' };
+            if (status === 'Available') return { color: 'bg-brand-forest/10 text-brand-forest border-brand-forest/20', icon: 'check-circle-2' };
+            return { color: 'bg-gray-100 text-gray-600 border-gray-200', icon: 'info' };
         }
 
         function createPatientCard(patient) {
@@ -218,18 +218,18 @@
             const speciesIcon = patient.type === 'Dog' ? 'dog' : 'cat';
             
             return `
-                <div onclick="openDrawer('${patient.id}')" class="group bg-white border border-slate-200 rounded-xl p-4 hover:border-blue-300 hover:shadow-md transition cursor-pointer relative overflow-hidden flex items-center justify-between">
+                <div onclick="openDrawer('${patient.id}')" class="group bg-brand-paper border border-brand-sandDark rounded p-4 hover:border-brand-forest hover:bg-brand-sand hover:shadow-md transition cursor-pointer relative overflow-hidden flex items-center justify-between">
                     
                     <div class="flex items-center gap-4">
-                        <div class="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center text-slate-400 shrink-0 group-hover:bg-blue-50 group-hover:text-brand-accent transition-colors shadow-inner">
+                        <div class="w-12 h-12 rounded bg-brand-sand border border-brand-sandDark flex items-center justify-center text-gray-400 shrink-0 group-hover:bg-brand-forest/10 group-hover:border-brand-forest/20 group-hover:text-brand-forest transition-colors">
                             <i data-lucide="${speciesIcon}" class="w-6 h-6"></i>
                         </div>
                         <div>
                             <div class="flex items-center gap-2 mb-0.5">
-                                <h3 class="text-base font-black text-slate-900 leading-none">${patient.name}</h3>
-                                <span class="text-[10px] font-bold text-slate-400 tracking-widest">${patient.id}</span>
+                                <h3 class="text-base font-bold text-brand-slate leading-none">${patient.name}</h3>
+                                <span class="text-[10px] font-bold text-gray-400 tracking-widest font-mono">${patient.id}</span>
                             </div>
-                            <p class="text-xs font-medium text-slate-500">${patient.breed}</p>
+                            <p class="text-xs font-medium text-gray-500">${patient.breed}</p>
                         </div>
                     </div>
 
@@ -237,9 +237,8 @@
                         <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider border ${conf.color} shadow-sm">
                             <i data-lucide="${conf.icon}" class="w-3 h-3"></i> ${patient.status}
                         </span>
-                        <i data-lucide="chevron-right" class="w-4 h-4 text-slate-300 group-hover:text-brand-accent transition-transform group-hover:translate-x-1"></i>
+                        <i data-lucide="chevron-right" class="w-4 h-4 text-brand-sandDark group-hover:text-brand-forest transition-transform group-hover:translate-x-1"></i>
                     </div>
-
                 </div>
             `;
         }
@@ -253,17 +252,14 @@
             const filterSpecies = document.getElementById('filter-species').value;
             const filterStatus = document.getElementById('filter-status').value;
 
-            // Only render active prototype statuses
             let filtered = patientsState.filter(p => p.status === 'Available' || p.status === 'Medical Treatment');
 
             if (filterSpecies !== 'All') {
                 filtered = filtered.filter(p => p.type === filterSpecies);
             }
-
             if (filterStatus !== 'All') {
                 filtered = filtered.filter(p => p.status === filterStatus);
             }
-
             if (search) {
                 filtered = filtered.filter(p => 
                     p.name.toLowerCase().includes(search) || 
@@ -281,22 +277,18 @@
                 emptyState.classList.add('hidden');
                 emptyState.classList.remove('flex');
                 
-                // Sort Alphabetically by Name
                 filtered.sort((a,b) => a.name.localeCompare(b.name)).forEach(patient => {
                     grid.innerHTML += createPatientCard(patient);
                 });
             }
-
             lucide.createIcons();
         }
 
-        // --- 4. DRAWER LOGIC ---
         // --- 4. DRAWER LOGIC ---
         function openDrawer(patientId) {
             const patient = patientsState.find(p => p.id === patientId);
             if (!patient) return;
 
-            // Populate Header Data
             document.getElementById('drawer-id-badge').textContent = patient.id;
             document.getElementById('drawer-title').textContent = patient.name;
             document.getElementById('drawer-subtitle').textContent = patient.breed;
@@ -304,29 +296,26 @@
             const speciesIcon = document.getElementById('drawer-species-icon');
             speciesIcon.setAttribute('data-lucide', patient.type === 'Dog' ? 'dog' : 'cat');
 
-            // Populate Status Card
             const conf = getStatusConfig(patient.status);
             const statusCard = document.getElementById('drawer-status-card');
-            statusCard.className = `p-4 rounded-xl border flex items-center justify-between shadow-sm ${conf.color}`;
+            statusCard.className = `p-4 rounded border border-brand-sandDark flex items-center justify-between shadow-ledger ${conf.color}`;
             document.getElementById('drawer-status-text').textContent = patient.status;
 
-            // Populate Medical History
             const historyContainer = document.getElementById('drawer-medical-history');
             const patientLogs = medicalHistoryState.filter(log => log.patientName === patient.name || log.patientId === patient.id).sort((a,b) => new Date(b.date) - new Date(a.date));
 
             if (patientLogs.length === 0) {
                 historyContainer.innerHTML = `
-                    <div class="p-6 text-center border border-slate-100 border-dashed rounded-xl bg-slate-50/50">
-                        <p class="text-sm font-medium text-slate-400">No medical logs found for this animal.</p>
+                    <div class="p-6 text-center border border-brand-sandDark rounded bg-[#FAFAF8]">
+                        <p class="text-sm font-medium text-gray-400">No medical logs found for this animal.</p>
                     </div>`;
             } else {
                 historyContainer.innerHTML = patientLogs.map(log => {
-                    // NEW: Supplies Tag Engine
                     let suppliesHTML = '';
                     if (log.supplies && log.supplies.length > 0) {
                         const tags = log.supplies.map(s => `
-                            <span class="inline-flex items-center gap-1 px-2 py-1 bg-white border border-slate-200 rounded text-[10px] font-bold shadow-sm">
-                                <span class="text-brand-secondary">${s.qty} ${s.unit}</span> <span class="text-slate-700">${s.name}</span>
+                            <span class="inline-flex items-center gap-1 px-2 py-1 bg-brand-paper border border-brand-sandDark rounded text-[10px] font-bold shadow-sm">
+                                <span class="text-brand-forest font-mono">${s.qty} ${s.unit}</span> <span class="text-brand-slate">${s.name}</span>
                             </span>
                         `).join('');
                         
@@ -338,26 +327,26 @@
                     }
 
                     return `
-                    <div class="p-4 bg-slate-50 border border-slate-200 rounded-xl relative">
-                        <div class="absolute -left-1.5 top-5 w-3 h-3 rounded-full border-2 border-white bg-slate-300 shadow-sm"></div>
+                    <div class="p-4 bg-[#FAFAF8] border border-brand-sandDark rounded relative">
+                        <div class="absolute -left-1.5 top-5 w-3 h-3 rounded-full border-2 border-brand-paper bg-brand-sandDark shadow-sm"></div>
+                        
                         <div class="flex justify-between items-start mb-2">
                             <div>
-                                <span class="px-2 py-0.5 rounded bg-white border border-slate-200 text-[10px] font-bold uppercase tracking-wider text-slate-600 shadow-sm">${log.type}</span>
+                                <span class="px-2 py-0.5 rounded bg-brand-paper border border-brand-sandDark text-[10px] font-bold uppercase tracking-wider text-gray-600 shadow-sm">${log.type}</span>
                             </div>
-                            <span class="text-xs font-bold text-slate-500">${log.date}</span>
+                            <span class="text-xs font-bold text-gray-500 font-mono">${log.date}</span>
                         </div>
-                        <p class="text-sm text-slate-800 leading-relaxed">${log.desc}</p>
+                        
+                        <p class="text-sm text-brand-slate leading-relaxed">${log.desc}</p>
                         
                         ${suppliesHTML}
                         
-                        <p class="text-[10px] text-slate-400 font-medium ${suppliesHTML ? 'mt-3 pt-2 border-t border-slate-100' : 'mt-2'}">Logged by <span class="font-bold text-slate-600">${log.personnel}</span></p>
+                        <p class="text-[10px] text-gray-400 font-medium ${suppliesHTML ? 'mt-3 pt-2 border-t border-brand-sandDark' : 'mt-2'}">Logged by <span class="font-bold text-gray-600">${log.personnel}</span></p>
                     </div>
                 `}).join('');
             }
-
             lucide.createIcons();
 
-            // Trigger Animation
             const drawer = document.getElementById('side-drawer');
             const backdrop = document.getElementById('drawer-backdrop');
             
@@ -376,7 +365,6 @@
 
         // Boot
         window.onload = init;
-
     </script>
 </body>
 </html>

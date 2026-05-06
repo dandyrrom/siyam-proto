@@ -4,50 +4,61 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Donations - DAS SIYAM</title>
+    
+    <!-- Typography: Inter & Monospace -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <script>
         tailwind.config = { 
             theme: { 
                 extend: { 
-                    fontFamily: { sans: ['Inter', 'sans-serif'] }, 
+                    fontFamily: { 
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', 'monospace'],
+                    }, 
                     colors: { 
-                        brand: { 
-                            primary: '#0F172A',       // Enterprise Sidebar (Slate 900)
-                            action: '#2563EB',        // Primary Buttons (Blue 600)
-                            actionDark: '#1D4ED8',    // Button Hover (Blue 700)
-                            secondary: '#0EA5E9',     // Accents (Sky 500)
-                            secondaryDark: '#0284C7', // Accents Dark (Sky 600)
-                            surface: '#F8FAFC',       // Backgrounds
-                            panel: '#FFFFFF',         // Cards
-                            accent: '#2563EB',        // Legacy Support
-                            bg: '#F8FAFC'             // Legacy Support
-                        },
-                        semantic: {
-                            critical: '#EF4444',      // Red 500 (Medical warnings)
-                            criticalBg: '#FEF2F2',    // Red 50
-                            criticalBorder: '#FECACA' // Red 200
+                        brand: {
+                            forest: '#1E4D40',
+                            forestLight: '#2A6B59',
+                            sand: '#F7F5F0',
+                            sandDark: '#EADDCD',
+                            terracotta: '#D96C5B',
+                            slate: '#2C3E50',
+                            paper: '#FFFFFF'
                         }
-                    } 
+                    },
+                    boxShadow: {
+                        'ledger': '0 2px 4px rgba(0,0,0,0.02)',
+                    }
                 } 
             } 
         }
     </script>
+    <style>
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #EADDCD; border-radius: 4px; }
+        .modal-transition { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+    </style>
 </head>
-<body class="flex h-screen overflow-hidden text-gray-800 selection:bg-indigo-100 selection:text-indigo-900">
-
+<body class="flex h-screen overflow-hidden bg-brand-sand text-brand-slate font-sans selection:bg-brand-forestLight/20 selection:text-brand-forest">
+    
     <!-- Main Workspace -->
-    <main class="flex-1 flex flex-col h-screen relative overflow-hidden bg-[#FAFAFA]">
+    <main class="flex-1 flex flex-col h-screen relative overflow-hidden">
         
         <!-- Top Navigation Bar -->
-        <header class="h-16 bg-white/80 backdrop-blur-md border-b border-gray-200 flex items-center justify-between px-8 shrink-0 z-10 sticky top-0">
+        <header class="h-16 bg-brand-paper border-b border-brand-sandDark flex items-center justify-between px-8 shrink-0 z-10 sticky top-0">
             <div class="flex items-center">
-                <h1 class="text-lg font-semibold text-gray-900 tracking-tight">Donations</h1>
+                <h1 class="text-lg font-bold text-brand-slate tracking-tight">Donations</h1>
             </div>
             <div class="flex items-center space-x-3">
-                <button class="p-2 text-gray-400 hover:text-gray-600 rounded-md hover:bg-gray-50 transition-colors relative">
+                <button class="p-2 text-gray-400 hover:text-brand-forest rounded hover:bg-brand-sand transition-colors relative">
                     <i data-lucide="bell" class="w-4 h-4"></i>
-                    <span class="absolute top-1.5 right-1.5 w-1.5 h-1.5 bg-red-500 rounded-full ring-2 ring-white"></span>
+                    <span class="absolute top-1.5 right-1.5 w-1.5 h-1.5 bg-brand-terracotta rounded-full"></span>
                 </button>
             </div>
         </header>
@@ -59,49 +70,49 @@
                 
                 <!-- Metrics Overview -->
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div class="bg-white p-5 rounded-2xl border border-gray-200/60 shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] flex items-center justify-between">
+                    <div class="bg-brand-paper p-5 rounded border border-brand-sandDark shadow-ledger flex items-center justify-between">
                         <div>
-                            <p class="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">Needs Review</p>
-                            <h3 class="text-2xl font-semibold text-gray-900 tracking-tight" id="kpi-review">0</h3>
+                            <p class="text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1">Needs Review</p>
+                            <h3 class="text-2xl font-bold text-brand-slate tracking-tight font-mono" id="kpi-review">0</h3>
                         </div>
-                        <div class="w-10 h-10 rounded-full bg-orange-50 flex items-center justify-center text-orange-500">
-                            <i data-lucide="inbox" class="w-5 h-5"></i>
+                        <div class="w-10 h-10 rounded bg-orange-50 border border-orange-200 flex items-center justify-center text-orange-600">
+                            <i data-lucide="inbox" class="w-4 h-4"></i>
                         </div>
                     </div>
                     
-                    <div class="bg-white p-5 rounded-2xl border border-gray-200/60 shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] flex items-center justify-between">
+                    <div class="bg-brand-paper p-5 rounded border border-brand-sandDark shadow-ledger flex items-center justify-between">
                         <div>
-                            <p class="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">Expected Soon</p>
-                            <h3 class="text-2xl font-semibold text-gray-900 tracking-tight" id="kpi-approved">0</h3>
+                            <p class="text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1">Expected Soon</p>
+                            <h3 class="text-2xl font-bold text-brand-slate tracking-tight font-mono" id="kpi-approved">0</h3>
                         </div>
-                        <div class="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center text-blue-500">
-                            <i data-lucide="calendar-clock" class="w-5 h-5"></i>
+                        <div class="w-10 h-10 rounded bg-brand-forestLight/10 border border-brand-forestLight/20 flex items-center justify-center text-brand-forestLight">
+                            <i data-lucide="calendar-clock" class="w-4 h-4"></i>
                         </div>
                     </div>
 
-                    <div class="bg-white p-5 rounded-2xl border border-gray-200/60 shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] flex items-center justify-between">
+                    <div class="bg-brand-paper p-5 rounded border border-brand-sandDark shadow-ledger flex items-center justify-between">
                         <div>
-                            <p class="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">Received This Month</p>
-                            <h3 class="text-2xl font-semibold text-gray-900 tracking-tight" id="kpi-received">14</h3>
+                            <p class="text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1">Received This Month</p>
+                            <h3 class="text-2xl font-bold text-brand-slate tracking-tight font-mono" id="kpi-received">14</h3>
                         </div>
-                        <div class="w-10 h-10 rounded-full bg-green-50 flex items-center justify-center text-green-600">
-                            <i data-lucide="check-circle-2" class="w-5 h-5"></i>
+                        <div class="w-10 h-10 rounded bg-brand-forest/10 border border-brand-forest/20 flex items-center justify-center text-brand-forest">
+                            <i data-lucide="check-circle-2" class="w-4 h-4"></i>
                         </div>
                     </div>
                 </div>
 
                 <!-- Primary Data View -->
-                <div class="bg-white border border-gray-200/80 rounded-2xl shadow-[0_4px_20px_-8px_rgba(0,0,0,0.05)] overflow-hidden">
+                <div class="bg-brand-paper border border-brand-sandDark rounded shadow-ledger overflow-hidden flex flex-col">
                     
                     <!-- View Controls -->
-                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center px-6 py-4 border-b border-gray-100 gap-4">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center px-6 py-4 border-b border-brand-sandDark bg-[#FAFAF8] gap-4">
                         
                         <!-- Tab Navigation -->
-                        <div class="flex space-x-1 bg-gray-100/80 p-1 rounded-lg">
-                            <button onclick="switchTab('active')" id="tab-active" class="px-4 py-1.5 text-sm font-medium rounded-md bg-white text-gray-900 shadow-sm ring-1 ring-gray-200 transition-all">
+                        <div class="flex space-x-1 bg-brand-paper border border-brand-sandDark p-1 rounded">
+                            <button onclick="switchTab('active')" id="tab-active" class="px-4 py-1.5 text-sm font-bold rounded bg-brand-forestLight/20 text-brand-forest transition-all">
                                 Active
                             </button>
-                            <button onclick="switchTab('history')" id="tab-history" class="px-4 py-1.5 text-sm font-medium rounded-md text-gray-500 hover:text-gray-700 hover:bg-gray-200/50 transition-all">
+                            <button onclick="switchTab('history')" id="tab-history" class="px-4 py-1.5 text-sm font-medium rounded text-gray-500 hover:text-brand-forest transition-all">
                                 History
                             </button>
                         </div>
@@ -110,27 +121,27 @@
                         <div class="flex items-center space-x-3 w-full sm:w-auto">
                             <div class="relative w-full sm:w-64">
                                 <i data-lucide="search" class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4"></i>
-                                <input type="text" placeholder="Search donors or items..." class="w-full pl-9 pr-3 py-1.5 text-sm bg-gray-50 border-none ring-1 ring-inset ring-gray-200 rounded-lg focus:bg-white focus:ring-2 focus:ring-indigo-500 transition-all">
+                                <input type="text" placeholder="Search donors or items..." class="w-full pl-9 pr-3 py-1.5 text-sm bg-brand-sand border border-brand-sandDark rounded focus:bg-brand-paper focus:ring-1 focus:ring-brand-forest focus:outline-none transition-all font-medium text-brand-slate">
                             </div>
-                            <button id="export-btn" class="hidden sm:flex items-center px-3 py-1.5 text-sm font-medium text-gray-600 bg-white ring-1 ring-inset ring-gray-200 rounded-lg hover:bg-gray-50 transition-all">
-                                <i data-lucide="download" class="w-4 h-4 mr-2 text-gray-400"></i> Export
+                            <button id="export-btn" class="hidden sm:flex items-center px-3 py-1.5 text-sm font-medium text-brand-forest bg-white border border-brand-forest rounded hover:bg-brand-sand transition-all">
+                                <i data-lucide="download" class="w-4 h-4 mr-2"></i> Export
                             </button>
                         </div>
                     </div>
 
                     <!-- Active Donations Table -->
                     <div id="view-active" class="overflow-x-auto block">
-                        <table class="min-w-full divide-y divide-gray-100">
+                        <table class="min-w-full text-left border-collapse text-sm">
                             <thead>
-                                <tr>
-                                    <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider bg-gray-50/50">Donor</th>
-                                    <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider bg-gray-50/50">Items Offered</th>
-                                    <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider bg-gray-50/50">Drop-off Schedule</th>
-                                    <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider bg-gray-50/50">Status</th>
-                                    <th class="px-6 py-3 text-right text-xs font-semibold text-gray-500 uppercase tracking-wider bg-gray-50/50">Action</th>
+                                <tr class="bg-[#FAFAF8] border-b-2 border-brand-sandDark">
+                                    <th class="px-6 py-3 text-xs font-bold text-gray-500 uppercase tracking-wider">Donor</th>
+                                    <th class="px-6 py-3 text-xs font-bold text-gray-500 uppercase tracking-wider">Items Offered</th>
+                                    <th class="px-6 py-3 text-xs font-bold text-gray-500 uppercase tracking-wider">Drop-off Schedule</th>
+                                    <th class="px-6 py-3 text-xs font-bold text-gray-500 uppercase tracking-wider">Status</th>
+                                    <th class="px-6 py-3 text-right text-xs font-bold text-gray-500 uppercase tracking-wider">Action</th>
                                 </tr>
                             </thead>
-                            <tbody id="active-table-body" class="bg-white divide-y divide-gray-50">
+                            <tbody id="active-table-body" class="divide-y divide-brand-sandDark">
                                 <!-- Populated by JS -->
                             </tbody>
                         </table>
@@ -138,37 +149,36 @@
 
                     <!-- History Table (Hidden by default) -->
                     <div id="view-history" class="overflow-x-auto hidden">
-                        <table class="min-w-full divide-y divide-gray-100">
+                        <table class="min-w-full text-left border-collapse text-sm">
                             <thead>
-                                <tr>
-                                    <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider bg-gray-50/50">Date Received</th>
-                                    <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider bg-gray-50/50">Donor</th>
-                                    <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider bg-gray-50/50">Items Received</th>
-                                    <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider bg-gray-50/50">Received By</th>
+                                <tr class="bg-[#FAFAF8] border-b-2 border-brand-sandDark">
+                                    <th class="px-6 py-3 text-xs font-bold text-gray-500 uppercase tracking-wider">Date Received</th>
+                                    <th class="px-6 py-3 text-xs font-bold text-gray-500 uppercase tracking-wider">Donor</th>
+                                    <th class="px-6 py-3 text-xs font-bold text-gray-500 uppercase tracking-wider">Items Received</th>
+                                    <th class="px-6 py-3 text-xs font-bold text-gray-500 uppercase tracking-wider">Received By</th>
                                 </tr>
                             </thead>
-                            <tbody id="history-table-body" class="bg-white divide-y divide-gray-50">
+                            <tbody id="history-table-body" class="divide-y divide-brand-sandDark">
                                 <!-- Populated by JS -->
                             </tbody>
                         </table>
                     </div>
-
                 </div>
             </div>
         </div>
     </main>
 
     <!-- Modal: Review Donation Details -->
-    <div id="modal-review" class="fixed inset-0 bg-gray-900/40 z-50 hidden flex items-center justify-center backdrop-blur-[2px] opacity-0 modal-transition">
-        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-3xl max-h-[90vh] flex flex-col overflow-hidden mx-4 transform scale-95 modal-transition" id="modal-review-content">
+    <div id="modal-review" class="fixed inset-0 bg-slate-900/40 z-50 hidden flex items-center justify-center backdrop-blur-[2px] opacity-0 modal-transition">
+        <div class="bg-brand-paper rounded border border-brand-sandDark shadow-ledger w-full max-w-3xl max-h-[90vh] flex flex-col overflow-hidden mx-4 transform scale-95 modal-transition" id="modal-review-content">
             
             <!-- Header -->
-            <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-white">
+            <div class="px-6 py-4 border-b border-brand-sandDark bg-[#FAFAF8] flex justify-between items-center rounded-t">
                 <div>
-                    <h2 class="text-lg font-semibold text-gray-900 tracking-tight">Review Donation</h2>
-                    <p class="text-sm text-gray-500 mt-0.5">Verify items and confirm the drop-off schedule.</p>
+                    <h2 class="text-lg font-bold text-brand-slate tracking-tight">Review Donation</h2>
+                    <p class="text-xs text-gray-500 font-medium mt-0.5">Verify items and confirm the drop-off schedule.</p>
                 </div>
-                <button onclick="closeLocalModal('modal-review')" class="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-full transition-colors">
+                <button onclick="closeLocalModal('modal-review')" class="p-1.5 text-gray-400 hover:text-brand-forest hover:bg-brand-sand rounded transition">
                     <i data-lucide="x" class="w-5 h-5"></i>
                 </button>
             </div>
@@ -178,42 +188,43 @@
                 
                 <!-- Left: Info & Schedule -->
                 <div class="space-y-6">
-                    <div>
-                        <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">Submission Details</p>
+                    <div class="bg-[#FAFAF8] p-5 rounded border border-brand-sandDark">
+                        <p class="text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-4 border-b-2 border-brand-sandDark pb-2">Submission Details</p>
                         <div class="space-y-4">
                             <div>
-                                <p class="text-xs text-gray-500 mb-1">Donor</p>
+                                <p class="text-[10px] text-gray-500 uppercase tracking-wider font-bold mb-1">Donor</p>
                                 <div class="flex items-center">
-                                    <div class="w-8 h-8 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center text-xs font-bold mr-3" id="review-avatar">
+                                    <div class="w-8 h-8 rounded bg-brand-forest/10 border border-brand-forest/20 text-brand-forest flex items-center justify-center text-xs font-bold mr-3" id="review-avatar">
                                         J
                                     </div>
-                                    <p class="font-medium text-gray-900" id="review-donor-name">Juan Dela Cruz</p>
+                                    <p class="text-sm font-bold text-brand-slate" id="review-donor-name">Juan Dela Cruz</p>
                                 </div>
                             </div>
                             <div>
-                                <p class="text-xs text-gray-500 mb-1">Items Offered</p>
-                                <p class="text-sm text-gray-800 bg-gray-50 p-3 rounded-lg border border-gray-100 leading-relaxed" id="review-items">10x Dog Food (Pedigree), 5x Bleach</p>
+                                <p class="text-[10px] text-gray-500 uppercase tracking-wider font-bold mb-1">Items Offered</p>
+                                <p class="text-sm text-brand-slate bg-brand-paper p-3 rounded border border-brand-sandDark leading-relaxed" id="review-items">10x Dog Food (Pedigree), 5x Bleach</p>
                             </div>
                         </div>
                     </div>
 
-                    <div>
-                        <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">Schedule Check</p>
-                        <div class="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm">
-                            <div class="px-4 py-3 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
-                                <span class="text-sm text-gray-600">Requested Time</span>
-                                <span class="text-sm font-semibold text-gray-900" id="review-date">Oct 25, 2:00 PM</span>
+                    <div class="bg-[#FAFAF8] p-0 rounded border border-brand-sandDark overflow-hidden">
+                        <p class="text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-0 border-b-2 border-brand-sandDark p-4 pb-2 bg-[#FAFAF8]">Schedule Check</p>
+                        
+                        <div class="bg-brand-paper">
+                            <div class="px-4 py-3 border-b border-brand-sandDark flex justify-between items-center bg-[#FAFAF8]">
+                                <span class="text-xs font-bold text-gray-500 uppercase tracking-wider">Requested Time</span>
+                                <span class="text-sm font-bold text-brand-slate font-mono" id="review-date">Oct 25, 2:00 PM</span>
                             </div>
-                            <div class="p-4">
-                                <p class="text-xs font-medium text-gray-500 mb-3">Other events on this day:</p>
+                            <div class="p-4 bg-brand-paper">
+                                <p class="text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-3">Other events on this day:</p>
                                 <ul class="space-y-3">
                                     <li class="flex items-start">
-                                        <div class="w-1.5 h-1.5 rounded-full bg-orange-400 mt-1.5 mr-2.5 shrink-0"></div>
-                                        <p class="text-sm text-gray-600">10:00 AM - Vet Visit (Clinic)</p>
+                                        <div class="w-1.5 h-1.5 rounded-full bg-orange-500 mt-1.5 mr-2.5 shrink-0"></div>
+                                        <p class="text-sm font-medium text-gray-600">10:00 AM - Vet Visit (Clinic)</p>
                                     </li>
                                     <li class="flex items-start">
-                                        <div class="w-1.5 h-1.5 rounded-full bg-green-400 mt-1.5 mr-2.5 shrink-0"></div>
-                                        <p class="text-sm text-gray-600">No scheduling conflicts near 2:00 PM.</p>
+                                        <div class="w-1.5 h-1.5 rounded-full bg-brand-forest mt-1.5 mr-2.5 shrink-0"></div>
+                                        <p class="text-sm font-medium text-gray-600">No scheduling conflicts near 2:00 PM.</p>
                                     </li>
                                 </ul>
                             </div>
@@ -222,25 +233,25 @@
                 </div>
 
                 <!-- Right: Attached Photos -->
-                <div>
-                    <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">Attached Photos</p>
+                <div class="bg-[#FAFAF8] p-5 rounded border border-brand-sandDark">
+                    <p class="text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-4 border-b-2 border-brand-sandDark pb-2">Attached Photos</p>
                     <div class="space-y-4">
-                        <div class="group relative rounded-xl border border-gray-200 bg-gray-50 overflow-hidden cursor-pointer hover:border-indigo-300 transition-colors">
-                            <div class="p-3 border-b border-gray-100 bg-white flex justify-between items-center">
-                                <span class="text-xs font-medium text-gray-600">Items Photo</span>
+                        <div class="group relative rounded border border-brand-sandDark bg-brand-paper overflow-hidden cursor-pointer hover:border-brand-forest transition-colors">
+                            <div class="p-3 border-b border-brand-sandDark bg-[#FAFAF8] flex justify-between items-center">
+                                <span class="text-xs font-bold text-gray-600">Items Photo</span>
                                 <i data-lucide="maximize-2" class="w-3.5 h-3.5 text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity"></i>
                             </div>
-                            <div class="h-32 flex items-center justify-center">
+                            <div class="h-32 flex items-center justify-center bg-brand-sand">
                                 <i data-lucide="image" class="w-8 h-8 text-gray-300"></i>
                             </div>
                         </div>
                         
-                        <div class="group relative rounded-xl border border-gray-200 bg-gray-50 overflow-hidden cursor-pointer hover:border-indigo-300 transition-colors">
-                            <div class="p-3 border-b border-gray-100 bg-white flex justify-between items-center">
-                                <span class="text-xs font-medium text-gray-600">Receipt / Proof</span>
+                        <div class="group relative rounded border border-brand-sandDark bg-brand-paper overflow-hidden cursor-pointer hover:border-brand-forest transition-colors">
+                            <div class="p-3 border-b border-brand-sandDark bg-[#FAFAF8] flex justify-between items-center">
+                                <span class="text-xs font-bold text-gray-600">Receipt / Proof</span>
                                 <i data-lucide="maximize-2" class="w-3.5 h-3.5 text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity"></i>
                             </div>
-                            <div class="h-32 flex items-center justify-center">
+                            <div class="h-32 flex items-center justify-center bg-brand-sand">
                                 <i data-lucide="receipt" class="w-8 h-8 text-gray-300"></i>
                             </div>
                         </div>
@@ -249,15 +260,15 @@
             </div>
 
             <!-- Footer Actions -->
-            <div class="px-6 py-4 border-t border-gray-100 bg-gray-50/80 flex justify-between items-center">
-                <button onclick="closeLocalModal('modal-review')" class="px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors">
+            <div class="px-6 py-4 border-t border-brand-sandDark bg-[#FAFAF8] rounded-b flex justify-between items-center">
+                <button onclick="closeLocalModal('modal-review')" class="px-4 py-2 text-sm font-medium text-gray-500 hover:text-brand-slate transition-colors">
                     Close
                 </button>
                 <div class="flex space-x-3">
-                    <button onclick="processDonation('changes')" class="px-4 py-2 text-sm font-medium text-gray-700 bg-white ring-1 ring-inset ring-gray-300 rounded-lg hover:bg-gray-50 transition-all">
+                    <button onclick="processDonation('changes')" class="px-4 py-2 text-sm font-medium text-gray-600 bg-white border border-brand-sandDark rounded hover:bg-brand-sand transition-all">
                         Ask for Changes
                     </button>
-                    <button onclick="processDonation('approve')" class="px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 shadow-sm transition-all">
+                    <button onclick="processDonation('approve')" class="px-4 py-2 text-sm font-medium text-white bg-brand-forest rounded hover:bg-brand-forestLight shadow-sm transition-all">
                         Approve & Confirm Schedule
                     </button>
                 </div>
@@ -266,9 +277,9 @@
     </div>
 
     <!-- Scripts -->
-     <script src="assets/js/layout.js"></script>
-     <script src="assets/js/forms.js"></script>
-     <script src="assets/js/db.js"></script>
+    <script src="assets/js/layout.js"></script>
+    <script src="assets/js/forms.js"></script>
+    <script src="assets/js/db.js"></script>
     <script>
         lucide.createIcons();
 
@@ -281,12 +292,14 @@
             document.getElementById('view-active').classList.add('hidden');
             document.getElementById('view-history').classList.add('hidden');
             
-            document.getElementById('tab-active').className = "px-4 py-1.5 text-sm font-medium rounded-md text-gray-500 hover:text-gray-700 hover:bg-gray-200/50 transition-all";
-            document.getElementById('tab-history').className = "px-4 py-1.5 text-sm font-medium rounded-md text-gray-500 hover:text-gray-700 hover:bg-gray-200/50 transition-all";
+            // Inactive styles
+            document.getElementById('tab-active').className = "px-4 py-1.5 text-sm font-medium rounded text-gray-500 hover:text-brand-forest transition-all";
+            document.getElementById('tab-history').className = "px-4 py-1.5 text-sm font-medium rounded text-gray-500 hover:text-brand-forest transition-all";
             
             document.getElementById(`view-${tabId}`).classList.remove('hidden');
-            document.getElementById(`tab-${tabId}`).className = "px-4 py-1.5 text-sm font-medium rounded-md bg-white text-gray-900 shadow-sm ring-1 ring-gray-200 transition-all";
-
+            
+            // Active styles
+            document.getElementById(`tab-${tabId}`).className = "px-4 py-1.5 text-sm font-bold rounded bg-brand-forestLight/20 text-brand-forest transition-all";
             document.getElementById('export-btn').style.display = tabId === 'history' ? 'flex' : 'none';
         }
 
@@ -295,7 +308,6 @@
             return name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
         }
 
-        // RENAMED: Prevents collision with forms.js
         function openLocalModal(modalId) {
             const modal = document.getElementById(modalId);
             const content = document.getElementById(`${modalId}-content`);
@@ -306,7 +318,6 @@
             }, 10);
         }
 
-        // RENAMED: Prevents collision with forms.js
         function closeLocalModal(modalId) {
             const modal = document.getElementById(modalId);
             const content = document.getElementById(`${modalId}-content`);
@@ -323,9 +334,9 @@
             donations = db.read('donations'); // Always fetch fresh
             const activeBody = document.getElementById('active-table-body');
             const historyBody = document.getElementById('history-table-body');
+            
             activeBody.innerHTML = '';
             historyBody.innerHTML = '';
-
             let reviewCount = 0;
             let approvedCount = 0;
 
@@ -336,43 +347,47 @@
                     if (d.status === 'Needs Review') reviewCount++;
                     if (d.status === 'Approved') approvedCount++;
 
-                    const badgeClass = d.status === 'Needs Review' ? 'badge-review' : 'badge-approved';
+                    // Mapping badges to semantic palette
+                    const badgeClass = d.status === 'Needs Review' 
+                        ? 'bg-orange-50 text-orange-600 border border-orange-200' 
+                        : 'bg-brand-forestLight/10 text-brand-forestLight border border-brand-forestLight/20';
+                    
                     const actionBtn = d.status === 'Needs Review' 
-                        ? `<button onclick="openReviewModal('${d.id}')" class="text-sm font-medium text-gray-600 bg-white ring-1 ring-inset ring-gray-300 rounded-md px-3 py-1.5 hover:bg-gray-50 transition-all">Review</button>`
-                        : `<button onclick="window.openReceiveModal('${d.id}')" class="text-sm font-medium text-indigo-700 bg-indigo-50 ring-1 ring-inset ring-indigo-200 rounded-md px-3 py-1.5 hover:bg-indigo-100 transition-all">Receive Items</button>`;
+                        ? `<button onclick="openReviewModal('${d.id}')" class="text-xs font-medium text-brand-forest bg-white border border-brand-forest rounded px-3 py-1.5 hover:bg-brand-sand transition-all">Review</button>`
+                        : `<button onclick="window.openReceiveModal('${d.id}')" class="text-xs font-medium text-white bg-brand-forest rounded px-3 py-1.5 hover:bg-brand-forestLight transition-all shadow-sm">Receive Items</button>`;
 
                     activeBody.innerHTML += `
-                        <tr class="hover:bg-gray-50/50 transition-colors group">
+                        <tr class="hover:bg-brand-sand transition-colors group">
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <div class="flex items-center">
-                                    <div class="w-8 h-8 rounded-full bg-gray-100 text-gray-600 flex items-center justify-center text-xs font-semibold mr-3 group-hover:bg-white group-hover:ring-1 group-hover:ring-gray-200 transition-all">${initials}</div>
+                                    <div class="w-8 h-8 rounded bg-brand-forest/10 border border-brand-forest/20 text-brand-forest flex items-center justify-center text-xs font-bold mr-3 group-hover:bg-white transition-all">${initials}</div>
                                     <div>
-                                        <div class="text-sm font-medium text-gray-900">${d.donor}</div>
-                                        <div class="text-xs text-gray-400 mt-0.5">${d.id}</div>
+                                        <div class="text-sm font-bold text-brand-slate">${d.donor}</div>
+                                        <div class="text-xs font-mono text-gray-500 mt-0.5">${d.id}</div>
                                     </div>
                                 </div>
                             </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600 truncate max-w-[200px]">${d.items}</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600"><div class="flex items-center"><i data-lucide="calendar" class="w-3.5 h-3.5 mr-2 text-gray-400"></i> ${d.date}</div></td>
-                            <td class="px-6 py-4 whitespace-nowrap"><span class="px-2.5 py-1 inline-flex text-xs font-medium rounded-full ${badgeClass}">${d.status}</span></td>
+                            <td class="px-6 py-4 text-sm font-medium text-gray-600 truncate max-w-[200px]">${d.items}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-600 font-mono"><div class="flex items-center"><i data-lucide="calendar" class="w-3.5 h-3.5 mr-2 text-gray-400"></i> ${d.date}</div></td>
+                            <td class="px-6 py-4 whitespace-nowrap"><span class="px-2 py-1 inline-flex text-[10px] font-bold uppercase tracking-wider rounded ${badgeClass}">${d.status}</span></td>
                             <td class="px-6 py-4 whitespace-nowrap text-right">${actionBtn}</td>
                         </tr>
                     `;
                 } else if (d.status === 'Received') {
                     historyBody.innerHTML += `
-                        <tr class="hover:bg-gray-50/50 transition-colors group">
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">${d.date}</td>
+                        <tr class="hover:bg-brand-sand transition-colors group">
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-600 font-mono">${d.date}</td>
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <div class="flex items-center">
-                                    <div class="w-8 h-8 rounded-full bg-gray-100 text-gray-600 flex items-center justify-center text-xs font-semibold mr-3 group-hover:bg-white group-hover:ring-1 group-hover:ring-gray-200 transition-all">${initials}</div>
+                                    <div class="w-8 h-8 rounded bg-brand-forest/10 border border-brand-forest/20 text-brand-forest flex items-center justify-center text-xs font-bold mr-3 group-hover:bg-white transition-all">${initials}</div>
                                     <div>
-                                        <div class="text-sm font-medium text-gray-900">${d.donor}</div>
-                                        <div class="text-xs text-gray-400 mt-0.5">${d.id}</div>
+                                        <div class="text-sm font-bold text-brand-slate">${d.donor}</div>
+                                        <div class="text-xs font-mono text-gray-500 mt-0.5">${d.id}</div>
                                     </div>
                                 </div>
                             </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">${d.items}</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${d.handler}</td>
+                            <td class="px-6 py-4 text-sm font-medium text-gray-600">${d.items}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-500">${d.handler}</td>
                         </tr>
                     `;
                 }
@@ -387,10 +402,12 @@
         function openReviewModal(id) {
             const donation = donations.find(d => d.id === id);
             activeDonationId = id;
+
             document.getElementById('review-donor-name').innerText = donation.donor;
             document.getElementById('review-avatar').innerText = getInitials(donation.donor);
             document.getElementById('review-items').innerText = donation.items;
             document.getElementById('review-date').innerText = donation.date;
+            
             openLocalModal('modal-review');
         }
 
@@ -402,10 +419,12 @@
 
         function processDonation(action) {
             if (!activeDonationId) return;
+
             if (action === 'approve') {
                 const donationIndex = donations.findIndex(d => d.id === activeDonationId);
                 donations[donationIndex].status = 'Approved';
-                db.write('donations', donations); // Fixed: Save to DB
+                db.write('donations', donations); // Save to DB
+                
                 closeLocalModal('modal-review');
                 setTimeout(() => { renderTables(); }, 200);
             } else {

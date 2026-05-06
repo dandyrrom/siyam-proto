@@ -4,28 +4,28 @@
 const globalModalHTML = `
     <div id="modal-backdrop" class="fixed inset-0 bg-slate-900/40 backdrop-blur-[2px] z-50 hidden transition-opacity opacity-0 duration-300" onclick="closeModal()"></div>
     <div id="modal-wrapper" class="fixed inset-0 z-50 flex items-center justify-center hidden pointer-events-none p-4">
-        <div id="modal-panel" class="bg-white rounded-xl shadow-2xl w-full max-w-3xl flex flex-col pointer-events-auto transform scale-95 translate-y-4 opacity-0 transition-all duration-300 max-h-[90vh]">
+        <div id="modal-panel" class="bg-brand-paper rounded border border-brand-sandDark shadow-2xl w-full max-w-3xl flex flex-col pointer-events-auto transform scale-95 translate-y-4 opacity-0 transition-all duration-300 max-h-[90vh]">
             
-            <div class="px-6 py-4 border-b border-slate-200 flex items-center justify-between bg-slate-50/50 rounded-t-xl shrink-0">
+            <div class="px-6 py-4 border-b border-brand-sandDark bg-[#FAFAF8] rounded-t shrink-0 flex items-center justify-between">
                 <div class="flex items-center gap-3">
-                    <div id="modal-icon-container" class="w-8 h-8 rounded-lg flex items-center justify-center bg-blue-100 text-brand-accent">
+                    <div id="modal-icon-container" class="w-8 h-8 rounded bg-brand-forest/10 flex items-center justify-center text-brand-forest border border-brand-forest/20">
                         <i id="modal-icon" data-lucide="plus" class="w-4 h-4"></i>
                     </div>
-                    <h2 id="modal-title" class="text-lg font-semibold text-slate-900">Modal Title</h2>
+                    <h2 id="modal-title" class="text-lg font-bold text-brand-slate tracking-tight">Modal Title</h2>
                 </div>
-                <button onclick="closeModal()" class="text-slate-400 hover:text-slate-700 hover:bg-slate-200 p-1.5 rounded-md transition"><i data-lucide="x" class="w-5 h-5"></i></button>
+                <button onclick="closeModal()" class="text-gray-400 hover:text-brand-forest hover:bg-brand-sand p-1.5 rounded transition"><i data-lucide="x" class="w-5 h-5"></i></button>
             </div>
 
             <div class="p-6 overflow-y-auto custom-scrollbar relative">
                 
                 <!-- FORM 1: CREATE MASTER ITEM -->
                 <div id="form-create" class="hidden form-section space-y-6">
-                    <div class="bg-slate-50 p-5 rounded-lg border border-slate-200">
-                        <h3 class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-4 border-b border-slate-200 pb-2">Core Identity</h3>
+                    <div class="bg-[#FAFAF8] p-5 rounded border border-brand-sandDark">
+                        <h3 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-4 border-b-2 border-brand-sandDark pb-2">Core Identity</h3>
                         <div class="grid grid-cols-2 gap-4 mb-4">
                             <div>
-                                <label class="block text-sm font-medium text-slate-700 mb-1">Category <span class="text-red-500">*</span></label>
-                                <select id="create-category" onchange="handleCategorySchemaChange()" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-brand-accent outline-none font-medium text-brand-accent bg-blue-50/50">
+                                <label class="block text-xs font-medium text-gray-600 mb-1">Category <span class="text-brand-terracotta">*</span></label>
+                                <select id="create-category" onchange="handleCategorySchemaChange()" class="w-full border border-brand-sandDark rounded px-3 py-2 text-sm focus:ring-1 focus:ring-brand-forest focus:border-brand-forest outline-none font-medium text-brand-forest bg-brand-sand shadow-sm cursor-pointer">
                                     <option value="" disabled selected>Select Category to generate schema...</option>
                                     <option value="Medications">Medications</option>
                                     <option value="Injectables">Injectables</option>
@@ -39,18 +39,18 @@ const globalModalHTML = `
                                 </select>
                             </div>
                             <div>
-                                <label class="block text-sm font-medium text-slate-700 mb-1">Item Group</label>
-                                <select id="create-item-group" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-brand-accent outline-none bg-white shadow-sm">
+                                <label class="block text-xs font-medium text-gray-600 mb-1">Item Group</label>
+                                <select id="create-item-group" class="w-full border border-brand-sandDark rounded px-3 py-2 text-sm focus:ring-1 focus:ring-brand-forest focus:border-brand-forest outline-none bg-brand-paper text-brand-slate shadow-sm cursor-pointer">
                                     <option value="" disabled selected>Select Group...</option>
                                 </select>
                             </div>
                         </div>
                         <div class="grid grid-cols-3 gap-4">
-                            <div><label class="block text-sm font-medium text-slate-700 mb-1">Commodity Name <span class="text-red-500">*</span></label><input type="text" id="create-name" placeholder="e.g., Ascorbic Acid" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-brand-accent outline-none"></div>
-                            <div><label class="block text-sm font-medium text-slate-700 mb-1">Brand / Mfg <span class="text-red-500">*</span></label><input type="text" id="create-brand" placeholder="e.g., Generic, 3M" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-brand-accent outline-none"></div>
+                            <div><label class="block text-xs font-medium text-gray-600 mb-1">Commodity Name <span class="text-brand-terracotta">*</span></label><input type="text" id="create-name" placeholder="e.g., Ascorbic Acid" class="w-full border border-brand-sandDark rounded px-3 py-2 text-sm focus:ring-1 focus:ring-brand-forest focus:border-brand-forest outline-none text-brand-slate bg-brand-paper shadow-sm font-medium"></div>
+                            <div><label class="block text-xs font-medium text-gray-600 mb-1">Brand / Mfg <span class="text-brand-terracotta">*</span></label><input type="text" id="create-brand" placeholder="e.g., Generic, 3M" class="w-full border border-brand-sandDark rounded px-3 py-2 text-sm focus:ring-1 focus:ring-brand-forest focus:border-brand-forest outline-none text-brand-slate bg-brand-paper shadow-sm font-medium"></div>
                             <div>
-                                <label class="block text-sm font-medium text-slate-700 mb-1">Target Species <span class="text-red-500">*</span></label>
-                                <select id="create-species" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-brand-accent outline-none">
+                                <label class="block text-xs font-medium text-gray-600 mb-1">Target Species <span class="text-brand-terracotta">*</span></label>
+                                <select id="create-species" class="w-full border border-brand-sandDark rounded px-3 py-2 text-sm focus:ring-1 focus:ring-brand-forest focus:border-brand-forest outline-none text-brand-slate bg-brand-paper shadow-sm cursor-pointer">
                                     <option value="Multi-Species (Both)">Multi-Species (Both)</option>
                                     <option value="Canine (Dog)">Canine (Dog)</option>
                                     <option value="Feline (Cat)">Feline (Cat)</option>
@@ -60,24 +60,24 @@ const globalModalHTML = `
                         </div>
                     </div>
 
-                    <div id="dynamic-schema-container" class="hidden bg-indigo-50/50 p-5 rounded-lg border border-indigo-100">
-                        <h3 class="text-xs font-bold text-indigo-700 uppercase tracking-wider mb-4 border-b border-indigo-200 pb-2">Specific Attributes (Auto-Generated)</h3>
+                    <div id="dynamic-schema-container" class="hidden bg-brand-sand p-5 rounded border border-brand-sandDark shadow-sm">
+                        <h3 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-4 border-b-2 border-brand-sandDark pb-2">Specific Attributes (Auto-Generated)</h3>
                         <div id="dynamic-fields-grid" class="grid grid-cols-2 gap-4"></div>
                     </div>
 
-                    <div class="bg-slate-50 p-5 rounded-lg border border-slate-200">
-                        <h3 class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-4 border-b border-slate-200 pb-2">Base Metrics & Storage</h3>
+                    <div class="bg-[#FAFAF8] p-5 rounded border border-brand-sandDark">
+                        <h3 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-4 border-b-2 border-brand-sandDark pb-2">Base Metrics & Storage</h3>
                         <div class="grid grid-cols-3 gap-4">
                             <div>
-                                <label class="block text-xs font-medium text-slate-500 mb-1">Base Unit <span class="text-red-500">*</span></label>
-                                <select id="create-base-unit" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-brand-accent bg-white shadow-sm">
+                                <label class="block text-xs font-medium text-gray-600 mb-1">Base Unit <span class="text-brand-terracotta">*</span></label>
+                                <select id="create-base-unit" class="w-full border border-brand-sandDark rounded px-3 py-2 text-sm outline-none focus:ring-1 focus:ring-brand-forest focus:border-brand-forest bg-brand-paper text-brand-slate shadow-sm cursor-pointer">
                                     <option value="" disabled selected>Select Unit...</option>
                                 </select>
                             </div>
-                            <div><label class="block text-xs font-medium text-slate-500 mb-1">Alert Threshold <span class="text-red-500">*</span></label><input type="number" id="create-min-threshold" placeholder="10" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-brand-accent"></div>
+                            <div><label class="block text-xs font-medium text-gray-600 mb-1">Alert Threshold <span class="text-brand-terracotta">*</span></label><input type="number" id="create-min-threshold" placeholder="10" class="w-full border border-brand-sandDark rounded px-3 py-2 text-sm outline-none focus:ring-1 focus:ring-brand-forest focus:border-brand-forest text-brand-slate bg-brand-paper shadow-sm font-mono font-medium"></div>
                             <div>
-                                <label class="block text-xs font-medium text-slate-500 mb-1">Storage Protocol <span class="text-red-500">*</span></label>
-                                <select id="create-storage" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-brand-accent">
+                                <label class="block text-xs font-medium text-gray-600 mb-1">Storage Protocol <span class="text-brand-terracotta">*</span></label>
+                                <select id="create-storage" class="w-full border border-brand-sandDark rounded px-3 py-2 text-sm outline-none focus:ring-1 focus:ring-brand-forest focus:border-brand-forest bg-brand-paper text-brand-slate shadow-sm cursor-pointer">
                                     <option value="Ambient (Room Temp)">Ambient (Room Temp)</option>
                                     <option value="Refrigerated (Cold Chain)">Refrigerated (Cold Chain)</option>
                                     <option value="Frozen">Frozen</option>
@@ -87,109 +87,109 @@ const globalModalHTML = `
                         </div>
                     </div>
 
-                    <div class="bg-blue-50 p-5 rounded-lg border border-blue-200">
-                        <h3 class="text-xs font-bold text-blue-800 uppercase tracking-wider mb-4 border-b border-blue-200 pb-2">Opening Balance (Initial Batch Setup)</h3>
+                    <div class="bg-[#FAFAF8] p-5 rounded border border-brand-sandDark">
+                        <h3 class="text-xs font-bold text-brand-forest uppercase tracking-wider mb-4 border-b-2 border-brand-sandDark pb-2">Opening Balance (Initial Batch Setup)</h3>
                         
                         <div class="grid grid-cols-3 gap-4 mb-4">
                             <div>
-                                <label class="block text-xs font-medium text-slate-700 mb-1">Purchasing Unit <span class="text-red-500">*</span></label>
-                                <select id="create-purch-unit" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-brand-accent bg-white shadow-sm">
+                                <label class="block text-xs font-medium text-gray-600 mb-1">Purchasing Unit <span class="text-brand-terracotta">*</span></label>
+                                <select id="create-purch-unit" class="w-full border border-brand-sandDark rounded px-3 py-2 text-sm outline-none focus:ring-1 focus:ring-brand-forest focus:border-brand-forest bg-brand-paper text-brand-slate shadow-sm cursor-pointer">
                                     <option value="" disabled selected>Select Unit...</option>
                                 </select>
                             </div>
-                            <div><label class="block text-xs font-medium text-slate-700 mb-1">Multiplier <span class="text-red-500">*</span></label><input type="number" id="create-multiplier" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-brand-accent"></div>
-                            <div><label class="block text-xs font-medium text-slate-700 mb-1">Qty Received <span class="text-red-500">*</span></label><input type="number" id="create-init-qty" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-brand-accent"></div>
+                            <div><label class="block text-xs font-medium text-gray-600 mb-1">Multiplier <span class="text-brand-terracotta">*</span></label><input type="number" id="create-multiplier" class="w-full border border-brand-sandDark rounded px-3 py-2 text-sm outline-none focus:ring-1 focus:ring-brand-forest focus:border-brand-forest text-brand-slate bg-brand-paper shadow-sm font-mono font-medium"></div>
+                            <div><label class="block text-xs font-medium text-gray-600 mb-1">Qty Received <span class="text-brand-terracotta">*</span></label><input type="number" id="create-init-qty" class="w-full border border-brand-sandDark rounded px-3 py-2 text-sm outline-none focus:ring-1 focus:ring-brand-forest focus:border-brand-forest text-brand-slate bg-brand-paper shadow-sm font-mono font-medium"></div>
                         </div>
 
                         <div class="grid grid-cols-2 gap-4 mb-4">
                             <div>
-                                <label class="block text-sm font-medium text-slate-700 mb-1">Procurement Channel <span class="text-red-500">*</span></label>
-                                <select id="create-procurement" onchange="handleProcurementChange('create')" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-brand-accent bg-white">
+                                <label class="block text-xs font-medium text-gray-600 mb-1">Procurement Channel <span class="text-brand-terracotta">*</span></label>
+                                <select id="create-procurement" onchange="handleProcurementChange('create')" class="w-full border border-brand-sandDark rounded px-3 py-2 text-sm outline-none focus:ring-1 focus:ring-brand-forest focus:border-brand-forest bg-brand-paper text-brand-slate shadow-sm cursor-pointer">
                                     <option value="Commercial Purchase">Commercial Purchase</option>
                                     <option value="Private Donation">Private Donation</option>
                                     <option value="Municipal Allocation">Municipal Allocation</option>
                                 </select>
                             </div>
                             <div>
-                                <label class="block text-sm font-medium text-slate-700 mb-1">Physical Location</label>
-                                <select id="create-location" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-brand-accent bg-white shadow-sm">
+                                <label class="block text-xs font-medium text-gray-600 mb-1">Physical Location</label>
+                                <select id="create-location" class="w-full border border-brand-sandDark rounded px-3 py-2 text-sm outline-none focus:ring-1 focus:ring-brand-forest focus:border-brand-forest bg-brand-paper text-brand-slate shadow-sm cursor-pointer">
                                     <option value="" disabled selected>Select Location...</option>
                                 </select>
                             </div>
                         </div>
 
                         <div id="create-finance-purchase" class="grid grid-cols-2 gap-4 mb-4">
-                            <div><label class="block text-sm font-medium text-slate-700 mb-1">Actual Total Cost (₱) <span class="text-red-500">*</span></label><input type="number" id="create-actual-cost" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-brand-accent"></div>
-                            <div><label class="block text-sm font-medium text-slate-700 mb-1">Receipt / PO #</label><input type="text" id="create-receipt" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-brand-accent"></div>
+                            <div><label class="block text-xs font-medium text-gray-600 mb-1">Actual Total Cost (₱) <span class="text-brand-terracotta">*</span></label><input type="number" id="create-actual-cost" class="w-full border border-brand-sandDark rounded px-3 py-2 text-sm outline-none focus:ring-1 focus:ring-brand-forest focus:border-brand-forest text-brand-slate bg-brand-paper shadow-sm font-mono font-medium"></div>
+                            <div><label class="block text-xs font-medium text-gray-600 mb-1">Receipt / PO #</label><input type="text" id="create-receipt" class="w-full border border-brand-sandDark rounded px-3 py-2 text-sm outline-none focus:ring-1 focus:ring-brand-forest focus:border-brand-forest text-brand-slate bg-brand-paper shadow-sm font-mono font-medium"></div>
                         </div>
                         
                         <div id="create-finance-donation" class="grid grid-cols-2 gap-4 mb-4 hidden">
-                            <div><label class="block text-sm font-medium text-slate-700 mb-1">Est. Market Value (₱) <span class="text-red-500">*</span></label><input type="number" id="create-est-value" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-brand-accent"></div>
-                            <div><label class="block text-sm font-medium text-slate-700 mb-1">Donor Name / Intent ID</label><input type="text" id="create-donor" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-brand-accent"></div>
+                            <div><label class="block text-xs font-medium text-gray-600 mb-1">Est. Market Value (₱) <span class="text-brand-terracotta">*</span></label><input type="number" id="create-est-value" class="w-full border border-brand-sandDark rounded px-3 py-2 text-sm outline-none focus:ring-1 focus:ring-brand-forest focus:border-brand-forest text-brand-slate bg-brand-paper shadow-sm font-mono font-medium"></div>
+                            <div><label class="block text-xs font-medium text-gray-600 mb-1">Donor Name / Intent ID</label><input type="text" id="create-donor" class="w-full border border-brand-sandDark rounded px-3 py-2 text-sm outline-none focus:ring-1 focus:ring-brand-forest focus:border-brand-forest text-brand-slate bg-brand-paper shadow-sm font-medium"></div>
                         </div>
 
-                        <div class="grid grid-cols-2 gap-4 border-t border-blue-200 pt-4">
-                            <div><label class="block text-sm font-medium text-slate-700 mb-1">Expiration Date <span id="req-exp" class="text-red-500 hidden">*</span></label><input type="date" id="create-expiry" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-brand-accent"></div>
-                            <div><label class="block text-sm font-medium text-slate-700 mb-1">Batch / Lot ID <span id="req-batch" class="text-red-500 hidden">*</span></label><input type="text" id="create-batch" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-brand-accent"></div>
+                        <div class="grid grid-cols-2 gap-4 border-t border-brand-sandDark pt-4">
+                            <div><label class="block text-xs font-medium text-gray-600 mb-1">Expiration Date <span id="req-exp" class="text-brand-terracotta hidden">*</span></label><input type="date" id="create-expiry" class="w-full border border-brand-sandDark rounded px-3 py-2 text-sm outline-none focus:ring-1 focus:ring-brand-forest focus:border-brand-forest text-brand-slate bg-brand-paper shadow-sm font-mono font-medium"></div>
+                            <div><label class="block text-xs font-medium text-gray-600 mb-1">Batch / Lot ID <span id="req-batch" class="text-brand-terracotta hidden">*</span></label><input type="text" id="create-batch" class="w-full border border-brand-sandDark rounded px-3 py-2 text-sm outline-none focus:ring-1 focus:ring-brand-forest focus:border-brand-forest text-brand-slate bg-brand-paper shadow-sm font-mono font-medium"></div>
                         </div>
                     </div>
                 </div>
 
                 <!-- FORM 2: STOCK IN (RECEIVE BATCH) -->
                 <div id="form-in" class="hidden form-section space-y-6">
-                    <div class="bg-blue-50/50 p-4 rounded-lg border border-blue-100">
-                        <label class="block text-sm font-bold text-slate-700 mb-2">Select Item <span class="text-red-500">*</span></label>
-                        <select id="in-item-select" onchange="handleItemSelect('in')" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-brand-accent outline-none bg-white shadow-sm"></select>
+                    <div class="bg-brand-sand p-4 rounded border border-brand-sandDark">
+                        <label class="block text-xs font-bold text-gray-600 uppercase tracking-wider mb-2">Select Item <span class="text-brand-terracotta">*</span></label>
+                        <select id="in-item-select" onchange="handleItemSelect('in')" class="w-full border border-brand-sandDark rounded px-3 py-2 text-sm focus:ring-1 focus:ring-brand-forest focus:border-brand-forest outline-none bg-brand-paper text-brand-slate shadow-sm cursor-pointer"></select>
                     </div>
                     
-                    <div class="bg-slate-50 p-4 rounded-lg border border-slate-200 space-y-4">
-                        <h3 class="text-xs font-bold text-slate-500 uppercase tracking-wider border-b border-slate-200 pb-2">Quantity & Logistics</h3>
+                    <div class="bg-[#FAFAF8] p-4 rounded border border-brand-sandDark space-y-4">
+                        <h3 class="text-xs font-bold text-gray-500 uppercase tracking-wider border-b-2 border-brand-sandDark pb-2">Quantity & Logistics</h3>
                         <div class="grid grid-cols-3 gap-4">
                             <div>
-                                <label class="block text-xs font-medium text-slate-700 mb-1">Packaging (e.g., Box) <span class="text-red-500">*</span></label>
-                                <select id="in-purch-unit" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-brand-accent bg-white shadow-sm">
+                                <label class="block text-xs font-medium text-gray-600 mb-1">Packaging <span class="text-brand-terracotta">*</span></label>
+                                <select id="in-purch-unit" class="w-full border border-brand-sandDark rounded px-3 py-2 text-sm outline-none focus:ring-1 focus:ring-brand-forest focus:border-brand-forest bg-brand-paper text-brand-slate shadow-sm cursor-pointer">
                                     <option value="" disabled selected>Select Unit...</option>
                                 </select>
                             </div>
-                            <div><label class="block text-xs font-medium text-slate-700 mb-1">Multiplier (Base/Pack) <span class="text-red-500">*</span></label><input type="number" id="in-multiplier" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-brand-accent bg-white"></div>
-                            <div><label class="block text-xs font-medium text-slate-700 mb-1">Qty Received (Packs) <span class="text-red-500">*</span></label><input type="number" id="in-qty" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-brand-accent"></div>
+                            <div><label class="block text-xs font-medium text-gray-600 mb-1">Multiplier <span class="text-brand-terracotta">*</span></label><input type="number" id="in-multiplier" class="w-full border border-brand-sandDark rounded px-3 py-2 text-sm outline-none focus:ring-1 focus:ring-brand-forest focus:border-brand-forest text-brand-slate bg-brand-paper shadow-sm font-mono font-medium"></div>
+                            <div><label class="block text-xs font-medium text-gray-600 mb-1">Qty Received <span class="text-brand-terracotta">*</span></label><input type="number" id="in-qty" class="w-full border border-brand-sandDark rounded px-3 py-2 text-sm outline-none focus:ring-1 focus:ring-brand-forest focus:border-brand-forest text-brand-slate bg-brand-paper shadow-sm font-mono font-medium"></div>
                         </div>
 
-                        <div class="grid grid-cols-2 gap-4 border-t border-slate-200 pt-4">
+                        <div class="grid grid-cols-2 gap-4 border-t border-brand-sandDark pt-4">
                             <div>
-                                <label class="block text-sm font-medium text-slate-700 mb-1">Procurement Channel <span class="text-red-500">*</span></label>
-                                <select id="in-procurement" onchange="handleProcurementChange('in')" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-brand-accent bg-white">
+                                <label class="block text-xs font-medium text-gray-600 mb-1">Procurement Channel <span class="text-brand-terracotta">*</span></label>
+                                <select id="in-procurement" onchange="handleProcurementChange('in')" class="w-full border border-brand-sandDark rounded px-3 py-2 text-sm outline-none focus:ring-1 focus:ring-brand-forest focus:border-brand-forest bg-brand-paper text-brand-slate shadow-sm cursor-pointer">
                                     <option value="Commercial Purchase">Commercial Purchase</option>
                                     <option value="Private Donation">Private Donation</option>
                                     <option value="Municipal Allocation">Municipal Allocation</option>
                                 </select>
                             </div>
                             <div>
-                                <label class="block text-sm font-medium text-slate-700 mb-1">Physical Location</label>
-                                <select id="in-location" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-brand-accent bg-white shadow-sm">
+                                <label class="block text-xs font-medium text-gray-600 mb-1">Physical Location</label>
+                                <select id="in-location" class="w-full border border-brand-sandDark rounded px-3 py-2 text-sm outline-none focus:ring-1 focus:ring-brand-forest focus:border-brand-forest bg-brand-paper text-brand-slate shadow-sm cursor-pointer">
                                     <option value="" disabled selected>Select Location...</option>
                                 </select>
                             </div>
                         </div>
 
                         <div id="in-finance-purchase" class="grid grid-cols-2 gap-4">
-                            <div><label class="block text-xs font-medium text-slate-700 mb-1">Actual Total Cost (₱) <span class="text-red-500">*</span></label><input type="number" id="in-actual-cost" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-brand-accent"></div>
-                            <div><label class="block text-xs font-medium text-slate-700 mb-1">Receipt / PO #</label><input type="text" id="in-receipt" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-brand-accent"></div>
+                            <div><label class="block text-xs font-medium text-gray-600 mb-1">Actual Total Cost (₱) <span class="text-brand-terracotta">*</span></label><input type="number" id="in-actual-cost" class="w-full border border-brand-sandDark rounded px-3 py-2 text-sm outline-none focus:ring-1 focus:ring-brand-forest focus:border-brand-forest text-brand-slate bg-brand-paper shadow-sm font-mono font-medium"></div>
+                            <div><label class="block text-xs font-medium text-gray-600 mb-1">Receipt / PO #</label><input type="text" id="in-receipt" class="w-full border border-brand-sandDark rounded px-3 py-2 text-sm outline-none focus:ring-1 focus:ring-brand-forest focus:border-brand-forest text-brand-slate bg-brand-paper shadow-sm font-mono font-medium"></div>
                         </div>
                         <div id="in-finance-donation" class="grid grid-cols-2 gap-4 hidden">
-                            <div><label class="block text-xs font-medium text-slate-700 mb-1">Est. Market Value (₱) <span class="text-red-500">*</span></label><input type="number" id="in-est-value" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-brand-accent"></div>
-                            <div><label class="block text-xs font-medium text-slate-700 mb-1">Donor Name / Intent ID</label><input type="text" id="in-donor" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-brand-accent"></div>
+                            <div><label class="block text-xs font-medium text-gray-600 mb-1">Est. Market Value (₱) <span class="text-brand-terracotta">*</span></label><input type="number" id="in-est-value" class="w-full border border-brand-sandDark rounded px-3 py-2 text-sm outline-none focus:ring-1 focus:ring-brand-forest focus:border-brand-forest text-brand-slate bg-brand-paper shadow-sm font-mono font-medium"></div>
+                            <div><label class="block text-xs font-medium text-gray-600 mb-1">Donor Name / Intent ID</label><input type="text" id="in-donor" class="w-full border border-brand-sandDark rounded px-3 py-2 text-sm outline-none focus:ring-1 focus:ring-brand-forest focus:border-brand-forest text-brand-slate bg-brand-paper shadow-sm font-medium"></div>
                         </div>
                     </div>
 
-                    <div class="bg-slate-50 p-4 rounded-lg border border-slate-200 space-y-4">
-                        <h3 class="text-xs font-bold text-slate-500 uppercase tracking-wider border-b border-slate-200 pb-2">Batch Data</h3>
+                    <div class="bg-[#FAFAF8] p-4 rounded border border-brand-sandDark space-y-4">
+                        <h3 class="text-xs font-bold text-gray-500 uppercase tracking-wider border-b-2 border-brand-sandDark pb-2">Batch Data</h3>
                         <div class="grid grid-cols-3 gap-4">
-                            <div><label class="block text-xs font-medium text-slate-700 mb-1">New Expiration Date</label><input type="date" id="in-new-expiry" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm outline-none"></div>
-                            <div><label class="block text-xs font-medium text-slate-700 mb-1">New Batch / Lot ID</label><input type="text" id="in-new-batch" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm outline-none"></div>
+                            <div><label class="block text-xs font-medium text-gray-600 mb-1">New Expiration Date</label><input type="date" id="in-new-expiry" class="w-full border border-brand-sandDark rounded px-3 py-2 text-sm outline-none focus:ring-1 focus:ring-brand-forest focus:border-brand-forest text-brand-slate bg-brand-paper shadow-sm font-mono font-medium"></div>
+                            <div><label class="block text-xs font-medium text-gray-600 mb-1">New Batch / Lot ID</label><input type="text" id="in-new-batch" class="w-full border border-brand-sandDark rounded px-3 py-2 text-sm outline-none focus:ring-1 focus:ring-brand-forest focus:border-brand-forest text-brand-slate bg-brand-paper shadow-sm font-mono font-medium"></div>
                             <div>
-                                <label class="block text-xs font-medium text-slate-700 mb-1">Received By <span class="text-red-500">*</span></label>
-                                <select id="in-personnel" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm outline-none bg-white shadow-sm">
+                                <label class="block text-xs font-medium text-gray-600 mb-1">Received By <span class="text-brand-terracotta">*</span></label>
+                                <select id="in-personnel" class="w-full border border-brand-sandDark rounded px-3 py-2 text-sm outline-none focus:ring-1 focus:ring-brand-forest focus:border-brand-forest bg-brand-paper text-brand-slate shadow-sm cursor-pointer">
                                     <option value="" disabled selected>Select Staff...</option>
                                 </select>
                             </div>
@@ -199,49 +199,49 @@ const globalModalHTML = `
 
                 <!-- FORM 3: STOCK OUT (DEDUCT) -->
                 <div id="form-out" class="hidden form-section space-y-6">
-                     <div class="bg-red-50/50 p-4 rounded-lg border border-red-100">
-                        <label class="block text-sm font-bold text-slate-700 mb-2">Select Item <span class="text-red-500">*</span></label>
-                        <select id="out-item-select" onchange="handleOutSelect()" class="w-full border border-white rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-brand-accent outline-none bg-white shadow-sm"></select>
+                     <div class="bg-brand-terracotta/10 p-4 rounded border border-brand-terracotta/20">
+                        <label class="block text-xs font-bold text-brand-terracotta uppercase tracking-wider mb-2">Select Item <span class="text-brand-terracotta">*</span></label>
+                        <select id="out-item-select" onchange="handleOutSelect()" class="w-full border border-brand-sandDark rounded px-3 py-2 text-sm focus:ring-1 focus:ring-brand-forest focus:border-brand-forest outline-none bg-brand-paper text-brand-slate shadow-sm cursor-pointer"></select>
                     </div>
                     
-                    <div class="bg-slate-50 p-4 rounded-lg border border-slate-200">
-                        <h3 class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-4 border-b border-slate-200 pb-2">Quantity</h3>
-                        <label class="block text-sm font-medium text-slate-700 mb-1">Quantity Deducted (<span id="out-base-label" class="text-brand-accent">Base Unit</span>) <span class="text-red-500">*</span></label>
-                        <input type="number" id="out-qty" placeholder="e.g., 5" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-brand-accent outline-none">
-                        <p id="out-available-hint" class="text-xs font-medium text-amber-600 text-right mt-1">Available: --</p>
+                    <div class="bg-[#FAFAF8] p-4 rounded border border-brand-sandDark">
+                        <h3 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-4 border-b-2 border-brand-sandDark pb-2">Quantity</h3>
+                        <label class="block text-xs font-medium text-gray-600 mb-1">Quantity Deducted (<span id="out-base-label" class="text-brand-forest font-bold">Base Unit</span>) <span class="text-brand-terracotta">*</span></label>
+                        <input type="number" id="out-qty" placeholder="e.g., 5" class="w-full border border-brand-sandDark rounded px-3 py-2 text-sm focus:ring-1 focus:ring-brand-forest focus:border-brand-forest outline-none text-brand-slate bg-brand-paper shadow-sm font-mono font-medium">
+                        <p id="out-available-hint" class="text-[10px] font-bold text-orange-600 uppercase tracking-wider text-right mt-1">Available: --</p>
                     </div>
 
-                    <div class="bg-slate-50 p-4 rounded-lg border border-slate-200 space-y-4">
-                        <h3 class="text-xs font-bold text-slate-500 uppercase tracking-wider border-b border-slate-200 pb-2">Reason & Impact Tracking</h3>
+                    <div class="bg-[#FAFAF8] p-4 rounded border border-brand-sandDark space-y-4">
+                        <h3 class="text-xs font-bold text-gray-500 uppercase tracking-wider border-b-2 border-brand-sandDark pb-2">Reason & Impact Tracking</h3>
                         <div class="grid grid-cols-2 gap-4">
                             <div>
-                                <label class="block text-sm font-medium text-slate-700 mb-1">Deduction Reason <span class="text-red-500">*</span></label>
-                                <select id="out-reason" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-brand-accent outline-none bg-white shadow-sm">
+                                <label class="block text-xs font-medium text-gray-600 mb-1">Deduction Reason <span class="text-brand-terracotta">*</span></label>
+                                <select id="out-reason" class="w-full border border-brand-sandDark rounded px-3 py-2 text-sm focus:ring-1 focus:ring-brand-forest focus:border-brand-forest outline-none bg-brand-paper text-brand-slate shadow-sm cursor-pointer">
                                     <option value="" disabled selected>Select Reason...</option>
                                 </select>
                             </div>
                             <div>
-                                <label class="block text-sm font-medium text-slate-700 mb-1">Personnel / Auth By <span class="text-red-500">*</span></label>
-                                <select id="out-personnel" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-brand-accent outline-none bg-white shadow-sm">
+                                <label class="block text-xs font-medium text-gray-600 mb-1">Personnel / Auth By <span class="text-brand-terracotta">*</span></label>
+                                <select id="out-personnel" class="w-full border border-brand-sandDark rounded px-3 py-2 text-sm focus:ring-1 focus:ring-brand-forest focus:border-brand-forest outline-none bg-brand-paper text-brand-slate shadow-sm cursor-pointer">
                                     <option value="" disabled selected>Select Staff...</option>
                                 </select>
                             </div>
                         </div>
                         <div id="out-subject-container" class="block">
-                            <label class="block text-sm font-medium text-slate-700 mb-1">Subject / Dispensed To <span class="text-red-500">*</span></label>
-                            <select id="out-subject" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-brand-accent outline-none bg-white shadow-sm">
+                            <label class="block text-xs font-medium text-gray-600 mb-1">Subject / Dispensed To <span class="text-brand-terracotta">*</span></label>
+                            <select id="out-subject" class="w-full border border-brand-sandDark rounded px-3 py-2 text-sm focus:ring-1 focus:ring-brand-forest focus:border-brand-forest outline-none bg-brand-paper text-brand-slate shadow-sm cursor-pointer">
                                 <option value="" disabled selected>Select Destination...</option>
                             </select>
-                            <p class="text-[10px] text-slate-500 mt-1">Required for Impact Statement Generation.</p>
+                            <p class="text-[10px] text-gray-500 mt-1">Required for Impact Statement Generation.</p>
                         </div>
                     </div>
                 </div>
 
             </div>
 
-            <div class="px-6 py-4 border-t border-slate-200 bg-slate-50 flex justify-end gap-3 rounded-b-xl shrink-0">
-                <button onclick="closeModal()" class="px-4 py-2 bg-white border border-slate-300 text-slate-700 rounded-lg text-sm font-medium hover:bg-slate-50 transition">Cancel</button>
-                <button id="modal-submit-btn" onclick="submitModal()" class="px-4 py-2 bg-brand-accent text-white rounded-lg text-sm font-medium hover:bg-blue-700 transition shadow-sm">Confirm</button>
+            <div class="px-6 py-4 border-t border-brand-sandDark bg-[#FAFAF8] rounded-b flex justify-end gap-3 shrink-0">
+                <button onclick="closeModal()" class="px-4 py-2 bg-brand-paper border border-brand-sandDark text-gray-600 rounded text-sm font-medium hover:bg-brand-sand transition">Cancel</button>
+                <button id="modal-submit-btn" onclick="submitModal()" class="px-4 py-2 bg-brand-forest text-white rounded text-sm font-medium hover:bg-brand-forestLight transition shadow-sm">Confirm</button>
             </div>
         </div>
     </div>
@@ -267,9 +267,9 @@ const categorySchemas = {
 };
 
 const htmlField = (id, label, type='text', placeholder='', required=false) => `
-    <div><label class="block text-xs font-medium text-slate-700 mb-1">${label} ${required ? '<span class="text-red-500">*</span>' : ''}</label><input type="${type}" id="${id}" placeholder="${placeholder}" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-brand-accent"></div>`;
+    <div><label class="block text-xs font-medium text-gray-600 mb-1">${label} ${required ? '<span class="text-brand-terracotta">*</span>' : ''}</label><input type="${type}" id="${id}" placeholder="${placeholder}" class="w-full border border-brand-sandDark rounded px-3 py-2 text-sm outline-none focus:ring-1 focus:ring-brand-forest focus:border-brand-forest font-medium text-brand-slate bg-brand-paper shadow-sm"></div>`;
 const htmlSelect = (id, label, options, required=false) => `
-    <div><label class="block text-xs font-medium text-slate-700 mb-1">${label} ${required ? '<span class="text-red-500">*</span>' : ''}</label><select id="${id}" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-brand-accent bg-white">${options.map(o => `<option value="${o}">${o}</option>`).join('')}</select></div>`;
+    <div><label class="block text-xs font-medium text-gray-600 mb-1">${label} ${required ? '<span class="text-brand-terracotta">*</span>' : ''}</label><select id="${id}" class="w-full border border-brand-sandDark rounded px-3 py-2 text-sm outline-none focus:ring-1 focus:ring-brand-forest focus:border-brand-forest font-medium text-brand-slate bg-brand-paper shadow-sm cursor-pointer">${options.map(o => `<option value="${o}">${o}</option>`).join('')}</select></div>`;
 
 window.handleCategorySchemaChange = function() {
     const cat = document.getElementById('create-category').value;
@@ -331,7 +331,7 @@ function populateSelects() {
     });
 
     if(currentDonationContext) {
-        inSel.innerHTML += '<optgroup label="Action"><option value="NEW_ITEM" class="text-blue-600 font-bold">+ Item not found? Create new master item</option></optgroup>';
+        inSel.innerHTML += '<optgroup label="Action"><option value="NEW_ITEM" class="text-brand-forest font-bold">+ Item not found? Create new master item</option></optgroup>';
     }
 }
 

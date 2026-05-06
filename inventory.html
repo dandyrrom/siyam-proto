@@ -4,23 +4,51 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Digital Ledger - Enterprise Schema Architecture</title>
+    
+    <!-- Typography: Inter & Monospace -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+    
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
     <script>
-        tailwind.config = { theme: { extend: { fontFamily: { sans: ['Inter', 'sans-serif'] }, colors: { brand: { primary: '#0F172A', accent: '#2563EB', bg: '#F8FAFC' } } } } }
+        tailwind.config = { 
+            theme: { 
+                extend: { 
+                    fontFamily: { 
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', 'monospace'],
+                    }, 
+                    colors: { 
+                        brand: {
+                            forest: '#1E4D40',
+                            forestLight: '#2A6B59',
+                            sand: '#F7F5F0',
+                            sandDark: '#EADDCD',
+                            terracotta: '#D96C5B',
+                            slate: '#2C3E50',
+                            paper: '#FFFFFF'
+                        }
+                    },
+                    boxShadow: {
+                        'ledger': '0 2px 4px rgba(0,0,0,0.02)',
+                    }
+                } 
+            } 
+        }
     </script>
     <style>
         .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
         .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #EADDCD; border-radius: 4px; }
         #side-drawer { transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
         .drawer-open { transform: translateX(0) !important; }
         .modal-enter { opacity: 1 !important; transform: scale(1) translateY(0) !important; }
         .sticky-header { position: sticky; top: 0; z-index: 10; backdrop-filter: blur(8px); }
     </style>
 </head>
-<body class="bg-brand-bg text-slate-800 font-sans h-screen flex overflow-hidden">
+<body class="bg-brand-sand text-brand-slate font-sans h-screen flex overflow-hidden">
 
     <!-- WORKSPACE -->
     <main class="flex-1 flex flex-col max-w-6xl mx-auto w-full p-6 overflow-hidden">
@@ -28,37 +56,37 @@
         <!-- HEADER & ACTIONS -->
         <div class="flex items-end justify-between mb-4 shrink-0">
             <div>
-                <h1 class="text-2xl font-bold text-slate-900">Supply Inbox</h1>
-                <p class="text-sm text-slate-500 mt-1">Typography-driven list. Full financial & clinical schema.</p>
+                <h1 class="text-2xl font-bold text-brand-slate tracking-tight">Supply Inbox</h1>
+                <p class="text-sm text-gray-500 mt-1 font-medium">Typography-driven list. Full financial & clinical schema.</p>
             </div>
             <div class="flex items-center gap-3">
-                <button onclick="openModal('in')" class="flex items-center gap-2 px-4 py-2 bg-white border border-slate-300 text-slate-700 rounded-lg text-sm font-medium hover:bg-slate-50 transition shadow-sm">
-                    <i data-lucide="arrow-down-to-line" class="w-4 h-4 text-green-600"></i> Stock In
+                <button onclick="openModal('in')" class="flex items-center gap-2 px-4 py-2 bg-white border border-brand-forest text-brand-forest rounded text-sm font-medium hover:bg-brand-sand transition">
+                    <i data-lucide="arrow-down-to-line" class="w-4 h-4"></i> Stock In
                 </button>
-                <button onclick="openModal('out')" class="flex items-center gap-2 px-4 py-2 bg-white border border-slate-300 text-slate-700 rounded-lg text-sm font-medium hover:bg-slate-50 transition shadow-sm">
-                    <i data-lucide="arrow-up-from-line" class="w-4 h-4 text-red-500"></i> Stock Out
+                <button onclick="openModal('out')" class="flex items-center gap-2 px-4 py-2 bg-white border border-brand-forest text-brand-forest rounded text-sm font-medium hover:bg-brand-sand transition">
+                    <i data-lucide="arrow-up-from-line" class="w-4 h-4"></i> Stock Out
                 </button>
-                <button onclick="openModal('create')" class="flex items-center gap-2 px-4 py-2 bg-brand-accent text-white rounded-lg text-sm font-medium hover:bg-blue-700 transition shadow-sm shadow-blue-500/20">
+                <button onclick="openModal('create')" class="flex items-center gap-2 px-4 py-2 bg-brand-forest text-white rounded text-sm font-medium hover:bg-brand-forestLight transition shadow-ledger">
                     <i data-lucide="plus" class="w-4 h-4"></i> Add Item
                 </button>
             </div>
         </div>
 
         <!-- CONTROLS BAR -->
-        <div class="flex items-center gap-3 mb-4 shrink-0 bg-white p-2.5 rounded-xl border border-slate-200 shadow-sm">
-            <div class="flex bg-slate-100 rounded-md p-0.5 shrink-0">
-                <button id="btn-flat" onclick="toggleView('flat')" class="px-4 py-1.5 text-sm font-medium rounded shadow-sm bg-white text-slate-900 transition-all">Flat List</button>
-                <button id="btn-group" onclick="toggleView('group')" class="px-4 py-1.5 text-sm font-medium rounded text-slate-500 hover:text-slate-900 transition-all">Grouped</button>
+        <div class="flex items-center gap-3 mb-4 shrink-0 bg-brand-paper p-2.5 rounded border border-brand-sandDark shadow-ledger">
+            <div class="flex bg-brand-sand rounded p-0.5 shrink-0 border border-brand-sandDark">
+                <button id="btn-flat" onclick="toggleView('flat')" class="px-4 py-1.5 text-sm font-bold rounded bg-brand-forestLight/20 text-brand-forest transition-all">Flat List</button>
+                <button id="btn-group" onclick="toggleView('group')" class="px-4 py-1.5 text-sm font-medium rounded text-gray-500 hover:text-brand-forest transition-all">Grouped</button>
             </div>
-            <div class="w-px h-6 bg-slate-200 mx-1"></div>
+            <div class="w-px h-6 bg-brand-sandDark mx-1"></div>
             <div class="relative flex-1 min-w-[200px]">
-                <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2"></i>
-                <input type="text" id="search-input" oninput="renderList()" placeholder="Search items, brands, specs..." class="w-full pl-9 pr-3 py-1.5 bg-transparent text-sm focus:outline-none">
+                <i data-lucide="search" class="w-4 h-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2"></i>
+                <input type="text" id="search-input" oninput="renderList()" placeholder="Search items, brands, specs..." class="w-full pl-9 pr-3 py-1.5 bg-transparent text-sm focus:outline-none font-medium">
             </div>
-            <div class="w-px h-6 bg-slate-200 mx-1"></div>
+            <div class="w-px h-6 bg-brand-sandDark mx-1"></div>
             <div class="flex items-center gap-2 shrink-0">
-                <i data-lucide="filter" class="w-4 h-4 text-slate-400"></i>
-                <select id="filter-category" onchange="renderList()" class="bg-transparent text-sm focus:outline-none text-slate-700 font-medium cursor-pointer py-1.5">
+                <i data-lucide="filter" class="w-4 h-4 text-gray-400"></i>
+                <select id="filter-category" onchange="renderList()" class="bg-transparent text-sm focus:outline-none text-brand-slate font-medium cursor-pointer py-1.5">
                     <option value="All">All Categories</option>
                     <option value="Medications">Medications</option>
                     <option value="Injectables">Injectables</option>
@@ -71,10 +99,10 @@
                     <option value="Chemicals">Chemicals</option>
                 </select>
             </div>
-            <div class="w-px h-6 bg-slate-200 mx-1"></div>
+            <div class="w-px h-6 bg-brand-sandDark mx-1"></div>
             <div class="flex items-center gap-2 shrink-0 pr-2">
-                <i data-lucide="arrow-up-down" class="w-4 h-4 text-slate-400"></i>
-                <select id="sort-by" onchange="renderList()" class="bg-transparent text-sm focus:outline-none text-slate-700 font-medium cursor-pointer py-1.5">
+                <i data-lucide="arrow-up-down" class="w-4 h-4 text-gray-400"></i>
+                <select id="sort-by" onchange="renderList()" class="bg-transparent text-sm focus:outline-none text-brand-slate font-medium cursor-pointer py-1.5">
                     <option value="name-asc">Alphabetical (A-Z)</option>
                     <option value="name-desc">Alphabetical (Z-A)</option>
                     <option value="stock-low">Stock (Low-High)</option>
@@ -83,7 +111,7 @@
         </div>
 
         <!-- INBOX LIST CONTAINER -->
-        <div class="flex-1 bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden flex flex-col">
+        <div class="flex-1 bg-brand-paper border border-brand-sandDark rounded shadow-ledger overflow-hidden flex flex-col">
             <div class="overflow-y-auto custom-scrollbar flex-1 relative p-2" id="inbox-container">
                 <!-- Rendered by JS -->
             </div>
@@ -93,29 +121,29 @@
 
     <!-- SIDE DRAWER (BIODATA) -->
     <div id="drawer-backdrop" class="fixed inset-0 bg-slate-900/20 backdrop-blur-[1px] z-30 hidden opacity-0 transition-opacity" onclick="closeDrawer()"></div>
-    <div id="side-drawer" class="fixed top-0 right-0 bottom-0 w-[500px] bg-white shadow-2xl z-40 translate-x-full flex flex-col border-l border-slate-200">
-        <div class="p-6 border-b border-slate-200 bg-slate-50 flex items-start justify-between shrink-0">
+    <div id="side-drawer" class="fixed top-0 right-0 bottom-0 w-[500px] bg-brand-paper shadow-2xl z-40 translate-x-full flex flex-col border-l border-brand-sandDark">
+        <div class="p-6 border-b border-brand-sandDark bg-[#FAFAF8] flex items-start justify-between shrink-0">
             <div>
-                <span id="drawer-group" class="px-2 py-0.5 rounded text-[10px] font-bold tracking-wider bg-white text-slate-600 border border-slate-200 uppercase mb-2 inline-block">Group</span>
-                <button onclick="editItemDetails('group')" class="ml-1 text-slate-400 hover:text-brand-accent transition inline-block"><i data-lucide="pencil" class="w-3 h-3"></i></button>
+                <span id="drawer-group" class="px-2 py-0.5 rounded text-[10px] font-bold tracking-wider bg-white text-gray-600 border border-brand-sandDark uppercase mb-2 inline-block">Group</span>
+                <button onclick="editItemDetails('group')" class="ml-1 text-gray-400 hover:text-brand-forest transition inline-block"><i data-lucide="pencil" class="w-3 h-3"></i></button>
                 
                 <div class="flex items-center gap-2 mt-1">
-                    <h2 id="drawer-title" class="text-xl font-bold text-slate-900 leading-tight">Name</h2>
-                    <button onclick="editItemDetails('name')" class="text-slate-400 hover:text-brand-accent transition"><i data-lucide="pencil" class="w-4 h-4"></i></button>
+                    <h2 id="drawer-title" class="text-xl font-bold text-brand-slate tracking-tight leading-tight">Name</h2>
+                    <button onclick="editItemDetails('name')" class="text-gray-400 hover:text-brand-forest transition"><i data-lucide="pencil" class="w-4 h-4"></i></button>
                 </div>
-                <p id="drawer-subtitle" class="text-sm font-medium text-brand-accent mt-1">Spec</p>
+                <p id="drawer-subtitle" class="text-sm font-medium text-gray-500 mt-1">Spec</p>
                 <input type="hidden" id="drawer-item-id">
             </div>
-            <button onclick="closeDrawer()" class="p-1.5 text-slate-400 hover:bg-slate-200 rounded transition"><i data-lucide="x" class="w-5 h-5"></i></button>
+            <button onclick="closeDrawer()" class="p-1.5 text-gray-400 hover:bg-brand-sand rounded transition"><i data-lucide="x" class="w-5 h-5"></i></button>
         </div>
         
         <div class="flex-1 overflow-y-auto p-6 space-y-6 custom-scrollbar" id="drawer-content">
             <!-- Injected via JS -->
         </div>
 
-        <div class="p-4 border-t border-slate-200 bg-slate-50 flex gap-3 shrink-0">
-            <button id="drawer-btn-in" class="flex-1 py-2.5 bg-brand-accent text-white rounded-lg text-sm font-medium shadow-sm hover:bg-blue-700 transition">Stock In</button>
-            <button id="drawer-btn-out" class="flex-1 py-2.5 bg-white border border-slate-300 text-slate-700 rounded-lg text-sm font-medium shadow-sm hover:bg-slate-50 transition">Stock Out</button>
+        <div class="p-4 border-t border-brand-sandDark bg-[#FAFAF8] flex gap-3 shrink-0">
+            <button id="drawer-btn-in" class="flex-1 py-2.5 bg-brand-forest text-white rounded text-sm font-medium hover:bg-brand-forestLight transition">Stock In</button>
+            <button id="drawer-btn-out" class="flex-1 py-2.5 bg-white border border-brand-forest text-brand-forest rounded text-sm font-medium hover:bg-brand-sand transition">Stock Out</button>
         </div>
     </div>
 
@@ -130,38 +158,47 @@ let currentView = 'flat';
 // --- 2. INBOX LIST RENDERING ---
 window.toggleView = function(view) {
     currentView = view;
-    document.getElementById('btn-flat').className = view === 'flat' ? 'px-4 py-1.5 text-sm font-medium rounded shadow-sm bg-white text-slate-900 transition-all' : 'px-4 py-1.5 text-sm font-medium rounded text-slate-500 hover:text-slate-900 transition-all';
-    document.getElementById('btn-group').className = view === 'group' ? 'px-4 py-1.5 text-sm font-medium rounded shadow-sm bg-white text-slate-900 transition-all' : 'px-4 py-1.5 text-sm font-medium rounded text-slate-500 hover:text-slate-900 transition-all';
+    // Updated active/inactive string literals to match Forest/Sand palette
+    document.getElementById('btn-flat').className = view === 'flat' ? 'px-4 py-1.5 text-sm font-bold rounded bg-brand-forestLight/20 text-brand-forest transition-all' : 'px-4 py-1.5 text-sm font-medium rounded text-gray-500 hover:text-brand-forest transition-all';
+    document.getElementById('btn-group').className = view === 'group' ? 'px-4 py-1.5 text-sm font-bold rounded bg-brand-forestLight/20 text-brand-forest transition-all' : 'px-4 py-1.5 text-sm font-medium rounded text-gray-500 hover:text-brand-forest transition-all';
     renderList();
 };
 
 window.createInboxRow = function(item) {
-    let statusColor = 'bg-emerald-500';
-    let statusText = 'text-emerald-700';
-    if (item.totalBaseUnits === 0) { statusColor = 'bg-red-500'; statusText = 'text-red-700'; } 
-    else if (item.totalBaseUnits <= item.minThreshold) { statusColor = 'bg-amber-500'; statusText = 'text-amber-700'; }
+    // Mapped status colors to semantic palette
+    let statusColor = 'bg-brand-forest';
+    let statusText = 'text-brand-forest';
+    
+    if (item.totalBaseUnits === 0) { 
+        statusColor = 'bg-brand-terracotta'; 
+        statusText = 'text-brand-terracotta'; 
+    } 
+    else if (item.totalBaseUnits <= item.minThreshold) { 
+        statusColor = 'bg-orange-500'; 
+        statusText = 'text-orange-600'; 
+    }
 
     let displaySpecies = item.targetSpecies.split(' ')[0];
 
     return `
-        <div class="group flex items-center justify-between p-4 mb-2 bg-white hover:bg-slate-50 border border-slate-100 hover:border-blue-200 rounded-xl transition cursor-pointer shadow-sm relative" onclick="openDrawer('${item.id}')">
+        <div class="group flex items-center justify-between p-4 mb-2 bg-brand-paper hover:bg-brand-sand border border-brand-sandDark rounded transition cursor-pointer shadow-ledger relative" onclick="openDrawer('${item.id}')">
             <div class="flex-1">
                 <div class="flex items-center gap-2 mb-1">
-                    <h3 class="text-lg font-bold text-slate-900 leading-tight group-hover:text-brand-accent transition">${item.name}</h3>
-                    <span class="px-2 py-0.5 rounded text-[10px] font-bold tracking-wider bg-slate-100 text-slate-500 uppercase">${item.category}</span>
-                    ${item.isControlled === 'Yes' ? `<span class="px-2 py-0.5 rounded text-[10px] font-bold tracking-wider bg-red-100 text-red-600 uppercase border border-red-200">Controlled</span>` : ''}
+                    <h3 class="text-lg font-bold text-brand-slate leading-tight group-hover:text-brand-forestLight transition">${item.name}</h3>
+                    <span class="px-2 py-0.5 rounded text-[10px] font-bold tracking-wider bg-gray-100 text-gray-600 uppercase border border-gray-200">${item.category}</span>
+                    ${item.isControlled === 'Yes' ? `<span class="px-2 py-0.5 rounded text-[10px] font-bold tracking-wider bg-brand-terracotta/10 text-brand-terracotta uppercase border border-brand-terracotta/20">Controlled</span>` : ''}
                 </div>
-                <div class="flex items-center gap-3 text-sm text-slate-500">
-                    <span class="font-medium text-brand-accent">${item.brand} ${item.generatedName ? '- ' + item.generatedName : ''}</span>
-                    <span class="w-1 h-1 rounded-full bg-slate-300"></span>
-                    <span class="flex items-center gap-1 text-slate-400"><i data-lucide="paw-print" class="w-3 h-3"></i> ${displaySpecies}</span>
+                <div class="flex items-center gap-3 text-sm text-gray-500">
+                    <span class="font-medium text-gray-600">${item.brand} ${item.generatedName ? '- ' + item.generatedName : ''}</span>
+                    <span class="w-1 h-1 rounded-full bg-brand-sandDark"></span>
+                    <span class="flex items-center gap-1 text-gray-400"><i data-lucide="paw-print" class="w-3 h-3"></i> ${displaySpecies}</span>
                 </div>
             </div>
             
-            <div class="w-48 px-6 flex flex-col items-end border-r border-slate-100 transition-opacity group-hover:opacity-10">
-                <div class="flex items-baseline gap-1">
-                    <span class="text-2xl font-black ${statusText}">${item.totalBaseUnits.toLocaleString()}</span>
-                    <span class="text-sm font-medium text-slate-500">${item.baseUnit}</span>
+            <div class="w-48 px-6 flex flex-col items-end border-r border-brand-sandDark transition-opacity group-hover:opacity-10">
+                <div class="flex items-baseline gap-1 font-mono">
+                    <span class="text-2xl font-bold ${statusText}">${item.totalBaseUnits.toLocaleString()}</span>
+                    <span class="text-sm font-medium text-gray-500">${item.baseUnit}</span>
                 </div>
                 <div class="flex items-center gap-1.5 mt-0.5">
                     <div class="w-2 h-2 rounded-full ${statusColor}"></div>
@@ -170,8 +207,8 @@ window.createInboxRow = function(item) {
             </div>
 
             <div class="absolute right-6 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity flex gap-2">
-                <button onclick="event.stopPropagation(); window.openModal('in', '${item.id}')" class="px-3 py-1.5 bg-blue-50 text-brand-accent border border-blue-200 rounded text-xs font-bold hover:bg-brand-accent hover:text-white transition shadow-sm">Stock In</button>
-                <button onclick="event.stopPropagation(); window.openModal('out', '${item.id}')" class="px-3 py-1.5 bg-white text-slate-600 border border-slate-200 rounded text-xs font-bold hover:bg-slate-100 transition shadow-sm">Stock Out</button>
+                <button onclick="event.stopPropagation(); window.openModal('in', '${item.id}')" class="px-3 py-1.5 bg-brand-forest text-white rounded text-xs font-medium hover:bg-brand-forestLight transition shadow-ledger">Stock In</button>
+                <button onclick="event.stopPropagation(); window.openModal('out', '${item.id}')" class="px-3 py-1.5 bg-white text-brand-forest border border-brand-forest rounded text-xs font-medium hover:bg-brand-sand transition">Stock Out</button>
             </div>
         </div>
     `;
@@ -204,7 +241,7 @@ window.renderList = function() {
     });
 
     if (filtered.length === 0) {
-        container.innerHTML = `<div class="p-12 text-center text-slate-400">No items match your criteria.</div>`;
+        container.innerHTML = `<div class="p-12 text-center text-gray-400 font-medium">No items match your criteria.</div>`;
         return;
     }
 
@@ -215,11 +252,12 @@ window.renderList = function() {
         groups.forEach(group => {
             const itemsInGroup = filtered.filter(i => (i.itemGroup || 'Uncategorized') === group);
             if(itemsInGroup.length > 0) {
+                // Applied new grouped header formatting
                 container.innerHTML += `
-                    <div class="sticky-header bg-white/90 p-3 mt-4 mb-2 border-b border-slate-200">
-                        <h2 class="text-sm font-black text-slate-800 uppercase tracking-wider flex items-center gap-2">
-                            <i data-lucide="folder-open" class="w-4 h-4 text-brand-accent"></i> ${group}
-                            <span class="ml-auto text-xs font-medium text-slate-400 bg-slate-100 px-2 py-0.5 rounded-full">${itemsInGroup.length} Items</span>
+                    <div class="sticky-header bg-[#FAFAF8] p-3 mt-4 mb-2 border-b-2 border-brand-sandDark rounded-t">
+                        <h2 class="text-xs font-bold text-gray-500 uppercase tracking-wider flex items-center gap-2">
+                            <i data-lucide="folder-open" class="w-4 h-4 text-brand-forest"></i> ${group}
+                            <span class="ml-auto text-xs font-bold text-gray-500 bg-white border border-brand-sandDark px-2 py-0.5 rounded">${itemsInGroup.length} Items</span>
                         </h2>
                     </div>
                 `;
@@ -271,51 +309,52 @@ window.openDrawer = function(itemId) {
         displayBulk = `(Est: ${bulk} ${item.latestPurchasingUnit}` + (rem > 0 ? ` + ${rem} ${item.baseUnit})` : ')');
     }
 
+    // Applied new ledger dossier styling to template literal
     document.getElementById('drawer-content').innerHTML = `
-        <div class="bg-blue-50 border border-blue-100 rounded-xl p-5 flex items-center justify-between">
+        <div class="bg-[#FAFAF8] border border-brand-sandDark rounded p-5 flex items-center justify-between">
             <div>
-                <p class="text-xs font-bold text-blue-600 uppercase tracking-wider mb-1">Total Stock on Hand</p>
-                <p class="text-2xl font-bold text-slate-900">${displayCount}</p>
-                ${displayBulk ? `<p class="text-xs font-medium text-slate-600 mt-0.5">${displayBulk}</p>` : ''}
+                <p class="text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1">Total Stock on Hand</p>
+                <p class="text-2xl font-bold text-brand-slate font-mono">${displayCount}</p>
+                ${displayBulk ? `<p class="text-xs font-medium text-gray-500 mt-0.5">${displayBulk}</p>` : ''}
             </div>
             <div class="text-right">
-                <p class="text-[10px] text-slate-500 uppercase tracking-wide">Alert Threshold</p>
-                <p class="text-sm font-medium text-amber-600">${item.minThreshold} ${item.baseUnit}</p>
+                <p class="text-[10px] text-gray-500 uppercase tracking-wider">Alert Threshold</p>
+                <p class="text-sm font-bold text-orange-600 font-mono">${item.minThreshold} ${item.baseUnit}</p>
             </div>
         </div>
 
         <div>
-            <h3 class="text-sm font-bold text-slate-900 border-b border-slate-200 pb-2 mb-4">Master Identity & Protocol</h3>
+            <h3 class="text-xs font-bold text-gray-500 uppercase tracking-wider border-b-2 border-brand-sandDark pb-2 mb-4">Master Identity & Protocol</h3>
             <div class="grid grid-cols-2 gap-y-4 gap-x-4">
-                <div><p class="text-[10px] text-slate-500 uppercase tracking-wide">Target Species</p><p class="text-sm font-medium text-slate-900">${item.targetSpecies}</p></div>
-                <div><p class="text-[10px] text-slate-500 uppercase tracking-wide">Storage Protocol</p><p class="text-sm font-medium text-slate-900">${item.storage}</p></div>
+                <div><p class="text-[10px] text-gray-500 uppercase tracking-wider">Target Species</p><p class="text-sm font-medium text-brand-slate">${item.targetSpecies}</p></div>
+                <div><p class="text-[10px] text-gray-500 uppercase tracking-wider">Storage Protocol</p><p class="text-sm font-medium text-brand-slate">${item.storage}</p></div>
             </div>
             
-            <h3 class="text-sm font-bold text-slate-900 border-b border-slate-200 pb-2 mt-6 mb-4">Latest Batch Info</h3>
+            <h3 class="text-xs font-bold text-gray-500 uppercase tracking-wider border-b-2 border-brand-sandDark pb-2 mt-6 mb-4">Latest Batch Info</h3>
             <div class="grid grid-cols-2 gap-y-4 gap-x-4">
-                <div><p class="text-[10px] text-slate-500 uppercase tracking-wide">Packaging Configuration</p><p class="text-sm font-medium text-slate-900">1 ${item.latestPurchasingUnit} = ${item.latestMultiplier} ${item.baseUnit}</p></div>
-                <div><p class="text-[10px] text-slate-500 uppercase tracking-wide">Physical Location</p><p class="text-sm font-medium text-slate-900">${item.latestLocation || 'Unassigned'}</p></div>
+                <div><p class="text-[10px] text-gray-500 uppercase tracking-wider">Packaging Configuration</p><p class="text-sm font-medium text-brand-slate">1 ${item.latestPurchasingUnit} = ${item.latestMultiplier} ${item.baseUnit}</p></div>
+                <div><p class="text-[10px] text-gray-500 uppercase tracking-wider">Physical Location</p><p class="text-sm font-medium text-brand-slate">${item.latestLocation || 'Unassigned'}</p></div>
                 
-                <div class="col-span-2 border-t border-slate-100 pt-3 mt-1">
-                    <p class="text-[10px] text-slate-500 uppercase tracking-wide mb-1">Procurement Financials</p>
-                    <div class="bg-slate-50 p-3 rounded border border-slate-200 flex justify-between">
-                        <div><p class="text-xs text-slate-500 font-medium">${item.procurement}</p></div>
-                        <div><p class="text-sm font-bold text-slate-900">${item.costInfo || 'N/A'}</p></div>
+                <div class="col-span-2 border-t border-brand-sandDark pt-3 mt-1">
+                    <p class="text-[10px] text-gray-500 uppercase tracking-wider mb-1">Procurement Financials</p>
+                    <div class="bg-[#FAFAF8] p-3 rounded border border-brand-sandDark flex justify-between">
+                        <div><p class="text-xs text-gray-500 font-medium">${item.procurement}</p></div>
+                        <div><p class="text-sm font-bold text-brand-slate font-mono">${item.costInfo || 'N/A'}</p></div>
                     </div>
                 </div>
 
-                <div class="col-span-2 border-t border-slate-100 pt-3 mt-1 grid grid-cols-2 gap-4">
-                    <div><p class="text-[10px] text-slate-500 uppercase tracking-wide">Expiration Date</p><p class="text-sm font-medium ${item.expiry ? 'text-red-600' : 'text-slate-400'}">${item.expiry || 'Not Applicable'}</p></div>
-                    <div><p class="text-[10px] text-slate-500 uppercase tracking-wide">Batch / Lot ID</p><p class="text-sm font-medium font-mono text-slate-900">${item.batchId || 'N/A'}</p></div>
+                <div class="col-span-2 border-t border-brand-sandDark pt-3 mt-1 grid grid-cols-2 gap-4">
+                    <div><p class="text-[10px] text-gray-500 uppercase tracking-wider">Expiration Date</p><p class="text-sm font-mono font-medium ${item.expiry ? 'text-brand-terracotta' : 'text-gray-400'}">${item.expiry || 'Not Applicable'}</p></div>
+                    <div><p class="text-[10px] text-gray-500 uppercase tracking-wider">Batch / Lot ID</p><p class="text-sm font-bold font-mono text-brand-slate">${item.batchId || 'N/A'}</p></div>
                 </div>
             </div>
         </div>
         ${item.isControlled === 'Yes' ? `
-        <div class="mt-2 p-4 bg-red-50 border border-red-200 rounded-xl flex gap-3">
-            <i data-lucide="shield-alert" class="w-5 h-5 text-red-600 shrink-0"></i>
+        <div class="mt-2 p-4 bg-brand-terracotta/10 border border-brand-terracotta/20 rounded flex gap-3">
+            <i data-lucide="shield-alert" class="w-5 h-5 text-brand-terracotta shrink-0"></i>
             <div>
-                <p class="text-sm font-bold text-red-700">Controlled Substance</p>
-                <p class="text-xs text-red-600 mt-1">Requires authorized personnel auditing.</p>
+                <p class="text-sm font-bold text-brand-terracotta">Controlled Substance</p>
+                <p class="text-xs text-brand-terracotta/80 mt-1 font-medium">Requires authorized personnel auditing.</p>
             </div>
         </div>` : ''}
     `;
