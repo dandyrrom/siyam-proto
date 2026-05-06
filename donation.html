@@ -4,36 +4,31 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Donations - DAS SIYAM</title>
-    
-    <!-- Typography: Inter & Monospace -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
-    
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <script>
         tailwind.config = { 
             theme: { 
                 extend: { 
-                    fontFamily: { 
-                        sans: ['Inter', 'sans-serif'],
-                        mono: ['SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', 'monospace'],
-                    }, 
+                    fontFamily: { sans: ['Inter', 'sans-serif'] }, 
                     colors: { 
-                        brand: {
-                            forest: '#1E4D40',
-                            forestLight: '#2A6B59',
-                            sand: '#F7F5F0',
-                            sandDark: '#EADDCD',
-                            terracotta: '#D96C5B',
-                            slate: '#2C3E50',
-                            paper: '#FFFFFF'
+                        brand: { 
+                            primary: '#0F172A',
+                            action: '#2563EB',
+                            actionDark: '#1D4ED8',
+                            secondary: '#0EA5E9',
+                            secondaryDark: '#0284C7',
+                            surface: '#F8FAFC',
+                            panel: '#FFFFFF',
+                            accent: '#2563EB',
+                            bg: '#F8FAFC'
+                        },
+                        semantic: {
+                            critical: '#EF4444',
+                            criticalBg: '#FEF2F2',
+                            criticalBorder: '#FECACA'
                         }
-                    },
-                    boxShadow: {
-                        'ledger': '0 2px 4px rgba(0,0,0,0.02)',
-                    }
+                    } 
                 } 
             } 
         }
@@ -41,24 +36,31 @@
     <style>
         .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
         .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: #EADDCD; border-radius: 4px; }
-        .modal-transition { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        .modal-transition { transition: all 0.2s ease; }
+        
+        /* Badge Styles for Pipeline Statuses */
+        .badge-pending { background-color: #FEF3C7; color: #92400E; border: 1px solid #FDE68A; }
+        .badge-approved { background-color: #DBEAFE; color: #1E40AF; border: 1px solid #BFDBFE; }
+        .badge-arrived { background-color: #D1FAE5; color: #065F46; border: 1px solid #A7F3D0; }
+        .badge-stocked { background-color: #F0FDF4; color: #166534; border: 1px solid #BBF7D0; }
+        .badge-rejected { background-color: #FEF2F2; color: #991B1B; border: 1px solid #FECACA; }
     </style>
 </head>
-<body class="flex h-screen overflow-hidden bg-brand-sand text-brand-slate font-sans selection:bg-brand-forestLight/20 selection:text-brand-forest">
-    
+<body class="flex h-screen overflow-hidden text-gray-800 selection:bg-indigo-100 selection:text-indigo-900">
+
     <!-- Main Workspace -->
-    <main class="flex-1 flex flex-col h-screen relative overflow-hidden">
+    <main class="flex-1 flex flex-col h-screen relative overflow-hidden bg-[#FAFAFA]">
         
         <!-- Top Navigation Bar -->
-        <header class="h-16 bg-brand-paper border-b border-brand-sandDark flex items-center justify-between px-8 shrink-0 z-10 sticky top-0">
+        <header class="h-16 bg-white/80 backdrop-blur-md border-b border-gray-200 flex items-center justify-between px-8 shrink-0 z-10 sticky top-0">
             <div class="flex items-center">
-                <h1 class="text-lg font-bold text-brand-slate tracking-tight">Donations</h1>
+                <h1 class="text-lg font-semibold text-gray-900 tracking-tight">Donations</h1>
+                <span class="ml-3 text-[10px] font-bold text-slate-400 uppercase tracking-widest">3-Step Pipeline</span>
             </div>
             <div class="flex items-center space-x-3">
-                <button class="p-2 text-gray-400 hover:text-brand-forest rounded hover:bg-brand-sand transition-colors relative">
+                <button class="p-2 text-gray-400 hover:text-gray-600 rounded-md hover:bg-gray-50 transition-colors relative">
                     <i data-lucide="bell" class="w-4 h-4"></i>
-                    <span class="absolute top-1.5 right-1.5 w-1.5 h-1.5 bg-brand-terracotta rounded-full"></span>
                 </button>
             </div>
         </header>
@@ -68,210 +70,273 @@
             
             <div class="max-w-6xl mx-auto space-y-8">
                 
-                <!-- Metrics Overview -->
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div class="bg-brand-paper p-5 rounded border border-brand-sandDark shadow-ledger flex items-center justify-between">
+                <!-- Pipeline KPI Metrics -->
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    
+                    <!-- Step 1: Pending Review -->
+                    <div class="bg-white p-5 rounded-2xl border border-gray-200/60 shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] flex items-center justify-between">
                         <div>
-                            <p class="text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1">Needs Review</p>
-                            <h3 class="text-2xl font-bold text-brand-slate tracking-tight font-mono" id="kpi-review">0</h3>
+                            <p class="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">Pending Review</p>
+                            <h3 class="text-2xl font-semibold text-gray-900 tracking-tight" id="kpi-pending">0</h3>
+                            <p class="text-[10px] text-amber-600 font-bold mt-1">Step 1 — Form Approval</p>
                         </div>
-                        <div class="w-10 h-10 rounded bg-orange-50 border border-orange-200 flex items-center justify-center text-orange-600">
-                            <i data-lucide="inbox" class="w-4 h-4"></i>
+                        <div class="w-10 h-10 rounded-full bg-amber-50 flex items-center justify-center text-amber-500">
+                            <i data-lucide="inbox" class="w-5 h-5"></i>
                         </div>
                     </div>
                     
-                    <div class="bg-brand-paper p-5 rounded border border-brand-sandDark shadow-ledger flex items-center justify-between">
+                    <!-- Step 2: Awaiting Arrival -->
+                    <div class="bg-white p-5 rounded-2xl border border-gray-200/60 shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] flex items-center justify-between">
                         <div>
-                            <p class="text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1">Expected Soon</p>
-                            <h3 class="text-2xl font-bold text-brand-slate tracking-tight font-mono" id="kpi-approved">0</h3>
+                            <p class="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">Awaiting Arrival</p>
+                            <h3 class="text-2xl font-semibold text-gray-900 tracking-tight" id="kpi-approved">0</h3>
+                            <p class="text-[10px] text-blue-600 font-bold mt-1">Step 2 — Confirm Delivery</p>
                         </div>
-                        <div class="w-10 h-10 rounded bg-brand-forestLight/10 border border-brand-forestLight/20 flex items-center justify-center text-brand-forestLight">
-                            <i data-lucide="calendar-clock" class="w-4 h-4"></i>
+                        <div class="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center text-blue-500">
+                            <i data-lucide="calendar-clock" class="w-5 h-5"></i>
                         </div>
                     </div>
 
-                    <div class="bg-brand-paper p-5 rounded border border-brand-sandDark shadow-ledger flex items-center justify-between">
+                    <!-- Step 3: Ready to Stock In -->
+                    <div class="bg-white p-5 rounded-2xl border border-gray-200/60 shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] flex items-center justify-between">
                         <div>
-                            <p class="text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1">Received This Month</p>
-                            <h3 class="text-2xl font-bold text-brand-slate tracking-tight font-mono" id="kpi-received">14</h3>
+                            <p class="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">Ready to Stock In</p>
+                            <h3 class="text-2xl font-semibold text-gray-900 tracking-tight" id="kpi-arrived">0</h3>
+                            <p class="text-[10px] text-emerald-600 font-bold mt-1">Step 3 — Log to Inventory</p>
                         </div>
-                        <div class="w-10 h-10 rounded bg-brand-forest/10 border border-brand-forest/20 flex items-center justify-center text-brand-forest">
-                            <i data-lucide="check-circle-2" class="w-4 h-4"></i>
+                        <div class="w-10 h-10 rounded-full bg-emerald-50 flex items-center justify-center text-emerald-600">
+                            <i data-lucide="package-check" class="w-5 h-5"></i>
+                        </div>
+                    </div>
+
+                    <!-- Completed -->
+                    <div class="bg-white p-5 rounded-2xl border border-gray-200/60 shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] flex items-center justify-between">
+                        <div>
+                            <p class="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">Stocked In (Total)</p>
+                            <h3 class="text-2xl font-semibold text-gray-900 tracking-tight" id="kpi-stocked">0</h3>
+                        </div>
+                        <div class="w-10 h-10 rounded-full bg-green-50 flex items-center justify-center text-green-600">
+                            <i data-lucide="check-circle-2" class="w-5 h-5"></i>
                         </div>
                     </div>
                 </div>
 
                 <!-- Primary Data View -->
-                <div class="bg-brand-paper border border-brand-sandDark rounded shadow-ledger overflow-hidden flex flex-col">
+                <div class="bg-white border border-gray-200/80 rounded-2xl shadow-[0_4px_20px_-8px_rgba(0,0,0,0.05)] overflow-hidden">
                     
                     <!-- View Controls -->
-                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center px-6 py-4 border-b border-brand-sandDark bg-[#FAFAF8] gap-4">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center px-6 py-4 border-b border-gray-100 gap-4">
                         
                         <!-- Tab Navigation -->
-                        <div class="flex space-x-1 bg-brand-paper border border-brand-sandDark p-1 rounded">
-                            <button onclick="switchTab('active')" id="tab-active" class="px-4 py-1.5 text-sm font-bold rounded bg-brand-forestLight/20 text-brand-forest transition-all">
-                                Active
+                        <div class="flex space-x-1 bg-gray-100/80 p-1 rounded-lg">
+                            <button onclick="switchTab('active')" id="tab-active" class="px-4 py-1.5 text-sm font-medium rounded-md bg-white text-gray-900 shadow-sm ring-1 ring-gray-200 transition-all">
+                                Active Pipeline
                             </button>
-                            <button onclick="switchTab('history')" id="tab-history" class="px-4 py-1.5 text-sm font-medium rounded text-gray-500 hover:text-brand-forest transition-all">
+                            <button onclick="switchTab('history')" id="tab-history" class="px-4 py-1.5 text-sm font-medium rounded-md text-gray-500 hover:text-gray-700 hover:bg-gray-200/50 transition-all">
                                 History
                             </button>
                         </div>
 
-                        <!-- Actions & Search -->
+                        <!-- Search -->
                         <div class="flex items-center space-x-3 w-full sm:w-auto">
                             <div class="relative w-full sm:w-64">
                                 <i data-lucide="search" class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4"></i>
-                                <input type="text" placeholder="Search donors or items..." class="w-full pl-9 pr-3 py-1.5 text-sm bg-brand-sand border border-brand-sandDark rounded focus:bg-brand-paper focus:ring-1 focus:ring-brand-forest focus:outline-none transition-all font-medium text-brand-slate">
+                                <input type="text" id="search-input" oninput="renderTables()" placeholder="Search donors or items..." class="w-full pl-9 pr-3 py-1.5 text-sm bg-gray-50 border-none ring-1 ring-inset ring-gray-200 rounded-lg focus:bg-white focus:ring-2 focus:ring-indigo-500 transition-all">
                             </div>
-                            <button id="export-btn" class="hidden sm:flex items-center px-3 py-1.5 text-sm font-medium text-brand-forest bg-white border border-brand-forest rounded hover:bg-brand-sand transition-all">
-                                <i data-lucide="download" class="w-4 h-4 mr-2"></i> Export
-                            </button>
                         </div>
                     </div>
 
-                    <!-- Active Donations Table -->
+                    <!-- Active Pipeline Table -->
                     <div id="view-active" class="overflow-x-auto block">
-                        <table class="min-w-full text-left border-collapse text-sm">
+                        <table class="min-w-full divide-y divide-gray-100">
                             <thead>
-                                <tr class="bg-[#FAFAF8] border-b-2 border-brand-sandDark">
-                                    <th class="px-6 py-3 text-xs font-bold text-gray-500 uppercase tracking-wider">Donor</th>
-                                    <th class="px-6 py-3 text-xs font-bold text-gray-500 uppercase tracking-wider">Items Offered</th>
-                                    <th class="px-6 py-3 text-xs font-bold text-gray-500 uppercase tracking-wider">Drop-off Schedule</th>
-                                    <th class="px-6 py-3 text-xs font-bold text-gray-500 uppercase tracking-wider">Status</th>
-                                    <th class="px-6 py-3 text-right text-xs font-bold text-gray-500 uppercase tracking-wider">Action</th>
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider bg-gray-50/50">Donor</th>
+                                    <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider bg-gray-50/50">Items Offered</th>
+                                    <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider bg-gray-50/50">Drop-off</th>
+                                    <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider bg-gray-50/50">Status</th>
+                                    <th class="px-6 py-3 text-right text-xs font-semibold text-gray-500 uppercase tracking-wider bg-gray-50/50">Next Action</th>
                                 </tr>
                             </thead>
-                            <tbody id="active-table-body" class="divide-y divide-brand-sandDark">
-                                <!-- Populated by JS -->
+                            <tbody id="active-table-body" class="bg-white divide-y divide-gray-50">
                             </tbody>
                         </table>
+                        <div id="active-empty" class="hidden p-12 text-center text-sm text-gray-400">No active donations in the pipeline.</div>
                     </div>
 
-                    <!-- History Table (Hidden by default) -->
+                    <!-- History Table -->
                     <div id="view-history" class="overflow-x-auto hidden">
-                        <table class="min-w-full text-left border-collapse text-sm">
+                        <table class="min-w-full divide-y divide-gray-100">
                             <thead>
-                                <tr class="bg-[#FAFAF8] border-b-2 border-brand-sandDark">
-                                    <th class="px-6 py-3 text-xs font-bold text-gray-500 uppercase tracking-wider">Date Received</th>
-                                    <th class="px-6 py-3 text-xs font-bold text-gray-500 uppercase tracking-wider">Donor</th>
-                                    <th class="px-6 py-3 text-xs font-bold text-gray-500 uppercase tracking-wider">Items Received</th>
-                                    <th class="px-6 py-3 text-xs font-bold text-gray-500 uppercase tracking-wider">Received By</th>
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider bg-gray-50/50">Completed</th>
+                                    <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider bg-gray-50/50">Donor</th>
+                                    <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider bg-gray-50/50">Items</th>
+                                    <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider bg-gray-50/50">Result</th>
+                                    <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider bg-gray-50/50">Pipeline Trail</th>
                                 </tr>
                             </thead>
-                            <tbody id="history-table-body" class="divide-y divide-brand-sandDark">
-                                <!-- Populated by JS -->
+                            <tbody id="history-table-body" class="bg-white divide-y divide-gray-50">
                             </tbody>
                         </table>
+                        <div id="history-empty" class="hidden p-12 text-center text-sm text-gray-400">No completed donations yet.</div>
                     </div>
+
                 </div>
             </div>
         </div>
     </main>
 
-    <!-- Modal: Review Donation Details -->
-    <div id="modal-review" class="fixed inset-0 bg-slate-900/40 z-50 hidden flex items-center justify-center backdrop-blur-[2px] opacity-0 modal-transition">
-        <div class="bg-brand-paper rounded border border-brand-sandDark shadow-ledger w-full max-w-3xl max-h-[90vh] flex flex-col overflow-hidden mx-4 transform scale-95 modal-transition" id="modal-review-content">
+    <!-- ================================================================== -->
+    <!-- MODAL: Step 1 — Review Donation Form (3.2)                         -->
+    <!-- ================================================================== -->
+    <div id="modal-review" class="fixed inset-0 bg-gray-900/40 z-50 hidden flex items-center justify-center backdrop-blur-[2px] opacity-0 modal-transition">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-3xl max-h-[90vh] flex flex-col overflow-hidden mx-4 transform scale-95 modal-transition" id="modal-review-content">
             
-            <!-- Header -->
-            <div class="px-6 py-4 border-b border-brand-sandDark bg-[#FAFAF8] flex justify-between items-center rounded-t">
+            <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-white">
                 <div>
-                    <h2 class="text-lg font-bold text-brand-slate tracking-tight">Review Donation</h2>
-                    <p class="text-xs text-gray-500 font-medium mt-0.5">Verify items and confirm the drop-off schedule.</p>
+                    <div class="flex items-center gap-2">
+                        <h2 class="text-lg font-semibold text-gray-900 tracking-tight">Review Donation Form</h2>
+                        <span class="px-2 py-0.5 rounded text-[10px] font-bold tracking-wider bg-amber-100 text-amber-700 uppercase">Step 1 of 3</span>
+                    </div>
+                    <p class="text-sm text-gray-500 mt-0.5">Verify submitted items and approve or reject the form.</p>
                 </div>
-                <button onclick="closeLocalModal('modal-review')" class="p-1.5 text-gray-400 hover:text-brand-forest hover:bg-brand-sand rounded transition">
+                <button onclick="closeLocalModal('modal-review')" class="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-full transition-colors">
                     <i data-lucide="x" class="w-5 h-5"></i>
                 </button>
             </div>
             
-            <!-- Body -->
-            <div class="p-6 overflow-y-auto custom-scrollbar flex-1 grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div class="p-6 overflow-y-auto custom-scrollbar flex-1 space-y-6">
                 
-                <!-- Left: Info & Schedule -->
-                <div class="space-y-6">
-                    <div class="bg-[#FAFAF8] p-5 rounded border border-brand-sandDark">
-                        <p class="text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-4 border-b-2 border-brand-sandDark pb-2">Submission Details</p>
-                        <div class="space-y-4">
+                <!-- Donor Info -->
+                <div>
+                    <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">Submission Details</p>
+                    <div class="space-y-4">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center text-sm font-bold" id="review-avatar">?</div>
                             <div>
-                                <p class="text-[10px] text-gray-500 uppercase tracking-wider font-bold mb-1">Donor</p>
-                                <div class="flex items-center">
-                                    <div class="w-8 h-8 rounded bg-brand-forest/10 border border-brand-forest/20 text-brand-forest flex items-center justify-center text-xs font-bold mr-3" id="review-avatar">
-                                        J
-                                    </div>
-                                    <p class="text-sm font-bold text-brand-slate" id="review-donor-name">Juan Dela Cruz</p>
-                                </div>
-                            </div>
-                            <div>
-                                <p class="text-[10px] text-gray-500 uppercase tracking-wider font-bold mb-1">Items Offered</p>
-                                <p class="text-sm text-brand-slate bg-brand-paper p-3 rounded border border-brand-sandDark leading-relaxed" id="review-items">10x Dog Food (Pedigree), 5x Bleach</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="bg-[#FAFAF8] p-0 rounded border border-brand-sandDark overflow-hidden">
-                        <p class="text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-0 border-b-2 border-brand-sandDark p-4 pb-2 bg-[#FAFAF8]">Schedule Check</p>
-                        
-                        <div class="bg-brand-paper">
-                            <div class="px-4 py-3 border-b border-brand-sandDark flex justify-between items-center bg-[#FAFAF8]">
-                                <span class="text-xs font-bold text-gray-500 uppercase tracking-wider">Requested Time</span>
-                                <span class="text-sm font-bold text-brand-slate font-mono" id="review-date">Oct 25, 2:00 PM</span>
-                            </div>
-                            <div class="p-4 bg-brand-paper">
-                                <p class="text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-3">Other events on this day:</p>
-                                <ul class="space-y-3">
-                                    <li class="flex items-start">
-                                        <div class="w-1.5 h-1.5 rounded-full bg-orange-500 mt-1.5 mr-2.5 shrink-0"></div>
-                                        <p class="text-sm font-medium text-gray-600">10:00 AM - Vet Visit (Clinic)</p>
-                                    </li>
-                                    <li class="flex items-start">
-                                        <div class="w-1.5 h-1.5 rounded-full bg-brand-forest mt-1.5 mr-2.5 shrink-0"></div>
-                                        <p class="text-sm font-medium text-gray-600">No scheduling conflicts near 2:00 PM.</p>
-                                    </li>
-                                </ul>
+                                <p class="font-medium text-gray-900" id="review-donor-name">--</p>
+                                <p class="text-xs text-gray-500">Submitted: <span id="review-submitted-date" class="font-medium">--</span></p>
                             </div>
                         </div>
                     </div>
                 </div>
+                
+                <!-- Items List (Structured) -->
+                <div>
+                    <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">Items Offered</p>
+                    <div id="review-items-list" class="space-y-2">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
 
-                <!-- Right: Attached Photos -->
-                <div class="bg-[#FAFAF8] p-5 rounded border border-brand-sandDark">
-                    <p class="text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-4 border-b-2 border-brand-sandDark pb-2">Attached Photos</p>
-                    <div class="space-y-4">
-                        <div class="group relative rounded border border-brand-sandDark bg-brand-paper overflow-hidden cursor-pointer hover:border-brand-forest transition-colors">
-                            <div class="p-3 border-b border-brand-sandDark bg-[#FAFAF8] flex justify-between items-center">
-                                <span class="text-xs font-bold text-gray-600">Items Photo</span>
-                                <i data-lucide="maximize-2" class="w-3.5 h-3.5 text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity"></i>
-                            </div>
-                            <div class="h-32 flex items-center justify-center bg-brand-sand">
-                                <i data-lucide="image" class="w-8 h-8 text-gray-300"></i>
-                            </div>
+                <!-- Schedule -->
+                <div>
+                    <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">Proposed Drop-off</p>
+                    <div class="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm">
+                        <div class="px-4 py-3 flex justify-between items-center bg-gray-50/50">
+                            <span class="text-sm text-gray-600 flex items-center gap-2"><i data-lucide="calendar" class="w-4 h-4 text-gray-400"></i> Requested Time</span>
+                            <span class="text-sm font-semibold text-gray-900" id="review-dropoff">--</span>
                         </div>
-                        
-                        <div class="group relative rounded border border-brand-sandDark bg-brand-paper overflow-hidden cursor-pointer hover:border-brand-forest transition-colors">
-                            <div class="p-3 border-b border-brand-sandDark bg-[#FAFAF8] flex justify-between items-center">
-                                <span class="text-xs font-bold text-gray-600">Receipt / Proof</span>
-                                <i data-lucide="maximize-2" class="w-3.5 h-3.5 text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity"></i>
-                            </div>
-                            <div class="h-32 flex items-center justify-center bg-brand-sand">
-                                <i data-lucide="receipt" class="w-8 h-8 text-gray-300"></i>
-                            </div>
-                        </div>
+                    </div>
+                </div>
+
+                <!-- Rejection Reason (shown only when rejecting) -->
+                <div id="review-reject-section" class="hidden">
+                    <p class="text-xs font-semibold text-red-500 uppercase tracking-wider mb-2">Rejection Reason *</p>
+                    <textarea id="review-reject-reason" rows="2" placeholder="Provide a reason for rejecting this donation form..." class="w-full border border-red-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-red-400 outline-none resize-none bg-red-50"></textarea>
+                </div>
+            </div>
+
+            <div class="px-6 py-4 border-t border-gray-100 bg-gray-50/80 flex justify-between items-center">
+                <button onclick="closeLocalModal('modal-review')" class="px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors">Close</button>
+                <div class="flex space-x-3">
+                    <button onclick="toggleRejectSection()" id="btn-reject-toggle" class="px-4 py-2 text-sm font-medium text-red-600 bg-white ring-1 ring-inset ring-red-300 rounded-lg hover:bg-red-50 transition-all">
+                        Reject
+                    </button>
+                    <button onclick="processDonationReview('approve')" class="px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 shadow-sm transition-all">
+                        Approve Form
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================================================================== -->
+    <!-- MODAL: Step 2 — Arrival Confirmation (3.3)                         -->
+    <!-- ================================================================== -->
+    <div id="modal-arrival" class="fixed inset-0 bg-gray-900/40 z-50 hidden flex items-center justify-center backdrop-blur-[2px] opacity-0 modal-transition">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-3xl max-h-[90vh] flex flex-col overflow-hidden mx-4 transform scale-95 modal-transition" id="modal-arrival-content">
+            
+            <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-white">
+                <div>
+                    <div class="flex items-center gap-2">
+                        <h2 class="text-lg font-semibold text-gray-900 tracking-tight">Confirm Arrival</h2>
+                        <span class="px-2 py-0.5 rounded text-[10px] font-bold tracking-wider bg-blue-100 text-blue-700 uppercase">Step 2 of 3</span>
+                    </div>
+                    <p class="text-sm text-gray-500 mt-0.5">Verify that the donation has physically arrived. Reconcile promised vs. delivered items.</p>
+                </div>
+                <button onclick="closeLocalModal('modal-arrival')" class="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-full transition-colors">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+            
+            <div class="p-6 overflow-y-auto custom-scrollbar flex-1 space-y-6">
+                
+                <!-- Donor Summary -->
+                <div class="flex items-center gap-3 bg-gray-50 p-4 rounded-xl border border-gray-100">
+                    <div class="w-10 h-10 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center text-sm font-bold" id="arrival-avatar">?</div>
+                    <div>
+                        <p class="font-medium text-gray-900" id="arrival-donor-name">--</p>
+                        <p class="text-xs text-gray-500">Approved by <span id="arrival-approved-by" class="font-medium">--</span> on <span id="arrival-approved-date" class="font-medium">--</span></p>
+                    </div>
+                </div>
+
+                <!-- Reconciliation Table -->
+                <div>
+                    <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">Item Reconciliation — Promised vs. Actually Delivered</p>
+                    <div class="border border-gray-200 rounded-xl overflow-hidden shadow-sm">
+                        <table class="w-full text-sm">
+                            <thead>
+                                <tr class="bg-gray-50 text-xs uppercase text-gray-500 tracking-wider">
+                                    <th class="px-4 py-3 text-left font-semibold">Item (Promised)</th>
+                                    <th class="px-4 py-3 text-center font-semibold w-28">Promised Qty</th>
+                                    <th class="px-4 py-3 text-center font-semibold w-36">Actual Qty Received</th>
+                                </tr>
+                            </thead>
+                            <tbody id="arrival-reconcile-body" class="divide-y divide-gray-100">
+                                <!-- Populated by JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Arrival Notes -->
+                <div>
+                    <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Arrival Notes <span class="normal-case text-gray-400 font-normal">(Optional)</span></label>
+                    <textarea id="arrival-notes" rows="2" placeholder="e.g., Donor delivered 4 sacks instead of 5. Balance to follow next week." class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-400 outline-none resize-none"></textarea>
+                </div>
+
+                <!-- Confirmed By -->
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Confirmed By *</label>
+                        <select id="arrival-personnel" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-400 outline-none bg-white">
+                            <option value="" disabled selected>Select Staff...</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Arrival Date *</label>
+                        <input type="date" id="arrival-date" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-400 outline-none">
                     </div>
                 </div>
             </div>
 
-            <!-- Footer Actions -->
-            <div class="px-6 py-4 border-t border-brand-sandDark bg-[#FAFAF8] rounded-b flex justify-between items-center">
-                <button onclick="closeLocalModal('modal-review')" class="px-4 py-2 text-sm font-medium text-gray-500 hover:text-brand-slate transition-colors">
-                    Close
+            <div class="px-6 py-4 border-t border-gray-100 bg-gray-50/80 flex justify-between items-center">
+                <button onclick="closeLocalModal('modal-arrival')" class="px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors">Cancel</button>
+                <button onclick="confirmArrival()" class="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 shadow-sm transition-all flex items-center gap-2">
+                    <i data-lucide="check" class="w-4 h-4"></i> Confirm Physical Arrival
                 </button>
-                <div class="flex space-x-3">
-                    <button onclick="processDonation('changes')" class="px-4 py-2 text-sm font-medium text-gray-600 bg-white border border-brand-sandDark rounded hover:bg-brand-sand transition-all">
-                        Ask for Changes
-                    </button>
-                    <button onclick="processDonation('approve')" class="px-4 py-2 text-sm font-medium text-white bg-brand-forest rounded hover:bg-brand-forestLight shadow-sm transition-all">
-                        Approve & Confirm Schedule
-                    </button>
-                </div>
             </div>
         </div>
     </div>
@@ -283,31 +348,66 @@
     <script>
         lucide.createIcons();
 
-        // --- 1. STATE MANAGEMENT (Wired to Global DB) ---
+        // =================================================================
+        // 1. STATE
+        // =================================================================
         let donations = db.read('donations');
         let activeDonationId = null;
 
-        // --- 2. UI CONTROLS ---
+        // =================================================================
+        // 2. UI CONTROLS
+        // =================================================================
         function switchTab(tabId) {
             document.getElementById('view-active').classList.add('hidden');
             document.getElementById('view-history').classList.add('hidden');
             
-            // Inactive styles
-            document.getElementById('tab-active').className = "px-4 py-1.5 text-sm font-medium rounded text-gray-500 hover:text-brand-forest transition-all";
-            document.getElementById('tab-history').className = "px-4 py-1.5 text-sm font-medium rounded text-gray-500 hover:text-brand-forest transition-all";
+            document.getElementById('tab-active').className = "px-4 py-1.5 text-sm font-medium rounded-md text-gray-500 hover:text-gray-700 hover:bg-gray-200/50 transition-all";
+            document.getElementById('tab-history').className = "px-4 py-1.5 text-sm font-medium rounded-md text-gray-500 hover:text-gray-700 hover:bg-gray-200/50 transition-all";
             
             document.getElementById(`view-${tabId}`).classList.remove('hidden');
-            
-            // Active styles
-            document.getElementById(`tab-${tabId}`).className = "px-4 py-1.5 text-sm font-bold rounded bg-brand-forestLight/20 text-brand-forest transition-all";
-            document.getElementById('export-btn').style.display = tabId === 'history' ? 'flex' : 'none';
+            document.getElementById(`tab-${tabId}`).className = "px-4 py-1.5 text-sm font-medium rounded-md bg-white text-gray-900 shadow-sm ring-1 ring-gray-200 transition-all";
         }
 
         function getInitials(name) {
-            if (name === 'Anonymous') return '?';
+            if (!name || name === 'Anonymous') return '?';
             return name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
         }
 
+        function formatItemsList(items) {
+            if (!items || items.length === 0) return '<span class="text-gray-400 italic text-xs">No items listed</span>';
+            return items.map(i => 
+                `<span class="inline-flex items-center gap-1 px-2 py-1 bg-gray-50 border border-gray-200 rounded text-xs font-medium text-gray-700 mr-1 mb-1">
+                    <span class="text-indigo-600 font-bold">${i.qty}</span> ${i.unit} ${i.name}
+                </span>`
+            ).join('');
+        }
+
+        function getStatusBadge(status) {
+            const map = {
+                'Pending':    { class: 'badge-pending',  label: 'Pending Review' },
+                'Approved':   { class: 'badge-approved', label: 'Awaiting Arrival' },
+                'Arrived':    { class: 'badge-arrived',  label: 'Ready to Stock In' },
+                'Stocked-In': { class: 'badge-stocked',  label: 'Stocked In' },
+                'Rejected':   { class: 'badge-rejected', label: 'Rejected' }
+            };
+            const s = map[status] || { class: 'badge-pending', label: status };
+            return `<span class="px-2.5 py-1 inline-flex text-xs font-medium rounded-full ${s.class}">${s.label}</span>`;
+        }
+
+        function getActionButton(donation) {
+            if (donation.status === 'Pending') {
+                return `<button onclick="openReviewModal('${donation.id}')" class="text-sm font-medium text-amber-700 bg-amber-50 ring-1 ring-inset ring-amber-200 rounded-md px-3 py-1.5 hover:bg-amber-100 transition-all">Review Form</button>`;
+            }
+            if (donation.status === 'Approved') {
+                return `<button onclick="openArrivalModal('${donation.id}')" class="text-sm font-medium text-blue-700 bg-blue-50 ring-1 ring-inset ring-blue-200 rounded-md px-3 py-1.5 hover:bg-blue-100 transition-all">Confirm Arrival</button>`;
+            }
+            if (donation.status === 'Arrived') {
+                return `<button onclick="openStockInFromDonation('${donation.id}')" class="text-sm font-medium text-emerald-700 bg-emerald-50 ring-1 ring-inset ring-emerald-200 rounded-md px-3 py-1.5 hover:bg-emerald-100 transition-all">Stock In</button>`;
+            }
+            return '';
+        }
+
+        // --- Local Modal Controls (scoped to donation.html) ---
         function openLocalModal(modalId) {
             const modal = document.getElementById(modalId);
             const content = document.getElementById(`${modalId}-content`);
@@ -329,124 +429,294 @@
             }, 200);
         }
 
-        // --- 3. RENDERING ---
+        // =================================================================
+        // 3. RENDERING
+        // =================================================================
         function renderTables() {
-            donations = db.read('donations'); // Always fetch fresh
+            donations = db.read('donations');
             const activeBody = document.getElementById('active-table-body');
             const historyBody = document.getElementById('history-table-body');
-            
             activeBody.innerHTML = '';
             historyBody.innerHTML = '';
-            let reviewCount = 0;
-            let approvedCount = 0;
+
+            const searchQuery = (document.getElementById('search-input').value || '').toLowerCase().trim();
+
+            let pendingCount = 0, approvedCount = 0, arrivedCount = 0, stockedCount = 0;
+            let activeRows = 0, historyRows = 0;
 
             donations.forEach(d => {
+                // Search filter
+                const itemsText = (d.items || []).map(i => i.name).join(' ').toLowerCase();
+                if (searchQuery && !d.donor.toLowerCase().includes(searchQuery) && !itemsText.includes(searchQuery)) return;
+
                 const initials = getInitials(d.donor);
-                
-                if (d.status === 'Needs Review' || d.status === 'Approved') {
-                    if (d.status === 'Needs Review') reviewCount++;
-                    if (d.status === 'Approved') approvedCount++;
+                const isActive = ['Pending', 'Approved', 'Arrived'].includes(d.status);
+                const isHistory = ['Stocked-In', 'Rejected'].includes(d.status);
 
-                    // Mapping badges to semantic palette
-                    const badgeClass = d.status === 'Needs Review' 
-                        ? 'bg-orange-50 text-orange-600 border border-orange-200' 
-                        : 'bg-brand-forestLight/10 text-brand-forestLight border border-brand-forestLight/20';
-                    
-                    const actionBtn = d.status === 'Needs Review' 
-                        ? `<button onclick="openReviewModal('${d.id}')" class="text-xs font-medium text-brand-forest bg-white border border-brand-forest rounded px-3 py-1.5 hover:bg-brand-sand transition-all">Review</button>`
-                        : `<button onclick="window.openReceiveModal('${d.id}')" class="text-xs font-medium text-white bg-brand-forest rounded px-3 py-1.5 hover:bg-brand-forestLight transition-all shadow-sm">Receive Items</button>`;
+                // Count KPIs (before search filter would make sense, but for prototype this is fine)
+                if (d.status === 'Pending') pendingCount++;
+                if (d.status === 'Approved') approvedCount++;
+                if (d.status === 'Arrived') arrivedCount++;
+                if (d.status === 'Stocked-In') stockedCount++;
 
+                if (isActive) {
+                    activeRows++;
                     activeBody.innerHTML += `
-                        <tr class="hover:bg-brand-sand transition-colors group">
+                        <tr class="hover:bg-gray-50/50 transition-colors group">
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <div class="flex items-center">
-                                    <div class="w-8 h-8 rounded bg-brand-forest/10 border border-brand-forest/20 text-brand-forest flex items-center justify-center text-xs font-bold mr-3 group-hover:bg-white transition-all">${initials}</div>
+                                    <div class="w-8 h-8 rounded-full bg-gray-100 text-gray-600 flex items-center justify-center text-xs font-semibold mr-3">${initials}</div>
                                     <div>
-                                        <div class="text-sm font-bold text-brand-slate">${d.donor}</div>
-                                        <div class="text-xs font-mono text-gray-500 mt-0.5">${d.id}</div>
+                                        <div class="text-sm font-medium text-gray-900">${d.donor}</div>
+                                        <div class="text-xs text-gray-400 mt-0.5">${d.id}</div>
                                     </div>
                                 </div>
                             </td>
-                            <td class="px-6 py-4 text-sm font-medium text-gray-600 truncate max-w-[200px]">${d.items}</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-600 font-mono"><div class="flex items-center"><i data-lucide="calendar" class="w-3.5 h-3.5 mr-2 text-gray-400"></i> ${d.date}</div></td>
-                            <td class="px-6 py-4 whitespace-nowrap"><span class="px-2 py-1 inline-flex text-[10px] font-bold uppercase tracking-wider rounded ${badgeClass}">${d.status}</span></td>
-                            <td class="px-6 py-4 whitespace-nowrap text-right">${actionBtn}</td>
+                            <td class="px-6 py-4 max-w-[260px]"><div class="flex flex-wrap">${formatItemsList(d.items)}</div></td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                                <div class="flex items-center"><i data-lucide="calendar" class="w-3.5 h-3.5 mr-2 text-gray-400"></i> ${d.dropOffSchedule || '--'}</div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">${getStatusBadge(d.status)}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-right">${getActionButton(d)}</td>
                         </tr>
                     `;
-                } else if (d.status === 'Received') {
+                } else if (isHistory) {
+                    historyRows++;
+                    const completedDate = d.status === 'Stocked-In' ? d.stockedInDate : d.approvedDate;
+                    
+                    // Build pipeline trail string
+                    let trail = '';
+                    if (d.status === 'Stocked-In') {
+                        trail = `<span class="text-xs text-gray-500">
+                            Approved: ${d.approvedBy || '--'} 
+                            → Arrived: ${d.arrivedBy || '--'} 
+                            → Stocked: ${d.stockedInBy || '--'}
+                        </span>`;
+                    } else if (d.status === 'Rejected') {
+                        trail = `<span class="text-xs text-red-500">Rejected by ${d.approvedBy || '--'}</span>`;
+                    }
+
                     historyBody.innerHTML += `
-                        <tr class="hover:bg-brand-sand transition-colors group">
-                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-600 font-mono">${d.date}</td>
+                        <tr class="hover:bg-gray-50/50 transition-colors">
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">${completedDate || '--'}</td>
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <div class="flex items-center">
-                                    <div class="w-8 h-8 rounded bg-brand-forest/10 border border-brand-forest/20 text-brand-forest flex items-center justify-center text-xs font-bold mr-3 group-hover:bg-white transition-all">${initials}</div>
+                                    <div class="w-8 h-8 rounded-full bg-gray-100 text-gray-600 flex items-center justify-center text-xs font-semibold mr-3">${initials}</div>
                                     <div>
-                                        <div class="text-sm font-bold text-brand-slate">${d.donor}</div>
-                                        <div class="text-xs font-mono text-gray-500 mt-0.5">${d.id}</div>
+                                        <div class="text-sm font-medium text-gray-900">${d.donor}</div>
+                                        <div class="text-xs text-gray-400 mt-0.5">${d.id}</div>
                                     </div>
                                 </div>
                             </td>
-                            <td class="px-6 py-4 text-sm font-medium text-gray-600">${d.items}</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-500">${d.handler}</td>
+                            <td class="px-6 py-4 max-w-[220px]"><div class="flex flex-wrap">${formatItemsList(d.status === 'Stocked-In' ? (d.actualItems || d.items) : d.items)}</div></td>
+                            <td class="px-6 py-4 whitespace-nowrap">${getStatusBadge(d.status)}</td>
+                            <td class="px-6 py-4">${trail}</td>
                         </tr>
                     `;
                 }
             });
 
-            document.getElementById('kpi-review').innerText = reviewCount;
-            document.getElementById('kpi-approved').innerText = approvedCount;
+            // Update KPIs (use unfiltered counts)
+            const allDonations = db.read('donations');
+            document.getElementById('kpi-pending').innerText = allDonations.filter(d => d.status === 'Pending').length;
+            document.getElementById('kpi-approved').innerText = allDonations.filter(d => d.status === 'Approved').length;
+            document.getElementById('kpi-arrived').innerText = allDonations.filter(d => d.status === 'Arrived').length;
+            document.getElementById('kpi-stocked').innerText = allDonations.filter(d => d.status === 'Stocked-In').length;
+
+            // Empty states
+            document.getElementById('active-empty').classList.toggle('hidden', activeRows > 0);
+            document.getElementById('history-empty').classList.toggle('hidden', historyRows > 0);
+
             lucide.createIcons();
         }
 
-        // --- 4. WORKFLOW ACTIONS ---
+        // =================================================================
+        // 4. STEP 1 — DONATION FORM APPROVAL (3.2)
+        // =================================================================
         function openReviewModal(id) {
             const donation = donations.find(d => d.id === id);
+            if (!donation) return;
             activeDonationId = id;
 
             document.getElementById('review-donor-name').innerText = donation.donor;
             document.getElementById('review-avatar').innerText = getInitials(donation.donor);
-            document.getElementById('review-items').innerText = donation.items;
-            document.getElementById('review-date').innerText = donation.date;
-            
+            document.getElementById('review-submitted-date').innerText = donation.submittedDate || '--';
+            document.getElementById('review-dropoff').innerText = donation.dropOffSchedule || '--';
+
+            // Render structured items
+            const itemsContainer = document.getElementById('review-items-list');
+            itemsContainer.innerHTML = donation.items.map(item => `
+                <div class="flex items-center justify-between p-3 bg-gray-50 border border-gray-100 rounded-lg">
+                    <span class="text-sm font-medium text-gray-800">${item.name}</span>
+                    <span class="text-sm font-bold text-indigo-600">${item.qty} ${item.unit}</span>
+                </div>
+            `).join('');
+
+            // Reset reject section
+            document.getElementById('review-reject-section').classList.add('hidden');
+            document.getElementById('review-reject-reason').value = '';
+
             openLocalModal('modal-review');
         }
 
-        // Triggers the GLOBAL forms.js
-        window.openReceiveModal = function(id) {
-            const donation = donations.find(d => d.id === id);
-            window.openModal('in', null, { donorName: donation.donor, donationId: id });
-        };
-
-        function processDonation(action) {
-            if (!activeDonationId) return;
-
-            if (action === 'approve') {
-                const donationIndex = donations.findIndex(d => d.id === activeDonationId);
-                donations[donationIndex].status = 'Approved';
-                db.write('donations', donations); // Save to DB
-                
-                closeLocalModal('modal-review');
-                setTimeout(() => { renderTables(); }, 200);
+        function toggleRejectSection() {
+            const section = document.getElementById('review-reject-section');
+            const isHidden = section.classList.contains('hidden');
+            section.classList.toggle('hidden');
+            
+            if (isHidden) {
+                document.getElementById('review-reject-reason').focus();
+                // Change reject button to "Confirm Reject"
+                document.getElementById('btn-reject-toggle').innerText = 'Confirm Rejection';
+                document.getElementById('btn-reject-toggle').onclick = function() { processDonationReview('reject'); };
             } else {
-                alert("This would open a small message box to request changes from the donor.");
+                document.getElementById('btn-reject-toggle').innerText = 'Reject';
+                document.getElementById('btn-reject-toggle').onclick = toggleRejectSection;
             }
         }
 
-        // Callback from GLOBAL forms.js
+        function processDonationReview(action) {
+            if (!activeDonationId) return;
+            const donationIndex = donations.findIndex(d => d.id === activeDonationId);
+            if (donationIndex === -1) return;
+
+            // Get current staff (prototype: hardcoded, in production comes from session)
+            const currentStaff = 'Rachelle';
+
+            if (action === 'approve') {
+                donations[donationIndex].status = 'Approved';
+                donations[donationIndex].approvedBy = currentStaff;
+                donations[donationIndex].approvedDate = new Date().toISOString().split('T')[0];
+            } else if (action === 'reject') {
+                const reason = document.getElementById('review-reject-reason').value.trim();
+                if (!reason) return alert('Please provide a rejection reason.');
+                donations[donationIndex].status = 'Rejected';
+                donations[donationIndex].approvedBy = currentStaff;
+                donations[donationIndex].approvedDate = new Date().toISOString().split('T')[0];
+                donations[donationIndex].rejectionReason = reason;
+            }
+
+            db.write('donations', donations);
+            closeLocalModal('modal-review');
+            setTimeout(() => renderTables(), 200);
+        }
+
+        // =================================================================
+        // 5. STEP 2 — ARRIVAL CONFIRMATION (3.3)
+        // =================================================================
+        function openArrivalModal(id) {
+            const donation = donations.find(d => d.id === id);
+            if (!donation || donation.status !== 'Approved') return;
+            activeDonationId = id;
+
+            document.getElementById('arrival-donor-name').innerText = donation.donor;
+            document.getElementById('arrival-avatar').innerText = getInitials(donation.donor);
+            document.getElementById('arrival-approved-by').innerText = donation.approvedBy || '--';
+            document.getElementById('arrival-approved-date').innerText = donation.approvedDate || '--';
+            document.getElementById('arrival-notes').value = '';
+            document.getElementById('arrival-date').value = new Date().toISOString().split('T')[0];
+
+            // Populate personnel dropdown
+            const staffList = db.read('staff').filter(s => s.status === 'active');
+            const personnelSelect = document.getElementById('arrival-personnel');
+            personnelSelect.innerHTML = '<option value="" disabled selected>Select Staff...</option>';
+            staffList.forEach(s => personnelSelect.add(new Option(s.name, s.name)));
+
+            // Build reconciliation table
+            const tbody = document.getElementById('arrival-reconcile-body');
+            tbody.innerHTML = '';
+            donation.items.forEach((item, idx) => {
+                tbody.innerHTML += `
+                    <tr class="hover:bg-gray-50 transition-colors">
+                        <td class="px-4 py-3 text-sm font-medium text-gray-800">${item.name} <span class="text-gray-400">(${item.unit})</span></td>
+                        <td class="px-4 py-3 text-center">
+                            <span class="text-sm font-bold text-gray-600">${item.qty}</span>
+                        </td>
+                        <td class="px-4 py-3 text-center">
+                            <input type="number" min="0" value="${item.qty}" data-idx="${idx}" class="arrival-actual-qty w-20 text-center border border-gray-300 rounded-md py-1 text-sm font-bold focus:ring-2 focus:ring-blue-400 outline-none">
+                        </td>
+                    </tr>
+                `;
+            });
+
+            openLocalModal('modal-arrival');
+        }
+
+        function confirmArrival() {
+            if (!activeDonationId) return;
+            const donationIndex = donations.findIndex(d => d.id === activeDonationId);
+            if (donationIndex === -1) return;
+
+            const personnel = document.getElementById('arrival-personnel').value;
+            const arrivalDate = document.getElementById('arrival-date').value;
+            if (!personnel) return alert('Please select the staff member who confirmed this arrival.');
+            if (!arrivalDate) return alert('Please enter the arrival date.');
+
+            const donation = donations[donationIndex];
+
+            // Build actualItems from reconciliation inputs
+            const qtyInputs = document.querySelectorAll('.arrival-actual-qty');
+            const actualItems = [];
+            let hasItems = false;
+
+            qtyInputs.forEach(input => {
+                const idx = parseInt(input.dataset.idx);
+                const actualQty = parseInt(input.value) || 0;
+                if (actualQty > 0) hasItems = true;
+                actualItems.push({
+                    name: donation.items[idx].name,
+                    qty: actualQty,
+                    unit: donation.items[idx].unit
+                });
+            });
+
+            if (!hasItems) return alert('At least one item must have a quantity greater than zero.');
+
+            // Update donation record
+            donation.status = 'Arrived';
+            donation.arrivedBy = personnel;
+            donation.arrivedDate = arrivalDate;
+            donation.actualItems = actualItems;
+            donation.arrivalNotes = document.getElementById('arrival-notes').value.trim() || null;
+
+            db.write('donations', donations);
+            closeLocalModal('modal-arrival');
+            setTimeout(() => renderTables(), 200);
+        }
+
+        // =================================================================
+        // 6. STEP 3 — DONATION STOCK-IN (3.4 / F3 Mechanism)
+        // =================================================================
+        // Gated: Only available for donations with status "Arrived"
+        // Opens the global forms.js Stock In modal with donation context
+        function openStockInFromDonation(id) {
+            const donation = donations.find(d => d.id === id);
+            if (!donation || donation.status !== 'Arrived') return;
+
+            // Pass donation context to forms.js global modal
+            // The donorName and donationId are consumed by forms.js
+            window.openModal('in', null, { 
+                donorName: donation.donor, 
+                donationId: id 
+            });
+        }
+
+        // Callback from forms.js after stock-in is completed
         window.finalizeDonationReceive = function(donationId) {
             const donationIndex = donations.findIndex(d => d.id === donationId);
-            donations[donationIndex].status = 'Received';
-            donations[donationIndex].handler = 'Admin User';
-            donations[donationIndex].date = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-            
+            if (donationIndex === -1) return;
+
+            donations[donationIndex].status = 'Stocked-In';
+            donations[donationIndex].stockedInBy = 'Admin User'; // Prototype placeholder
+            donations[donationIndex].stockedInDate = new Date().toISOString().split('T')[0];
+
             db.write('donations', donations);
             renderTables();
-            
-            const currentReceived = parseInt(document.getElementById('kpi-received').innerText);
-            document.getElementById('kpi-received').innerText = currentReceived + 1;
         };
 
-        // Initialize setup
+        // =================================================================
+        // INIT
+        // =================================================================
         switchTab('active');
         renderTables();
     </script>

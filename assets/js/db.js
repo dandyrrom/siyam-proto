@@ -25,9 +25,154 @@ const initialData = {
     patients: [
         { id: "P1001", name: "Luna", type: "Dog", breed: "Aspin", status: "Medical Treatment" }
     ],
+
+    // =========================================================================
+    // DONATION RECORDS (D2)
+    // Refactored to support the 3-step pipeline: 3.2 → 3.3 → 3.4
+    //
+    // Status lifecycle:
+    //   "Pending"    → Donor submitted, awaiting admin/staff review (3.2)
+    //   "Approved"   → Form reviewed and approved, awaiting physical arrival (3.3)
+    //   "Arrived"    → Physical arrival confirmed, reconciliation done, awaiting stock-in (3.4)
+    //   "Stocked-In" → Items logged into inventory via F3 mechanism (terminal)
+    //   "Rejected"   → Form reviewed and rejected (terminal)
+    //
+    // items[]       → What the donor promised on the form (immutable after submission)
+    // actualItems[] → What actually arrived (populated during 3.3, null before)
+    // =========================================================================
     donations: [
-        { id: 'DN-1043', donor: 'Juan Dela Cruz', items: '5 Gallons Bleach', date: 'Oct 26, 2:00 PM', status: 'Approved' }
+        // --- SEED: One donation at each pipeline stage for testing ---
+
+        // Stage: Pending (awaiting Step 1 / 3.2 review)
+        {
+            id: 'DN-1050',
+            donor: 'Maria Santos',
+            dropOffSchedule: '2026-05-10, 2:00 PM',
+            items: [
+                { name: 'Adult Dog Food (TopBreed)', qty: 3, unit: 'Sack' },
+                { name: 'Bleach', qty: 5, unit: 'Gallon' }
+            ],
+            status: 'Pending',
+            submittedDate: '2026-05-03',
+            approvedBy: null,
+            approvedDate: null,
+            arrivedBy: null,
+            arrivedDate: null,
+            actualItems: null,
+            arrivalNotes: null,
+            stockedInBy: null,
+            stockedInDate: null
+        },
+
+        // Stage: Pending (second, for batch testing)
+        {
+            id: 'DN-1051',
+            donor: 'Anonymous',
+            dropOffSchedule: '2026-05-12, 10:00 AM',
+            items: [
+                { name: 'Micropore Surgical Tape', qty: 2, unit: 'Box' }
+            ],
+            status: 'Pending',
+            submittedDate: '2026-05-04',
+            approvedBy: null,
+            approvedDate: null,
+            arrivedBy: null,
+            arrivedDate: null,
+            actualItems: null,
+            arrivalNotes: null,
+            stockedInBy: null,
+            stockedInDate: null
+        },
+
+        // Stage: Approved (passed Step 1, awaiting Step 2 / 3.3 arrival confirmation)
+        {
+            id: 'DN-1043',
+            donor: 'Juan Dela Cruz',
+            dropOffSchedule: '2026-05-08, 3:00 PM',
+            items: [
+                { name: 'Bleach', qty: 5, unit: 'Gallon' },
+                { name: 'Ascorbic Acid 500mg', qty: 2, unit: 'Box' }
+            ],
+            status: 'Approved',
+            submittedDate: '2026-04-28',
+            approvedBy: 'Rachelle',
+            approvedDate: '2026-04-29',
+            arrivedBy: null,
+            arrivedDate: null,
+            actualItems: null,
+            arrivalNotes: null,
+            stockedInBy: null,
+            stockedInDate: null
+        },
+
+        // Stage: Arrived (passed Steps 1 & 2, awaiting Step 3 / 3.4 stock-in)
+        {
+            id: 'DN-1040',
+            donor: 'Pet Lovers PH',
+            dropOffSchedule: '2026-05-01, 9:00 AM',
+            items: [
+                { name: 'Adult Dog Food (TopBreed)', qty: 5, unit: 'Sack' },
+                { name: 'Omeprazole 20mg', qty: 1, unit: 'Box' }
+            ],
+            status: 'Arrived',
+            submittedDate: '2026-04-25',
+            approvedBy: 'Rachelle',
+            approvedDate: '2026-04-26',
+            arrivedBy: 'Alvin',
+            arrivedDate: '2026-05-01',
+            actualItems: [
+                { name: 'Adult Dog Food (TopBreed)', qty: 4, unit: 'Sack' },
+                { name: 'Omeprazole 20mg', qty: 1, unit: 'Box' }
+            ],
+            arrivalNotes: 'Donor delivered 4 sacks instead of 5. Rest to follow next week.',
+            stockedInBy: null,
+            stockedInDate: null
+        },
+
+        // Stage: Stocked-In (completed full pipeline — appears in History)
+        {
+            id: 'DN-1035',
+            donor: 'Negros Pet Community',
+            dropOffSchedule: '2026-04-20, 1:00 PM',
+            items: [
+                { name: 'Co-amoxiclav 65mg', qty: 3, unit: 'Box' }
+            ],
+            status: 'Stocked-In',
+            submittedDate: '2026-04-18',
+            approvedBy: 'Rachelle',
+            approvedDate: '2026-04-18',
+            arrivedBy: 'Benjamin Buena',
+            arrivedDate: '2026-04-20',
+            actualItems: [
+                { name: 'Co-amoxiclav 65mg', qty: 3, unit: 'Box' }
+            ],
+            arrivalNotes: null,
+            stockedInBy: 'Rachelle',
+            stockedInDate: '2026-04-20'
+        },
+
+        // Stage: Rejected (terminal — appears in History)
+        {
+            id: 'DN-1032',
+            donor: 'John Smith',
+            dropOffSchedule: '2026-04-15, 11:00 AM',
+            items: [
+                { name: 'Unknown Supplements', qty: 10, unit: 'Bottle' }
+            ],
+            status: 'Rejected',
+            submittedDate: '2026-04-13',
+            approvedBy: 'Rachelle',
+            approvedDate: '2026-04-14',
+            rejectionReason: 'Items cannot be verified. Unlabeled supplements are not accepted per sanctuary policy.',
+            arrivedBy: null,
+            arrivedDate: null,
+            actualItems: null,
+            arrivalNotes: null,
+            stockedInBy: null,
+            stockedInDate: null
+        }
     ],
+
     staff: [
         { id: 'p1', name: 'Benjamin Buena', role: 'Lead Veterinarian', status: 'active' },
         { id: 'p2', name: 'Rachelle', role: 'Shelter Admin', status: 'active' },
