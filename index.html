@@ -4,21 +4,36 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DAS SIYAM - Command Center</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Typography: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <script>
         tailwind.config = { 
             theme: { 
                 extend: { 
-                    fontFamily: { sans: ['Inter', 'sans-serif'] }, 
+                    fontFamily: { 
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', 'monospace'],
+                    }, 
                     colors: { 
-                        brand: { 
-                            primary: '#0F172A', action: '#2563EB', actionDark: '#1D4ED8', 
-                            secondary: '#0EA5E9', secondaryDark: '#0284C7', surface: '#F8FAFC', 
-                            panel: '#FFFFFF', accent: '#2563EB', bg: '#F8FAFC'
+                        brand: {
+                            forest: '#1E4D40',
+                            forestLight: '#2A6B59',
+                            sand: '#F7F5F0',
+                            sandDark: '#EADDCD',
+                            terracotta: '#D96C5B',
+                            slate: '#2C3E50',
+                            paper: '#FFFFFF'
                         }
-                    } 
+                    },
+                    boxShadow: {
+                        'ledger': '0 2px 4px rgba(0,0,0,0.02)',
+                    }
                 } 
             } 
         }
@@ -30,100 +45,135 @@
         .sidebar-collapsed .profile-data { display: none; }
         .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
         .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #EADDCD; border-radius: 4px; }
     </style>
 </head>
-<body class="bg-brand-surface text-slate-800 font-sans h-screen flex overflow-hidden">
+<body class="bg-brand-sand text-brand-slate font-sans h-screen flex overflow-hidden">
 
     <main class="flex-1 flex flex-col min-w-0 relative">
         
-        <header class="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6 shrink-0 z-20">
+        <!-- Header -->
+        <header class="h-16 bg-brand-paper border-b border-brand-sandDark flex items-center justify-between px-6 shrink-0 z-20">
             <div class="flex items-center gap-2">
-                <span class="text-sm font-medium text-slate-400">DAS SIYAM</span>
-                <i data-lucide="chevron-right" class="w-4 h-4 text-slate-300"></i>
-                <span class="text-sm font-bold text-slate-800">Command Center</span>
+                <span class="text-sm font-medium text-gray-500">DAS SIYAM</span>
+                <i data-lucide="chevron-right" class="w-4 h-4 text-gray-400"></i>
+                <span class="text-sm font-bold text-brand-slate">Command Center</span>
             </div>
 
             <div class="flex items-center gap-4">
                 <div class="relative hidden sm:block w-48 lg:w-64">
-                    <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2"></i>
-                    <input type="text" placeholder="Global Search (Cmd+K)" class="w-full bg-slate-100 border border-slate-200 rounded-md pl-9 pr-3 py-1.5 text-xs font-medium focus:outline-none focus:ring-2 focus:ring-brand-action focus:bg-white transition-colors">
+                    <i data-lucide="search" class="w-4 h-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2"></i>
+                    <input type="text" placeholder="Global Search (Cmd+K)" class="w-full bg-brand-sand border border-brand-sandDark rounded pl-9 pr-3 py-1.5 text-xs font-medium focus:outline-none focus:ring-1 focus:ring-brand-forest focus:bg-brand-paper transition-colors">
                 </div>
-                <button class="relative w-8 h-8 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-500 hover:text-slate-800 transition">
+                <button class="relative w-8 h-8 rounded bg-brand-sand border border-brand-sandDark flex items-center justify-center text-gray-500 hover:text-brand-forest transition">
                     <i data-lucide="bell" class="w-4 h-4"></i>
                 </button>
             </div>
         </header>
 
-        <div class="flex-1 overflow-y-auto custom-scrollbar p-6 bg-slate-50">
+        <!-- Workspace -->
+        <div class="flex-1 overflow-y-auto custom-scrollbar p-6">
             <div class="max-w-[1400px] mx-auto w-full space-y-6">
                 
                 <section class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-2">
                     <div>
-                        <h1 class="text-2xl font-bold text-slate-900">Shelter Command Center</h1>
-                        <p class="text-sm text-slate-500 mt-1">Operational pulse and actionable tasks.</p>
+                        <h1 class="text-2xl font-bold text-brand-slate tracking-tight">Shelter Command Center</h1>
+                        <p class="text-sm text-gray-500 mt-1 font-medium">Operational pulse and actionable tasks.</p>
                     </div>
                 </section>
 
                 <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
                     
+                    <!-- Left Column -->
                     <div class="lg:col-span-8 flex flex-col gap-6">
+                        <!-- KPI Row -->
                         <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                            <div class="bg-gradient-to-br from-indigo-400 to-purple-500 rounded-[24px] p-5 shadow-sm flex flex-col justify-between">
-                                <div class="w-10 h-10 rounded-[14px] bg-white/20 flex items-center justify-center text-white mb-6 shadow-inner"><i data-lucide="layers" class="w-5 h-5"></i></div>
+                            <!-- Card 1: Tracked Assets -->
+                            <div class="bg-brand-paper border border-brand-sandDark rounded shadow-ledger p-5 flex flex-col justify-between">
+                                <div class="w-8 h-8 rounded bg-brand-forest/10 flex items-center justify-center text-brand-forest mb-4 border border-brand-forest/20">
+                                    <i data-lucide="layers" class="w-4 h-4"></i>
+                                </div>
                                 <div>
-                                    <p class="text-sm font-semibold text-white/90">Tracked Assets</p>
-                                    <div class="flex items-baseline gap-1 mt-1"><p id="dash-assets" class="text-3xl font-bold text-white tracking-tight">--</p></div>
+                                    <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Tracked Assets</p>
+                                    <div class="flex items-baseline gap-1 mt-1">
+                                        <p id="dash-assets" class="text-3xl font-bold text-brand-slate tracking-tight">--</p>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="bg-gradient-to-br from-rose-400 to-red-500 rounded-[24px] p-5 shadow-sm flex flex-col justify-between">
-                                <div class="w-10 h-10 rounded-[14px] bg-white/20 flex items-center justify-center text-white mb-6 shadow-inner"><i data-lucide="shield-alert" class="w-5 h-5"></i></div>
+                            <!-- Card 2: Zero Stock -->
+                            <div class="bg-brand-paper border border-brand-sandDark rounded shadow-ledger p-5 flex flex-col justify-between">
+                                <div class="w-8 h-8 rounded bg-brand-terracotta/10 flex items-center justify-center text-brand-terracotta mb-4 border border-brand-terracotta/20">
+                                    <i data-lucide="shield-alert" class="w-4 h-4"></i>
+                                </div>
                                 <div>
-                                    <p class="text-sm font-semibold text-white/90">Zero Stock</p>
-                                    <div class="flex items-baseline gap-1 mt-1"><p id="dash-zero" class="text-3xl font-bold text-white tracking-tight">--</p></div>
+                                    <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Zero Stock</p>
+                                    <div class="flex items-baseline gap-1 mt-1">
+                                        <p id="dash-zero" class="text-3xl font-bold text-brand-slate tracking-tight">--</p>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="bg-gradient-to-br from-amber-400 to-orange-500 rounded-[24px] p-5 shadow-sm flex flex-col justify-between">
-                                <div class="w-10 h-10 rounded-[14px] bg-white/20 flex items-center justify-center text-white mb-6 shadow-inner"><i data-lucide="alert-triangle" class="w-5 h-5"></i></div>
+                            <!-- Card 3: Low Stock -->
+                            <div class="bg-brand-paper border border-brand-sandDark rounded shadow-ledger p-5 flex flex-col justify-between">
+                                <div class="w-8 h-8 rounded bg-orange-50 flex items-center justify-center text-orange-600 mb-4 border border-orange-200">
+                                    <i data-lucide="alert-triangle" class="w-4 h-4"></i>
+                                </div>
                                 <div>
-                                    <p class="text-sm font-semibold text-white/90">Low Stock</p>
-                                    <div class="flex items-baseline gap-1 mt-1"><p id="dash-low" class="text-3xl font-bold text-white tracking-tight">--</p></div>
+                                    <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Low Stock</p>
+                                    <div class="flex items-baseline gap-1 mt-1">
+                                        <p id="dash-low" class="text-3xl font-bold text-brand-slate tracking-tight">--</p>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="bg-gradient-to-br from-teal-400 to-emerald-500 rounded-[24px] p-5 shadow-sm flex flex-col justify-between">
-                                <div class="w-10 h-10 rounded-[14px] bg-white/20 flex items-center justify-center text-white mb-6 shadow-inner"><i data-lucide="clock" class="w-5 h-5"></i></div>
+                            <!-- Card 4: Expiring Soon -->
+                            <div class="bg-brand-paper border border-brand-sandDark rounded shadow-ledger p-5 flex flex-col justify-between">
+                                <div class="w-8 h-8 rounded bg-gray-100 flex items-center justify-center text-gray-600 mb-4 border border-gray-200">
+                                    <i data-lucide="clock" class="w-4 h-4"></i>
+                                </div>
                                 <div>
-                                    <p class="text-sm font-semibold text-white/90">Expiring Soon</p>
-                                    <div class="flex items-baseline gap-1 mt-1"><p class="text-3xl font-bold text-white tracking-tight">1</p></div>
+                                    <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Expiring Soon</p>
+                                    <div class="flex items-baseline gap-1 mt-1">
+                                        <p class="text-3xl font-bold text-brand-slate tracking-tight">1</p>
+                                    </div>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden">
-                            <div class="px-5 py-4 border-b border-slate-100 bg-slate-50 flex justify-between items-center">
-                                <h2 class="text-sm font-bold text-slate-800 uppercase tracking-wider flex items-center gap-2"><i data-lucide="trending-down" class="w-4 h-4 text-slate-400"></i> Monthly Usage Summary</h2>
+                        <!-- Monthly Usage Summary -->
+                        <div class="bg-brand-paper border border-brand-sandDark rounded shadow-ledger overflow-hidden">
+                            <div class="px-5 py-4 border-b border-brand-sandDark bg-[#FAFAF8] flex justify-between items-center">
+                                <h2 class="text-xs font-semibold text-gray-500 uppercase tracking-wider flex items-center gap-2">
+                                    <i data-lucide="trending-down" class="w-4 h-4"></i> Monthly Usage Summary
+                                </h2>
                             </div>
-                            <div class="p-6 text-center text-slate-500 text-sm">Detailed visual graphs will be populated here by the Reports Module.</div>
+                            <div class="p-6 text-center text-gray-500 text-sm font-medium">
+                                Detailed visual graphs will be populated here by the Reports Module.
+                            </div>
                         </div>
                     </div>
 
+                    <!-- Right Column: Action Center -->
                     <div class="lg:col-span-4 flex flex-col gap-4 sticky top-6">
                         <div class="flex items-center gap-2 mb-1 px-1">
-                            <i data-lucide="list-checks" class="w-5 h-5 text-brand-primary"></i>
-                            <h2 class="text-lg font-black text-slate-900 tracking-tight">Action Center</h2>
+                            <i data-lucide="list-checks" class="w-5 h-5 text-brand-forest"></i>
+                            <h2 class="text-lg font-bold text-brand-slate tracking-tight">Action Center</h2>
                         </div>
 
-                        <!-- Donation Pipeline Action Card (Dynamic) -->
-                        <a href="donation.html" class="block bg-white p-5 rounded-2xl border border-slate-200 shadow-sm border-t-4 border-t-brand-action relative overflow-hidden group hover:shadow-md transition">
+                        <!-- Action Item -->
+                        <a href="donation.html" class="block bg-brand-paper p-5 rounded border border-brand-sandDark shadow-ledger relative overflow-hidden group hover:bg-brand-sand transition cursor-pointer">
                             <div class="flex justify-between items-start mb-3">
-                                <div class="p-2 bg-blue-50 rounded-lg text-brand-action"><i data-lucide="heart-handshake" class="w-5 h-5"></i></div>
-                                <span id="dash-donation-badge" class="px-2 py-1 bg-brand-action text-white text-[10px] font-bold uppercase rounded-md shadow-sm hidden">Action Needed</span>
+                                <div class="p-2 bg-brand-forest/10 rounded text-brand-forest border border-brand-forest/20">
+                                    <i data-lucide="package-plus" class="w-5 h-5"></i>
+                                </div>
+                                <span class="px-2 py-1 bg-brand-terracotta/10 text-brand-terracotta text-[10px] font-bold uppercase tracking-wider rounded border border-brand-terracotta/20">
+                                    Review Needed
+                                </span>
                             </div>
-                            <h3 class="text-2xl font-black text-slate-900 leading-none mb-1">
-                                <span id="dash-donation-count">--</span> <span class="text-sm font-medium text-slate-500">Active Donations</span>
-                            </h3>
-                            <p id="dash-donation-detail" class="text-xs font-bold text-slate-600 mb-4">Loading pipeline status...</p>
-                            <div class="w-full flex items-center justify-center gap-1 py-2 bg-slate-50 text-brand-action rounded-lg text-xs font-bold uppercase tracking-wider group-hover:bg-brand-action group-hover:text-white transition">Open Donation Pipeline &rarr;</div>
+                            <h3 class="text-2xl font-bold text-brand-slate leading-none mb-1">2 <span class="text-sm font-medium text-gray-500">Deliveries</span></h3>
+                            <p class="text-xs font-medium text-gray-600 mb-4">Pending donor physical intake.</p>
+                            
+                            <div class="w-full flex items-center justify-center gap-1 py-2 bg-brand-forest text-white rounded text-sm font-medium group-hover:bg-brand-forestLight transition">
+                                Process Intakes &rarr;
+                            </div>
                         </a>
                     </div>
                 </div>
@@ -135,36 +185,13 @@
     <script src="assets/js/db.js"></script>
     <script>
         document.addEventListener("DOMContentLoaded", () => {
+            // Fetch live data from the global database
             const inventory = db.read('inventory');
             
-            // Inventory KPIs
+            // Calculate Dashboard KPI numbers
             document.getElementById('dash-assets').textContent = inventory.length;
             document.getElementById('dash-zero').textContent = inventory.filter(i => i.totalBaseUnits === 0).length;
             document.getElementById('dash-low').textContent = inventory.filter(i => i.totalBaseUnits > 0 && i.totalBaseUnits <= i.minThreshold).length;
-            
-            // Donation Pipeline KPIs (Dynamic)
-            const donations = db.read('donations');
-            const pending = donations.filter(d => d.status === 'Pending').length;
-            const approved = donations.filter(d => d.status === 'Approved').length;
-            const arrived = donations.filter(d => d.status === 'Arrived').length;
-            const totalActive = pending + approved + arrived;
-
-            document.getElementById('dash-donation-count').textContent = totalActive;
-
-            // Build detail string showing pipeline breakdown
-            const parts = [];
-            if (pending > 0) parts.push(`${pending} pending review`);
-            if (approved > 0) parts.push(`${approved} awaiting arrival`);
-            if (arrived > 0) parts.push(`${arrived} ready to stock in`);
-            
-            const detailEl = document.getElementById('dash-donation-detail');
-            if (parts.length > 0) {
-                detailEl.textContent = parts.join(', ') + '.';
-                document.getElementById('dash-donation-badge').classList.remove('hidden');
-            } else {
-                detailEl.textContent = 'No donations require action.';
-                document.getElementById('dash-donation-badge').classList.add('hidden');
-            }
             
             if (typeof lucide !== 'undefined') lucide.createIcons();
         });

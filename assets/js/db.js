@@ -10,11 +10,11 @@ const initialData = {
         { id: 'i5', name: 'Omeprazole', brand: 'Generic', generatedName: '20mg Capsule', category: 'Medications', targetSpecies: 'Multi-Species', itemGroup: 'Gastrointestinal', baseUnit: 'cap', minThreshold: 50, storage: 'Ambient (Room Temp)', isControlled: 'No', latestPurchasingUnit: 'Box', latestMultiplier: 100, latestLocation: 'Shelf B', totalBaseUnits: 100, procurement: 'Commercial Purchase', costInfo: 'Total: ₱500', expiry: '2027-01-10', batchId: 'OMP-11', addedDate: '2026-04-10' },
         { id: 'i6', name: 'Ascorbic Acid', brand: 'Generic', generatedName: '500mg Tablet', category: 'Medications', targetSpecies: 'Multi-Species', itemGroup: 'Vitamins & Supplements', baseUnit: 'tab', minThreshold: 500, storage: 'Ambient (Room Temp)', isControlled: 'No', latestPurchasingUnit: 'Box', latestMultiplier: 100, latestLocation: 'Shelf C', totalBaseUnits: 5460, procurement: 'Private Donation', costInfo: 'Est Value: ₱2,500', expiry: '2028-05-01', batchId: 'ASC-22', addedDate: '2026-04-11' },
         { id: 'i7', name: 'Prednisone', brand: 'Generic', generatedName: '10mg Tablet', category: 'Medications', targetSpecies: 'Multi-Species', itemGroup: 'Anti-inflammatory', baseUnit: 'tab', minThreshold: 200, storage: 'Ambient (Room Temp)', isControlled: 'No', latestPurchasingUnit: 'Box', latestMultiplier: 100, latestLocation: 'Shelf B', totalBaseUnits: 1164, procurement: 'Commercial Purchase', costInfo: 'Total: ₱1,200', expiry: '2026-11-01', batchId: 'PRD-01', addedDate: '2026-04-11' },
-        { id: 'i8', name: 'Neptra', brand: 'Elanco', generatedName: 'Otic Suspension 1ml', category: 'Topicals', targetSpecies: 'Dog', itemGroup: 'Wound Care & Bandaging', baseUnit: 'tube', minThreshold: 10, storage: 'Ambient (Room Temp)', isControlled: 'No', latestPurchasingUnit: 'Box', latestMultiplier: 1, latestLocation: 'Cabinet 2', totalBaseUnits: 3, procurement: 'Commercial Purchase', costInfo: 'Total: ₱3,200', expiry: '2027-03-15', batchId: 'NEP-88', addedDate: '2026-04-12' }, 
-        { id: 'i9', name: 'Micropore', brand: '3M', generatedName: '1-inch Surgical Tape', category: 'Consumables', targetSpecies: 'Multi-Species', itemGroup: 'Wound Care & Bandaging', baseUnit: 'roll', minThreshold: 50, storage: 'Ambient (Room Temp)', isControlled: 'No', latestPurchasingUnit: 'Box', latestMultiplier: 12, latestLocation: 'Supply Closet', totalBaseUnits: 32, procurement: 'Commercial Purchase', costInfo: 'Total: ₱600', expiry: '', batchId: '', addedDate: '2026-04-13' }, 
-        { id: 'i10', name: 'Lidocaine', brand: 'Generic', generatedName: '2% Injectable 50ml', category: 'Injectables', targetSpecies: 'Multi-Species', itemGroup: 'Injectables & Sedatives', baseUnit: 'vial', minThreshold: 5, storage: 'Ambient (Room Temp)', isControlled: 'No', latestPurchasingUnit: 'Vial', latestMultiplier: 1, latestLocation: 'Cabinet 1', totalBaseUnits: 0, procurement: 'Commercial Purchase', costInfo: 'Total: ₱250', expiry: '2026-09-01', batchId: 'LID-001', addedDate: '2026-04-14' }, 
+        { id: 'i8', name: 'Neptra', brand: 'Elanco', generatedName: 'Otic Suspension 1ml', category: 'Topicals', targetSpecies: 'Dog', itemGroup: 'Wound Care & Bandaging', baseUnit: 'tube', minThreshold: 10, storage: 'Ambient (Room Temp)', isControlled: 'No', latestPurchasingUnit: 'Box', latestMultiplier: 1, latestLocation: 'Cabinet 2', totalBaseUnits: 3, procurement: 'Commercial Purchase', costInfo: 'Total: ₱3,200', expiry: '2027-03-15', batchId: 'NEP-88', addedDate: '2026-04-12' },
+        { id: 'i9', name: 'Micropore', brand: '3M', generatedName: '1-inch Surgical Tape', category: 'Consumables', targetSpecies: 'Multi-Species', itemGroup: 'Wound Care & Bandaging', baseUnit: 'roll', minThreshold: 50, storage: 'Ambient (Room Temp)', isControlled: 'No', latestPurchasingUnit: 'Box', latestMultiplier: 12, latestLocation: 'Supply Closet', totalBaseUnits: 32, procurement: 'Commercial Purchase', costInfo: 'Total: ₱600', expiry: '', batchId: '', addedDate: '2026-04-13' },
+        { id: 'i10', name: 'Lidocaine', brand: 'Generic', generatedName: '2% Injectable 50ml', category: 'Injectables', targetSpecies: 'Multi-Species', itemGroup: 'Injectables & Sedatives', baseUnit: 'vial', minThreshold: 5, storage: 'Ambient (Room Temp)', isControlled: 'No', latestPurchasingUnit: 'Vial', latestMultiplier: 1, latestLocation: 'Cabinet 1', totalBaseUnits: 0, procurement: 'Commercial Purchase', costInfo: 'Total: ₱250', expiry: '2026-09-01', batchId: 'LID-001', addedDate: '2026-04-14' },
         { id: 'i11', name: 'Calmivet', brand: 'Vetoquinol', generatedName: 'Acepromazine 50ml', category: 'Injectables', targetSpecies: 'Multi-Species', itemGroup: 'Injectables & Sedatives', baseUnit: 'vial', minThreshold: 10, storage: 'Secure (Controlled)', isControlled: 'Yes', latestPurchasingUnit: 'Vial', latestMultiplier: 1, latestLocation: 'Safe 1', totalBaseUnits: 4, procurement: 'Commercial Purchase', costInfo: 'Total: ₱1,800', expiry: '2027-06-30', batchId: 'CAL-99', addedDate: '2026-04-14' },
-        { id: 'i12', name: 'Phytomenadione', brand: 'Cycomin', generatedName: 'Vitamin K1 10mg/ml', category: 'Injectables', targetSpecies: 'Multi-Species', itemGroup: 'Vitamins & Supplements', baseUnit: 'ampoule', minThreshold: 20, storage: 'Secure (Controlled)', isControlled: 'No', latestPurchasingUnit: 'Box', latestMultiplier: 10, latestLocation: 'Cabinet 1', totalBaseUnits: 10, procurement: 'Private Donation', costInfo: 'Est Value: ₱1,500', expiry: '2026-12-01', batchId: 'PHY-10', addedDate: '2026-04-15' }, 
+        { id: 'i12', name: 'Phytomenadione', brand: 'Cycomin', generatedName: 'Vitamin K1 10mg/ml', category: 'Injectables', targetSpecies: 'Multi-Species', itemGroup: 'Vitamins & Supplements', baseUnit: 'ampoule', minThreshold: 20, storage: 'Secure (Controlled)', isControlled: 'No', latestPurchasingUnit: 'Box', latestMultiplier: 10, latestLocation: 'Cabinet 1', totalBaseUnits: 10, procurement: 'Private Donation', costInfo: 'Est Value: ₱1,500', expiry: '2026-12-01', batchId: 'PHY-10', addedDate: '2026-04-15' },
         { id: 'i13', name: 'Cefuroxime', brand: 'Generic', generatedName: '750mg Powder for Injection', category: 'Injectables', targetSpecies: 'Multi-Species', itemGroup: 'Antibiotics & Antimicrobials', baseUnit: 'vial', minThreshold: 30, storage: 'Ambient (Room Temp)', isControlled: 'No', latestPurchasingUnit: 'Vial', latestMultiplier: 1, latestLocation: 'Shelf A', totalBaseUnits: 59, procurement: 'Commercial Purchase', costInfo: 'Total: ₱4,500', expiry: '2027-02-28', batchId: 'CEF-02', addedDate: '2026-04-15' },
         { id: 'i14', name: 'Furosemide', brand: 'Generic', generatedName: '40mg Tablet', category: 'Medications', targetSpecies: 'Multi-Species', itemGroup: 'Cardiovascular & Renal', baseUnit: 'tab', minThreshold: 200, storage: 'Ambient (Room Temp)', isControlled: 'No', latestPurchasingUnit: 'Box', latestMultiplier: 100, latestLocation: 'Shelf B', totalBaseUnits: 1100, procurement: 'Commercial Purchase', costInfo: 'Total: ₱1,800', expiry: '2027-11-15', batchId: 'FUR-04', addedDate: '2026-04-16' },
         { id: 'i15', name: 'Synoquin', brand: 'VetPlus', generatedName: 'Joint Supplement 10s', category: 'Medications', targetSpecies: 'Dog', itemGroup: 'Vitamins & Supplements', baseUnit: 'tab', minThreshold: 50, storage: 'Ambient (Room Temp)', isControlled: 'No', latestPurchasingUnit: 'Box', latestMultiplier: 10, latestLocation: 'Shelf C', totalBaseUnits: 200, procurement: 'Commercial Purchase', costInfo: 'Total: ₱8,000', expiry: '2028-01-20', batchId: 'SYN-26', addedDate: '2026-04-17' }
@@ -25,154 +25,14 @@ const initialData = {
     patients: [
         { id: "P1001", name: "Luna", type: "Dog", breed: "Aspin", status: "Medical Treatment" }
     ],
-
-    // =========================================================================
-    // DONATION RECORDS (D2)
-    // Refactored to support the 3-step pipeline: 3.2 → 3.3 → 3.4
-    //
-    // Status lifecycle:
-    //   "Pending"    → Donor submitted, awaiting admin/staff review (3.2)
-    //   "Approved"   → Form reviewed and approved, awaiting physical arrival (3.3)
-    //   "Arrived"    → Physical arrival confirmed, reconciliation done, awaiting stock-in (3.4)
-    //   "Stocked-In" → Items logged into inventory via F3 mechanism (terminal)
-    //   "Rejected"   → Form reviewed and rejected (terminal)
-    //
-    // items[]       → What the donor promised on the form (immutable after submission)
-    // actualItems[] → What actually arrived (populated during 3.3, null before)
-    // =========================================================================
     donations: [
-        // --- SEED: One donation at each pipeline stage for testing ---
-
-        // Stage: Pending (awaiting Step 1 / 3.2 review)
-        {
-            id: 'DN-1050',
-            donor: 'Maria Santos',
-            dropOffSchedule: '2026-05-10, 2:00 PM',
-            items: [
-                { name: 'Adult Dog Food (TopBreed)', qty: 3, unit: 'Sack' },
-                { name: 'Bleach', qty: 5, unit: 'Gallon' }
-            ],
-            status: 'Pending',
-            submittedDate: '2026-05-03',
-            approvedBy: null,
-            approvedDate: null,
-            arrivedBy: null,
-            arrivedDate: null,
-            actualItems: null,
-            arrivalNotes: null,
-            stockedInBy: null,
-            stockedInDate: null
-        },
-
-        // Stage: Pending (second, for batch testing)
-        {
-            id: 'DN-1051',
-            donor: 'Anonymous',
-            dropOffSchedule: '2026-05-12, 10:00 AM',
-            items: [
-                { name: 'Micropore Surgical Tape', qty: 2, unit: 'Box' }
-            ],
-            status: 'Pending',
-            submittedDate: '2026-05-04',
-            approvedBy: null,
-            approvedDate: null,
-            arrivedBy: null,
-            arrivedDate: null,
-            actualItems: null,
-            arrivalNotes: null,
-            stockedInBy: null,
-            stockedInDate: null
-        },
-
-        // Stage: Approved (passed Step 1, awaiting Step 2 / 3.3 arrival confirmation)
-        {
-            id: 'DN-1043',
-            donor: 'Juan Dela Cruz',
-            dropOffSchedule: '2026-05-08, 3:00 PM',
-            items: [
-                { name: 'Bleach', qty: 5, unit: 'Gallon' },
-                { name: 'Ascorbic Acid 500mg', qty: 2, unit: 'Box' }
-            ],
-            status: 'Approved',
-            submittedDate: '2026-04-28',
-            approvedBy: 'Rachelle',
-            approvedDate: '2026-04-29',
-            arrivedBy: null,
-            arrivedDate: null,
-            actualItems: null,
-            arrivalNotes: null,
-            stockedInBy: null,
-            stockedInDate: null
-        },
-
-        // Stage: Arrived (passed Steps 1 & 2, awaiting Step 3 / 3.4 stock-in)
-        {
-            id: 'DN-1040',
-            donor: 'Pet Lovers PH',
-            dropOffSchedule: '2026-05-01, 9:00 AM',
-            items: [
-                { name: 'Adult Dog Food (TopBreed)', qty: 5, unit: 'Sack' },
-                { name: 'Omeprazole 20mg', qty: 1, unit: 'Box' }
-            ],
-            status: 'Arrived',
-            submittedDate: '2026-04-25',
-            approvedBy: 'Rachelle',
-            approvedDate: '2026-04-26',
-            arrivedBy: 'Alvin',
-            arrivedDate: '2026-05-01',
-            actualItems: [
-                { name: 'Adult Dog Food (TopBreed)', qty: 4, unit: 'Sack' },
-                { name: 'Omeprazole 20mg', qty: 1, unit: 'Box' }
-            ],
-            arrivalNotes: 'Donor delivered 4 sacks instead of 5. Rest to follow next week.',
-            stockedInBy: null,
-            stockedInDate: null
-        },
-
-        // Stage: Stocked-In (completed full pipeline — appears in History)
-        {
-            id: 'DN-1035',
-            donor: 'Negros Pet Community',
-            dropOffSchedule: '2026-04-20, 1:00 PM',
-            items: [
-                { name: 'Co-amoxiclav 65mg', qty: 3, unit: 'Box' }
-            ],
-            status: 'Stocked-In',
-            submittedDate: '2026-04-18',
-            approvedBy: 'Rachelle',
-            approvedDate: '2026-04-18',
-            arrivedBy: 'Benjamin Buena',
-            arrivedDate: '2026-04-20',
-            actualItems: [
-                { name: 'Co-amoxiclav 65mg', qty: 3, unit: 'Box' }
-            ],
-            arrivalNotes: null,
-            stockedInBy: 'Rachelle',
-            stockedInDate: '2026-04-20'
-        },
-
-        // Stage: Rejected (terminal — appears in History)
-        {
-            id: 'DN-1032',
-            donor: 'John Smith',
-            dropOffSchedule: '2026-04-15, 11:00 AM',
-            items: [
-                { name: 'Unknown Supplements', qty: 10, unit: 'Bottle' }
-            ],
-            status: 'Rejected',
-            submittedDate: '2026-04-13',
-            approvedBy: 'Rachelle',
-            approvedDate: '2026-04-14',
-            rejectionReason: 'Items cannot be verified. Unlabeled supplements are not accepted per sanctuary policy.',
-            arrivedBy: null,
-            arrivedDate: null,
-            actualItems: null,
-            arrivalNotes: null,
-            stockedInBy: null,
-            stockedInDate: null
-        }
+        { id: 'DN-1050', donor: 'Maria Santos', dropOffSchedule: '2026-05-10, 2:00 PM', items: [{ name: 'Adult Dog Food (TopBreed)', qty: 3, unit: 'Sack' }, { name: 'Bleach', qty: 5, unit: 'Gallon' }], proof: { itemPhoto: 'proof_items_DN1050.jpg', receiptPhoto: 'proof_receipt_DN1050.jpg' }, status: 'Pending', submittedDate: '2026-05-03', approvedBy: null, approvedDate: null, rejectionCode: null, rejectionNote: null, arrivedBy: null, arrivedDate: null, actualItems: null, arrivalNotes: null, stockedInBy: null, stockedInDate: null },
+        { id: 'DN-1051', donor: 'Anonymous', dropOffSchedule: '2026-05-12, 10:00 AM', items: [{ name: 'Micropore Surgical Tape', qty: 2, unit: 'Box' }], proof: { itemPhoto: 'proof_items_DN1051.jpg', receiptPhoto: null }, status: 'Pending', submittedDate: '2026-05-04', approvedBy: null, approvedDate: null, rejectionCode: null, rejectionNote: null, arrivedBy: null, arrivedDate: null, actualItems: null, arrivalNotes: null, stockedInBy: null, stockedInDate: null },
+        { id: 'DN-1043', donor: 'Juan Dela Cruz', dropOffSchedule: '2026-05-08, 3:00 PM', items: [{ name: 'Bleach', qty: 5, unit: 'Gallon' }, { name: 'Ascorbic Acid 500mg', qty: 2, unit: 'Box' }], proof: { itemPhoto: 'proof_items_DN1043.jpg', receiptPhoto: 'proof_receipt_DN1043.jpg' }, status: 'Approved', submittedDate: '2026-04-28', approvedBy: 'Rachelle', approvedDate: '2026-04-29', rejectionCode: null, rejectionNote: null, arrivedBy: null, arrivedDate: null, actualItems: null, arrivalNotes: null, stockedInBy: null, stockedInDate: null },
+        { id: 'DN-1040', donor: 'Pet Lovers PH', dropOffSchedule: '2026-05-01, 9:00 AM', items: [{ name: 'Adult Dog Food (TopBreed)', qty: 5, unit: 'Sack' }, { name: 'Omeprazole 20mg', qty: 1, unit: 'Box' }], proof: { itemPhoto: 'proof_items_DN1040.jpg', receiptPhoto: 'proof_receipt_DN1040.jpg' }, status: 'Arrived', submittedDate: '2026-04-25', approvedBy: 'Rachelle', approvedDate: '2026-04-26', rejectionCode: null, rejectionNote: null, arrivedBy: 'Alvin', arrivedDate: '2026-05-01', actualItems: [{ name: 'Adult Dog Food (TopBreed)', qty: 4, unit: 'Sack' }, { name: 'Omeprazole 20mg', qty: 1, unit: 'Box' }], arrivalNotes: 'Donor delivered 4 sacks instead of 5. Rest to follow next week.', stockedInBy: null, stockedInDate: null },
+        { id: 'DN-1035', donor: 'Negros Pet Community', dropOffSchedule: '2026-04-20, 1:00 PM', items: [{ name: 'Co-amoxiclav 65mg', qty: 3, unit: 'Box' }], proof: { itemPhoto: 'proof_items_DN1035.jpg', receiptPhoto: 'proof_receipt_DN1035.jpg' }, status: 'Stocked-In', submittedDate: '2026-04-18', approvedBy: 'Rachelle', approvedDate: '2026-04-18', rejectionCode: null, rejectionNote: null, arrivedBy: 'Benjamin Buena', arrivedDate: '2026-04-20', actualItems: [{ name: 'Co-amoxiclav 65mg', qty: 3, unit: 'Box' }], arrivalNotes: null, stockedInBy: 'Rachelle', stockedInDate: '2026-04-20' },
+        { id: 'DN-1032', donor: 'John Smith', dropOffSchedule: '2026-04-15, 11:00 AM', items: [{ name: 'Unknown Supplements', qty: 10, unit: 'Bottle' }], proof: { itemPhoto: 'proof_items_DN1032.jpg', receiptPhoto: null }, status: 'Rejected', submittedDate: '2026-04-13', approvedBy: 'Rachelle', approvedDate: '2026-04-14', rejectionCode: 'proof_denied', rejectionNote: 'Unlabeled supplements cannot be verified. No receipt provided.', arrivedBy: null, arrivedDate: null, actualItems: null, arrivalNotes: null, stockedInBy: null, stockedInDate: null }
     ],
-
     staff: [
         { id: 'p1', name: 'Benjamin Buena', role: 'Lead Veterinarian', status: 'active' },
         { id: 'p2', name: 'Rachelle', role: 'Shelter Admin', status: 'active' },
@@ -218,14 +78,11 @@ const initialData = {
     }
 };
 
-// 2. Initialize the Database
 function initDB() {
-    // Standard Overwrite for Prototype Phase
     localStorage.setItem('siyam_db', JSON.stringify(initialData));
-    console.log("System Status: Database seeded successfully with aligned PawPlacer nomenclature.");
+    console.log("System Status: Database seeded successfully.");
 }
 
-// 3. Helper Functions for CRUD Operations
 const db = {
     read: function(tableName) {
         const data = JSON.parse(localStorage.getItem('siyam_db'));
